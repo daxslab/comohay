@@ -1,0 +1,13 @@
+{{ object.title }}
+
+{{ object.description }}
+
+{{ object.price }}
+
+{{ object.province }}
+
+{{ object.municipality }}
+
+{{ object.category }}
+
+{{ object.category.parent }}

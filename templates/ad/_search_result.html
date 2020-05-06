@@ -1,0 +1,13 @@
+{% load highlight %}
+
+<div>
+    <a href="{{ result.object.get_absolute_url }}" {% if result.object.external_source %}target="_blank"{% endif %}><h3>{{ result.object.title }}</h3></a>
+    {% if result.object.external_source %}
+        <span class="badge badge-info">{{ result.object.external_source }}</span>
+    {% endif %}
+</div>
+<div>
+    <p>
+        {% highlight result.description with query max_lenght 260 %}
+    </p>
+</div>

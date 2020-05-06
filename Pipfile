@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "*"
+django-compressor = "*"
+django-libsass = "*"
+django-extensions = "*"
+django-crispy-forms = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
+django-haystack = {git = "https://github.com/django-haystack/django-haystack.git",ref = "v3.0b1"}
+whoosh = "*"
+pillow = "*"
+django-categories = "*"
+django-seed = "*"
+beautifulsoup4 = "*"
+requests = "*"
+
+[requires]
+python_version = "3.7"

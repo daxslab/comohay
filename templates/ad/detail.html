@@ -1,0 +1,34 @@
+{% extends 'layout.html' %}
+{% load more_like_this %}
+
+{% block content %}
+    <h1>{{ ad.title }}</h1>
+
+
+    {% if ad.adimage_set.all %}
+
+            {% for ad_image in ad.adimage_set.all %}
+
+                    <img src="{{ ad_image.image.url }}" class="img-rounded" alt="">
+
+            {% endfor %}
+
+    {% endif %}
+
+    <p>{{ ad.description }}</p>
+
+    {% if ad.price %}
+    <p>{{ ad.price }}</p>
+    {% endif %}
+
+    {% more_like_this ad as related_contents limit 5 %}
+    {% if related_contents %}
+        <h3>También le puede interesar:</h3>
+        {% for related_content in related_contents %}
+            <li><a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a></li>
+        {% endfor %}
+    {% endif %}
+
+
+
+{% endblock %}
