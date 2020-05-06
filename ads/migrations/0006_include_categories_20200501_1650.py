@@ -90,7 +90,6 @@ categories = {
         'Reparación electrónica',
         'Entretenimiento',
         'Fotografía y Video',
-        'Gastronomía',
         'Informática',
         'Peluquerías y Barberías',
         'Relojerías y Joyeros',
