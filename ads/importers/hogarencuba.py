@@ -11,7 +11,7 @@ from ads.models.province import Province
 
 class HogarencubaImporter(BaseImporter):
 
-    api_url = 'http://localhost/hogarencuba-less.json'
+    api_url = 'https://hogarencuba.com/api.json'
 
     source = 'hogarencuba.com'
 
