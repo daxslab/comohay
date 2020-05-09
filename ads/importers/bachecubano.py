@@ -59,6 +59,7 @@ CATEGORY_MAPPING = {
         'Servicios domésticos': 'Domésticos',
         'Bisutería y Relojes': 'Relojerías y Joyeros',
         'Gimnasios y Masajistas': 'Gimnasios y Masajistas',
+        'Cambio de Moneda': 'Cambio de Moneda',
     },
     'Inmuebles': {
         'Alquiler de Casas': 'Alquiler',
@@ -72,6 +73,9 @@ CATEGORY_MAPPING = {
         'Talleres': 'Taller',
         'Motos': 'Motos',
         'Accesorios y Piezas': 'Partes y Piezas',
+    },
+    'Empleo': {
+        'Empleos': 'Ofrezco',
     },
 }
 
@@ -93,6 +97,7 @@ class BachecubanoImporter(BaseImporter):
         'https://www.bachecubano.com/hogar',
         'https://www.bachecubano.com/transporte',
         'https://www.bachecubano.com/salud-y-belleza',
+        'https://www.bachecubano.com/otros',
     ]
 
     source = 'bachecubano.com'

@@ -94,6 +94,7 @@ categories = {
         'Peluquerías y Barberías',
         'Relojerías y Joyeros',
         'Gimnasios y Masajistas',
+        'Cambio de Moneda',
         'Otros Servicios',
     ]
 }
