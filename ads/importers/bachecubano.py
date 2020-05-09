@@ -39,6 +39,8 @@ CATEGORY_MAPPING = {
         'Mascotas': 'Animales y Mascotas',
         'Muebles y Decoración': 'Muebles y Decoración',
         'Obras de Arte': 'Arte',
+        'Implementos deportivos': 'Artículos deportivos',
+        'Vestuario y Calzado': 'Ropas, Zapatos y Accesorios',
     },
     'Servicios': {
         'Albañilería': 'Albañilería',
@@ -55,11 +57,21 @@ CATEGORY_MAPPING = {
         'Peluquerías y Barberías': 'Peluquerías y Barberías',
         'Relojerías y Joyeros': 'Relojerías y Joyeros',
         'Servicios domésticos': 'Domésticos',
+        'Bisutería y Relojes': 'Relojerías y Joyeros',
+        'Gimnasios y Masajistas': 'Gimnasios y Masajistas',
     },
     'Inmuebles': {
         'Alquiler de Casas': 'Alquiler',
         'Compra/Venta de Casas': 'Compra y venta de viviendas',
         'Permuta': 'Permutas',
+    },
+    'Transporte': {
+        'Compra/Venta de Autos': 'Autos',
+        'Bicicletas': 'Bicicletas',
+        'Alquiler de Autos': 'Autos',
+        'Talleres': 'Taller',
+        'Motos': 'Motos',
+        'Accesorios y Piezas': 'Partes y Piezas',
     },
 }
 
@@ -79,6 +91,8 @@ class BachecubanoImporter(BaseImporter):
         'https://www.bachecubano.com/electronica',
         'https://www.bachecubano.com/servicios',
         'https://www.bachecubano.com/hogar',
+        'https://www.bachecubano.com/transporte',
+        'https://www.bachecubano.com/salud-y-belleza',
     ]
 
     source = 'bachecubano.com'

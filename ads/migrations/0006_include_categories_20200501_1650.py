@@ -93,6 +93,7 @@ categories = {
         'Informática',
         'Peluquerías y Barberías',
         'Relojerías y Joyeros',
+        'Gimnasios y Masajistas',
         'Otros Servicios',
     ]
 }
