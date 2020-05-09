@@ -107,8 +107,9 @@ class BachecubanoImporter(BaseImporter):
     custom_headers = {'User-Agent': user_agent}
 
     def run(self):
+        self.remove_normalized_data_duplicates()
         self.import_data()
-        self.remove_old_data()
+        # self.remove_old_data()
 
     def import_data(self):
         for ad_data in self.normalized_data:
