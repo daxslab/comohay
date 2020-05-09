@@ -78,6 +78,7 @@ class BachecubanoImporter(BaseImporter):
         'https://www.bachecubano.com/computadoras',
         'https://www.bachecubano.com/electronica',
         'https://www.bachecubano.com/servicios',
+        'https://www.bachecubano.com/hogar',
     ]
 
     source = 'bachecubano.com'
