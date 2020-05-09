@@ -214,6 +214,7 @@ LOGGING = {
 EXTERNAL_SOURCES = {
     'hogarencuba': 'ads.importers.HogarencubaImporter',
     'bachecubano': 'ads.importers.BachecubanoImporter',
+    'revolico': 'ads.importers.RevolicoImporter',
 }
 
 try:

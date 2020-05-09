@@ -17,7 +17,8 @@ categories = {
         'Consolas y Videojuegos',
         'Accesorios y Componentes',
         'Centros de reparaciones',
-        'Otros',
+        'Cámara Foto/Video',
+        'Otros Computadoras',
     ],
     'Electrodomésticos': [
         'TV',
@@ -70,7 +71,7 @@ categories = {
         'Bicicletas',
         'Partes y Piezas',
         'Taller',
-        'Otros',
+        'Otros Transporte',
     ],
     'Servicios': [
         'Cuidados a domicilio',
