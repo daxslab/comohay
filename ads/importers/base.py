@@ -35,7 +35,7 @@ class BaseImporter(abc.ABC):
         for element in self.normalized_data:
             duplicated = False
             for checked_element in e:
-                if  checked_element['title'] == element['title'] and checked_element['desctiption'] == element['desctiption']:
+                if  checked_element['title'] == element['title'] and checked_element['description'] == element['description']:
                     duplicated = True
             if not duplicated:
                 e.append(element)
