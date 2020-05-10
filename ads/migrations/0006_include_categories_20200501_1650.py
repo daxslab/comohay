@@ -56,7 +56,7 @@ categories = {
         'Garajes y Estacionamientos',
         'Terrenos y Parcelas',
         'Permutas',
-        'Otros',
+        'Otros Inmuebles',
     ],
     'Empleo': [
         'Ofrezco',

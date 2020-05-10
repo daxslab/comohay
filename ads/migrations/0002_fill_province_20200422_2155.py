@@ -14,7 +14,7 @@ province_codes = {
     '32': 'Holguín',
     '33': 'Granma',
     '34': 'Santiago de Cuba',
-    # '40.01': 'Isla de la Juventud',
+    '40': 'Isla de la Juventud',
     '30': 'Camagüey',
     '29': 'Ciego de Ávila',
     '26': 'Villa Clara',

@@ -10,6 +10,8 @@ class BaseImporter(abc.ABC):
 
     logger = logging.getLogger('console')
 
+    category_mapping:list
+
     def __init__(self):
         self.get_normalized_data()
 
@@ -40,3 +42,13 @@ class BaseImporter(abc.ABC):
             if not duplicated:
                 e.append(element)
         self.normalized_data = e
+
+    def get_category_tree(self, bc_category):
+        for category in self.category_mapping:
+            for bc_category_name in self.category_mapping[category]:
+                if bc_category == bc_category_name and category == self.category_mapping[category][bc_category_name]:
+                    return (category, )
+                elif bc_category == bc_category_name:
+                    return (category, self.category_mapping[category][bc_category_name],)
+
+        return ('Misceláneas', 'Otros',)
