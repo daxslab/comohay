@@ -167,7 +167,7 @@ HAYSTACK_CONNECTIONS = {
         # 'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
         'ENGINE': 'utils.spanish_whoosh.SpanishWhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
-        'INCLUDE_SPELLING': True,
+        # 'INCLUDE_SPELLING': True,
     },
 }
 
