@@ -1,11 +1,10 @@
 from categories.models import Category
 from django.forms import modelformset_factory
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 
-# Create your views here.
-from django.template import loader
 from django.views.generic import ListView
+from django_filters.views import FilterView
 from haystack.views import SearchView
 
 from ads.forms.adform import AdForm
@@ -23,6 +22,26 @@ class index(SearchView):
         context['parent_categories'] = parent_categories
         return context
 
+
+class ads_by_main_category(FilterView):
+    paginate_by = 20
+    model = Ad
+    template_name = 'ad/ads.html'
+    filterset_fields = '__all__'
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.category = get_object_or_404(Category, slug=self.kwargs['category'], parent=None)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.order_by('-created_at')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['category'] = self.category
+
+        return context
 
 class ads_by_categories(ListView):
     paginate_by = 20
