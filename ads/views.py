@@ -43,10 +43,11 @@ class ads_by_main_category(FilterView):
 
         return context
 
-class ads_by_categories(ListView):
+class ads_by_categories(FilterView):
     paginate_by = 20
     model = Ad
     template_name = 'ad/ads.html'
+    filterset_fields = '__all__'
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
