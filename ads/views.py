@@ -3,7 +3,6 @@ from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 
-from django.views.generic import ListView
 from django_filters.views import FilterView
 from haystack.views import SearchView
 
@@ -13,21 +12,22 @@ from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
 
-class index(SearchView):
+class IndexView(SearchView):
     template = 'ad/index.html'
 
     def get_context(self):
-        context =  super().get_context()
+        context = super().get_context()
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         return context
 
 
-class ads_by_main_category(FilterView):
+class AdsByMainCategoryView(FilterView):
     paginate_by = 20
     model = Ad
     template_name = 'ad/ads.html'
     filterset_fields = '__all__'
+    category: Category
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -43,11 +43,14 @@ class ads_by_main_category(FilterView):
 
         return context
 
-class ads_by_categories(FilterView):
+
+class AdsByCategoriesView(FilterView):
     paginate_by = 20
     model = Ad
     template_name = 'ad/ads.html'
     filterset_fields = '__all__'
+    category: Category
+    subcategory: Category
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -58,7 +61,7 @@ class ads_by_categories(FilterView):
             raise Http404('No categories matches the given query.')
 
     def get_queryset(self):
-        queryset =  super().get_queryset().order_by('-created_at')
+        queryset = super().get_queryset().order_by('-created_at')
         return queryset.filter(category=self.subcategory.id)
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -98,4 +101,4 @@ def create(request):
     else:
         ad_form = AdForm()
         ad_image_formset = image_form_set(queryset=AdImage.objects.none())
-    return render(request, 'ad/create.html', {'ad_form':ad_form, 'ad_image_formset': ad_image_formset})
+    return render(request, 'ad/create.html', {'ad_form': ad_form, 'ad_image_formset': ad_image_formset})
