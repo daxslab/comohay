@@ -47,7 +47,7 @@
         {% else %}
             {% for parent_category in parent_categories %}
                 {% if parent_category.children.count %}
-                    <h4>{{ parent_category.name }}</h4>
+                    <h4><a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a></h4>
                     <ul>
                     {% for subcategory in parent_category.children.all %}
                         <li><a href="{% url 'ads:list_by_categories' parent_category.slug subcategory.slug %}">{{ subcategory.name }}</a></li>
