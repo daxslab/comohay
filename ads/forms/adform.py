@@ -13,6 +13,8 @@ class AdForm(ModelForm):
         model = Ad
         exclude = [
             'slug',
+            'external_source',
+            'external_id',
             'external_url',
             'created_at',
             'updated_at',
