@@ -43,9 +43,15 @@
                 </div>
             {% endif %}
         {% else %}
-            <div>
+
+            <div class="row">
             {% for parent_category in parent_categories %}
-                <div>
+                {% if forloop.counter0|divisibleby:4 %}
+                </div>
+                <div class="row">
+                {% endif %}
+
+                <div class="column">
                     {% if parent_category.children.count %}
                     <h4><a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a></h4>
                     <ul>
@@ -57,7 +63,6 @@
                 </div>
             {% endfor %}
             </div>
-
         {% endif %}
 
 {% endblock %}
