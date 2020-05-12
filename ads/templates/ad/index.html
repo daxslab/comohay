@@ -5,22 +5,19 @@
 
     <h1>Como Hay</h1>
 
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-            <form method="get" action="." class="card card-sm">
-                <div class="card-body row no-gutters allign-items-center">
-                    <div class="col-auto">
-                        <i></i>
-                    </div>
-                    <div class="col">
-                        <input placeholder="{% trans 'Search' %}" class="form-control form-control-lg form-control-borderless" value="{{ query }}" type="search" name="q" id="id_q">
+    <div class="row">
+        <div class="column row-center">
+            <form method="get" action="." class="">
+                <div style="display: flex">
+                    <div class="">
+                        <input placeholder="{% trans 'Search' %}" class="" value="{{ query }}" type="search" name="q" id="id_q">
                         {% if suggestion and query != suggestion %}
                         <div>
                             <p>{% trans 'Maybe you want to say' %}: <a href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
                         </div>
                         {% endif %}
                     </div>
-                    <div class="col-auto">
+                    <div class="">
                         <input type="submit" value="{% trans 'Search' %}" class="btn btn-lg btn-success">
                     </div>
                 </div>
@@ -46,17 +43,20 @@
                 </div>
             {% endif %}
         {% else %}
+            <div>
             {% for parent_category in parent_categories %}
-                {% if parent_category.children.count %}
+                <div>
+                    {% if parent_category.children.count %}
                     <h4><a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a></h4>
                     <ul>
                     {% for subcategory in parent_category.children.all %}
                         <li><a href="{% url 'ads:list_by_categories' parent_category.slug subcategory.slug %}">{{ subcategory.name }}</a></li>
                     {% endfor %}
                     </ul>
-
                 {% endif %}
+                </div>
             {% endfor %}
+            </div>
 
         {% endif %}
 
