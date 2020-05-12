@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 
 {% block content %}
 
@@ -16,23 +17,23 @@
         {% endfor %}
         </ul>
     {% else %}
-        <p>No se encontraron resultados.</p>
+        <p>{% trans 'No results where found' %}.</p>
     {% endif %}
 
     <div class="pagination">
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                <a href="?page=1">&laquo; {% trans 'first' %}</a>
+                <a href="?page={{ page_obj.previous_page_number }}">{% trans 'previous' %}</a>
             {% endif %}
 
             <span class="current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                {% blocktrans %}Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.{% endblocktrans %}
             </span>
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">next</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                <a href="?page={{ page_obj.next_page_number }}">{% trans 'next' %}</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">{% trans 'last' %} &raquo;</a>
             {% endif %}
         </span>
     </div>

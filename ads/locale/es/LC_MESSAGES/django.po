@@ -1,0 +1,159 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-12 03:42+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ads/forms/adimageform.py:8 ads/models/adimages.py:9
+#: ads/models/adimages.py:12
+msgid "Image"
+msgstr "Imagen"
+
+#: ads/models/ad.py:12
+msgid "Title"
+msgstr "Título"
+
+#: ads/models/ad.py:13
+msgid "Slug"
+msgstr "Slug"
+
+#: ads/models/ad.py:14
+msgid "Category"
+msgstr "Categoria"
+
+#: ads/models/ad.py:15
+msgid "Description"
+msgstr "Descripción"
+
+#: ads/models/ad.py:16
+msgid "Price"
+msgstr "Precio"
+
+#: ads/models/ad.py:17 ads/models/municipality.py:9 ads/models/province.py:12
+msgid "Province"
+msgstr "Provincia"
+
+#: ads/models/ad.py:18 ads/models/municipality.py:14
+msgid "Municipality"
+msgstr "Minicipio"
+
+#: ads/models/ad.py:19
+msgid "External source"
+msgstr "Fuente externa"
+
+#: ads/models/ad.py:20
+msgid "External ID"
+msgstr "ID externo"
+
+#: ads/models/ad.py:21
+msgid "External URL"
+msgstr "URL externa"
+
+#: ads/models/ad.py:24 ads/models/adimages.py:8
+msgid "Ad"
+msgstr "Anuncio"
+
+#: ads/models/ad.py:25
+msgid "Ads"
+msgstr "Anuncios"
+
+#: ads/models/adimages.py:13
+msgid "Images"
+msgstr "Imagenes"
+
+#: ads/models/basemodel.py:6
+msgid "Created at"
+msgstr "Fecha de creacion"
+
+#: ads/models/basemodel.py:7
+#, fuzzy
+#| msgid "Created at"
+msgid "Updated at"
+msgstr "Fecha de creacion"
+
+#: ads/models/municipality.py:10 ads/models/province.py:8
+msgid "Code"
+msgstr "Código"
+
+#: ads/models/municipality.py:11 ads/models/province.py:9
+msgid "Name"
+msgstr "Nombre"
+
+#: ads/models/municipality.py:15
+msgid "Municipalities"
+msgstr "Municipios"
+
+#: ads/models/province.py:13
+msgid "Provinces"
+msgstr "Provincias"
+
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:38
+msgid "No results where found"
+msgstr "No se encontraron resultados"
+
+#: ads/templates/ad/ads.html:26
+msgid "first"
+msgstr "primera"
+
+#: ads/templates/ad/ads.html:27
+#, fuzzy
+#| msgid "Previous"
+msgid "previous"
+msgstr "Anterior"
+
+#: ads/templates/ad/ads.html:31
+#, python-format
+msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s."
+msgstr "Página %(page_obj.number)s de %(page_obj.paginator.num_pages)s."
+
+#: ads/templates/ad/ads.html:35
+msgid "next"
+msgstr "siguiente"
+
+#: ads/templates/ad/ads.html:36
+msgid "last"
+msgstr "último"
+
+#: ads/templates/ad/create.html:7
+#, fuzzy
+#| msgid "Created at"
+msgid "Create Ad"
+msgstr "Fecha de creacion"
+
+#: ads/templates/ad/create.html:65
+msgid "Submit"
+msgstr "Enviar"
+
+#: ads/templates/ad/detail.html:27
+msgid "You may also be interested in"
+msgstr "También le puede interesar"
+
+#: ads/templates/ad/index.html:16 ads/templates/ad/index.html:24
+msgid "Search"
+msgstr "Buscar"
+
+#: ads/templates/ad/index.html:19
+msgid "Maybe you want to say"
+msgstr "Quzá quiso decir"
+
+#: ads/templates/ad/index.html:43
+msgid "Previous"
+msgstr "Anterior"
+
+#: ads/templates/ad/index.html:45
+msgid "Next"
+msgstr "Siguiente"

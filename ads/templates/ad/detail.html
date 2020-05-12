@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load more_like_this %}
+{% load i18n %}
 
 {% block content %}
     <h1>{{ ad.title }}</h1>
@@ -23,7 +24,7 @@
 
     {% more_like_this ad as related_contents limit 5 %}
     {% if related_contents %}
-        <h3>También le puede interesar:</h3>
+        <h3>{% trans "You may also be interested in" %}:</h3>
         {% for related_content in related_contents %}
             <li><a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a></li>
         {% endfor %}

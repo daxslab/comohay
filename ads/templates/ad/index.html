@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load i18n %}
 
 {% block content %}
 
@@ -12,15 +13,15 @@
                         <i></i>
                     </div>
                     <div class="col">
-                        <input placeholder="Buscar" class="form-control form-control-lg form-control-borderless" value="{{ query }}" type="search" name="q" id="id_q">
+                        <input placeholder="{% trans 'Search' %}" class="form-control form-control-lg form-control-borderless" value="{{ query }}" type="search" name="q" id="id_q">
                         {% if suggestion and query != suggestion %}
                         <div>
-                            <p>Quizá quiso decir: <a href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
+                            <p>{% trans 'Maybe you want to say' %}: <a href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
                         </div>
                         {% endif %}
                     </div>
                     <div class="col-auto">
-                        <input type="submit" value="Buscar" class="btn btn-lg btn-success">
+                        <input type="submit" value="{% trans 'Search' %}" class="btn btn-lg btn-success">
                     </div>
                 </div>
             </form>
@@ -34,14 +35,14 @@
             {% for result in page.object_list %}
                 {% include 'ad/_search_result.html' %}
             {% empty %}
-                <p>No se encontraron resultados.</p>
+                <p>{% trans 'No results where found' %}.</p>
             {% endfor %}
 
             {% if page.has_previous or page.has_next %}
                 <div>
-                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; {% trans 'Previous' %}{% if page.has_previous %}</a>{% endif %}
                     |
-                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}{% trans 'Next' %} &raquo;{% if page.has_next %}</a>{% endif %}
                 </div>
             {% endif %}
         {% else %}

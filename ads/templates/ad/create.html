@@ -1,9 +1,10 @@
 {% extends 'layout.html' %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block content %}
 
-<h1>Create AD</h1>
+<h1>{% trans 'Create Ad' %}</h1>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
@@ -61,7 +62,7 @@
         {{ form|crispy }}
     {% endfor %}
 
-    <input type="submit" value="Submit">
+    <input type="submit" value="{% trans 'Submit' %}">
 </form>
 
 {% endblock %}
