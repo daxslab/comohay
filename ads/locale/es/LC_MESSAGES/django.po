@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-12 03:42+0000\n"
+"POT-Creation-Date: 2020-05-12 17:03-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,8 +80,6 @@ msgid "Created at"
 msgstr "Fecha de creacion"
 
 #: ads/models/basemodel.py:7
-#, fuzzy
-#| msgid "Created at"
 msgid "Updated at"
 msgstr "Fecha de creacion"
 
@@ -110,15 +108,13 @@ msgid "first"
 msgstr "primera"
 
 #: ads/templates/ad/ads.html:27
-#, fuzzy
-#| msgid "Previous"
 msgid "previous"
-msgstr "Anterior"
+msgstr "anterior"
 
 #: ads/templates/ad/ads.html:31
 #, python-format
-msgid "Page %(page_obj.number)s of %(page_obj.paginator.num_pages)s."
-msgstr "Página %(page_obj.number)s de %(page_obj.paginator.num_pages)s."
+msgid "Page %(number)s of %(num_pages)s."
+msgstr "Página %(number)s de %(num_pages)s."
 
 #: ads/templates/ad/ads.html:35
 msgid "next"
@@ -129,10 +125,8 @@ msgid "last"
 msgstr "último"
 
 #: ads/templates/ad/create.html:7
-#, fuzzy
-#| msgid "Created at"
 msgid "Create Ad"
-msgstr "Fecha de creacion"
+msgstr "Incluir anuncio"
 
 #: ads/templates/ad/create.html:65
 msgid "Submit"
