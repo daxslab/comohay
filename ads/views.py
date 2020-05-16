@@ -8,6 +8,7 @@ from haystack.views import SearchView
 
 from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
+from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
@@ -96,6 +97,8 @@ def create(request):
                     image = form['image']
                     ad_image = AdImage(ad=ad, image=image)
                     ad_image.save()
+
+            TelegramBot.broadcast_ad(ad, request)
 
             return HttpResponseRedirect('/')
     else:

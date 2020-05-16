@@ -223,6 +223,9 @@ EXTERNAL_SOURCES = {
     'porlalivre': 'ads.importers.PorlalivreImporter',
 }
 
+TELEGRAM_BOT_TOKEN = 'bot_token'
+TELEGRAM_BOT_GROUPS = {}
+
 try:
     from .settings_local import *
 except:
