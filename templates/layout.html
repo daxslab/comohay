@@ -45,5 +45,9 @@
             </div>
         </footer>
 
+    {% compress js %}
+        <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
+
     </body>
 </html>

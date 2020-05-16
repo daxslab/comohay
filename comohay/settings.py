@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'categories',
     'categories.editor',
     'django_seed',
+    'lazysignup',
+    'actstream',
 ]
 
 MIDDLEWARE = [
@@ -57,6 +59,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+  'django.contrib.auth.backends.ModelBackend',
+  'lazysignup.backends.LazySignupBackend',
+)
+
 
 ROOT_URLCONF = 'comohay.urls'
 
@@ -152,6 +160,18 @@ STATICFILES_FINDERS = [
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+
+COMPRESS_ENABLED = True
+
+COMPRESS_FILTERS = {
+    'css': [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.CSSMinFilter',
+    ],
+    'js': [
+        'compressor.filters.jsmin.JSMinFilter'
+    ]
+}
 
 # Crispy forms template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

@@ -21,6 +21,8 @@ django-categories = "*"
 django-seed = "*"
 beautifulsoup4 = "*"
 requests = "*"
+actstream = {git = "https://github.com/justquick/django-activity-stream.git"}
+django-lazysignup = {git = "https://github.com/cccaballero/django-lazysignup.git",ref = "master"}
 
 [requires]
 python_version = "3.7"
