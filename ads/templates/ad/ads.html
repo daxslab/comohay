@@ -13,7 +13,7 @@
     {% if object_list %}
         <ul>
         {% for ad in object_list %}
-            <li><a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank"{% endif %}>{{ ad.title }}</a></li>
+            <li><a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank"  class="external"  data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %} data-ad="{{ ad.id }}">{{ ad.title }}</a></li>
         {% endfor %}
         </ul>
     {% else %}

@@ -1,11 +1,20 @@
+from encodings.base64_codec import base64_decode
+
+from actstream import action
 from categories.models import Category
 from django.forms import modelformset_factory
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.http.response import HttpResponseRedirectBase
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.generic import RedirectView
 
 from django_filters.views import FilterView
 from haystack.views import SearchView
+from lazysignup.decorators import allow_lazy_user
 
+from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD
 from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
 from ads.helpers.telegrambot import TelegramBot
@@ -44,6 +53,10 @@ class AdsByMainCategoryView(FilterView):
 
         return context
 
+    @method_decorator(allow_lazy_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class AdsByCategoriesView(FilterView):
     paginate_by = 20
@@ -72,12 +85,19 @@ class AdsByCategoriesView(FilterView):
 
         return context
 
+    @method_decorator(allow_lazy_user)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
+
+@allow_lazy_user
 def detail(request, ad_slug):
     ad = get_object_or_404(Ad, slug=ad_slug)
+    action.send(request.user, verb=ACTION_VIEW_AD, target=ad)
     return render(request, 'ad/detail.html', {'ad': ad})
 
 
+@allow_lazy_user
 def create(request):
 
     image_form_set = modelformset_factory(AdImage, form=AdImageForm, extra=3)
@@ -105,3 +125,23 @@ def create(request):
         ad_form = AdForm()
         ad_image_formset = image_form_set(queryset=AdImage.objects.none())
     return render(request, 'ad/create.html', {'ad_form': ad_form, 'ad_image_formset': ad_image_formset})
+
+
+@allow_lazy_user
+def to_external_url(request):
+    url = request.GET.get('url')
+    ref = request.GET.get('ref')
+    request_ad = request.GET.get('ad')
+    try:
+        from_url = base64_decode(bytes(ref, 'utf-8'))[0].decode('utf-8')
+        ad_id = base64_decode(bytes(request_ad, 'utf-8'))[0].decode('utf-8')
+        ad = Ad.objects.get(id=ad_id)
+    except:
+        from_url = None
+        ad = None
+    if not url or not from_url or not from_url.startswith(request.build_absolute_uri('/')) or not ad:
+        return HttpResponseBadRequest()
+    response = HttpResponseRedirect(url)
+    response['Referer'] = from_url
+    action.send(request.user, verb=ACTION_FOLLOW_EXTERNAL_AD, target=ad)
+    return response

@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -25,6 +26,7 @@ SECRET_KEY = ')37qpqif(e+nc$(%gkzjnrlxi6q#-bk*5xxu6$jar72865-b8$'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -44,6 +46,8 @@ INSTALLED_APPS = [
     'categories',
     'categories.editor',
     'django_seed',
+    'lazysignup',
+    'actstream',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -61,6 +65,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = (
+  'django.contrib.auth.backends.ModelBackend',
+  'allauth.account.auth_backends.AuthenticationBackend',
+  'lazysignup.backends.LazySignupBackend',
+)
+
 
 ROOT_URLCONF = 'comohay.urls'
 
@@ -80,14 +91,6 @@ TEMPLATES = [
         },
     },
 ]
-
-AUTHENTICATION_BACKENDS = (
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-)
 
 WSGI_APPLICATION = 'comohay.wsgi.application'
 
@@ -160,6 +163,18 @@ STATICFILES_FINDERS = [
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
+
+COMPRESS_ENABLED = True
+
+COMPRESS_FILTERS = {
+    'css': [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.CSSMinFilter',
+    ],
+    'js': [
+        'compressor.filters.jsmin.JSMinFilter'
+    ]
+}
 
 # Crispy forms template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
