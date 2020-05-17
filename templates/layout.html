@@ -12,6 +12,7 @@
 
         {% compress css %}
             <link type="text/x-scss" href="{% static 'sass/main.scss' %}" rel="stylesheet">
+            <link type="text/css" href="{% static 'fontello/css/fontello.css' %}" rel="stylesheet">
         {% endcompress %}
     </head>
     <body>
@@ -25,6 +26,11 @@
                        <ul class="navigation-list float-right">
                           <li class="navigation-item"><a class="navigation-link" href="{% url 'ads:index' %}">{% trans 'Index' %}</a></li>
                           <li class="navigation-item"><a class="navigation-link" href="{% url 'ads:create' %}">{% trans 'Add ad' %}</a></li>
+                           {% if user.is_authenticated %}
+                               <li class="navigation-item"><a class="navigation-link" href="{% url 'account_logout' %}">{% trans 'Logout' %}</a></li>
+                           {% else %}
+                               <li class="navigation-item"><a class="navigation-link" href="{% url 'account_login' %}">{% trans 'Login' %}</a></li>
+                           {% endif %}
                        </ul>
                     </section>
                  </nav>
@@ -39,11 +45,11 @@
             </div>
         </main>
 
-        <footer class="footer">
-            <div class="container">
-                <span class="text-muted">Place footer content here.</span>
-            </div>
-        </footer>
+{#        <footer class="footer">#}
+{#            <div class="container">#}
+{#                <span class="text-muted">Place footer content here.</span>#}
+{#            </div>#}
+{#        </footer>#}
 
     </body>
 </html>

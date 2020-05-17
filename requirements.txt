@@ -34,3 +34,4 @@ Unidecode==1.1.1
 urllib3==1.25.9
 Whoosh==2.7.4
 python-telegram-bot==12.7
+django-allauth=41.0
