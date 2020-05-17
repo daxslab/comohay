@@ -17,6 +17,7 @@ from lazysignup.decorators import allow_lazy_user
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD
 from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
+from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
@@ -116,6 +117,8 @@ def create(request):
                     image = form['image']
                     ad_image = AdImage(ad=ad, image=image)
                     ad_image.save()
+
+            TelegramBot.broadcast_ad(ad, request)
 
             return HttpResponseRedirect('/')
     else:
