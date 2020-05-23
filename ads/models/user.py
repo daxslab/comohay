@@ -13,14 +13,14 @@ class User(AbstractUser):
             pass
         return True
 
-    @property
-    def is_anonymous(self):
-        try:
-            if is_lazy_user(self):
-                return True
-        except:
-            pass
-        return False
+    # @property
+    # def is_anonymous(self):
+    #     try:
+    #         if is_lazy_user(self):
+    #             return True
+    #     except:
+    #         pass
+    #     return False
 
     class Meta(AbstractUser.Meta):
         swappable = 'AUTH_USER_MODEL'

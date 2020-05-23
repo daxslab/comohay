@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('categories', '0004_auto_20200517_1832'),
+        ('categories', '0001_initial'),
         ('auth', '0011_update_proxy_permissions'),
     ]
 
