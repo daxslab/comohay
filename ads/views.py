@@ -1,3 +1,4 @@
+import logging
 from encodings.base64_codec import base64_decode
 
 from actstream import action
@@ -21,6 +22,8 @@ from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
+
+logger = logging.getLogger(__name__)
 
 class IndexView(SearchView):
     template = 'ad/index.html'
@@ -118,7 +121,10 @@ def create(request):
                     ad_image = AdImage(ad=ad, image=image)
                     ad_image.save()
 
-            TelegramBot.broadcast_ad(ad, request)
+            try:
+                TelegramBot.broadcast_ad(ad, request)
+            except Exception as e:
+                logger.error('Error broadcasting AD: ' + str(e))
 
             return HttpResponseRedirect('/')
     else:
