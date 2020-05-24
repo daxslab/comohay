@@ -112,7 +112,7 @@ def add_categories(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ads', '0005_rename_ads_url_field_20200426_2053'),
+        ('ads', '0003_fill_municipality_20200422_2255'),
     ]
 
     operations = [
