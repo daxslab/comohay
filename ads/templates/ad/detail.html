@@ -5,31 +5,72 @@
 {% block content %}
     <h1>{{ ad.title }}</h1>
 
+    <div class="row">
+        {% if ad.adimage_set.all %}
+            <div class="column column-40" style="max-width: 100%">
+                {% for ad_image in ad.adimage_set.all %}
 
-    {% if ad.adimage_set.all %}
+                    <img src="{{ ad_image.image.url }}" class="img-gallery" alt="">
 
-            {% for ad_image in ad.adimage_set.all %}
+                {% endfor %}
+                <div class="gallery-buttons">
+                    <button class="gallery-button display-left">&#10094</button>
+                    <button class="gallery-button display-right float-right">&#10095</button>
+                </div>
+            </div>
+            <script>
 
-                    <img src="{{ ad_image.image.url }}" class="img-rounded" alt="">
+                function showDivs(n) {
+                    let i;
+                    let x = document.getElementsByClassName('img-gallery');
+                    if (n > x.length) {
+                        slideIndex = 1;
+                    }
+                    if (n < 1){
+                        slideIndex = x.length;
+                    }
+                    for (i = 0; i < x.length; i++){
+                        x[i].style.display = "none";
+                    }
+                    x[slideIndex-1].style.display = 'block';
+                }
 
-            {% endfor %}
+                function plusDivs(n) {
+                    showDivs(slideIndex += n);
+                }
 
-    {% endif %}
+                let slideIndex = 1;
+                showDivs(slideIndex);
 
-    <p>{{ ad.description }}</p>
+                let nextButton = document.querySelector('.gallery-button.display-right');
+                let backButton = document.querySelector('.gallery-button.display-left');
 
-    {% if ad.price %}
-    <p>{{ ad.price }}</p>
-    {% endif %}
+                nextButton.addEventListener('click', function () {
+                    plusDivs(+1);
+                });
+                backButton.addEventListener('click', function () {
+                    plusDivs(-1);
+                });
 
-    {% more_like_this ad as related_contents limit 5 %}
-    {% if related_contents %}
-        <h3>{% trans "You may also be interested in" %}:</h3>
-        {% for related_content in related_contents %}
-            <li><a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a></li>
-        {% endfor %}
-    {% endif %}
+            </script>
+        {% endif %}
+        <div class="column">
+            <p>{{ ad.description }}</p>
 
+            {% if ad.price %}
+            <p>{{ ad.price }}</p>
+            {% endif %}
 
+            {% more_like_this ad as related_contents limit 5 %}
+            {% if related_contents %}
+                <h3>{% trans "You may also be interested in" %}:</h3>
+                <ul>
+                    {% for related_content in related_contents %}
+                        <li><a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
 
 {% endblock %}
