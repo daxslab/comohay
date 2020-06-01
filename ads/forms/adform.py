@@ -18,4 +18,6 @@ class AdForm(ModelForm):
             'external_url',
             'created_at',
             'updated_at',
+            'created_by',
+            'created_at',
         ]

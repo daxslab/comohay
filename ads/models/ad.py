@@ -1,5 +1,6 @@
 from django import urls
 from django.db import models
+from django_currentuser.db.models import CurrentUserField
 from django_extensions.db.fields import AutoSlugField
 from django.utils.translation import gettext_lazy as _
 
@@ -19,6 +20,8 @@ class Ad(BaseModel):
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
     external_url = models.URLField(blank=True, null=True, verbose_name=_('External URL'))
+    created_by = CurrentUserField(verbose_name=_('Created by'))
+    updated_by = CurrentUserField(on_update=True, related_name='%(class)s_updated_by', verbose_name=_('Created at'))
 
     class Meta:
         verbose_name = _('Ad')
