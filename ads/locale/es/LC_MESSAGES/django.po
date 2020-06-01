@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-12 17:03-0400\n"
+"POT-Creation-Date: 2020-06-01 12:07-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,51 +23,59 @@ msgstr ""
 msgid "Image"
 msgstr "Imagen"
 
-#: ads/models/ad.py:12
+#: ads/models/ad.py:13
 msgid "Title"
 msgstr "Título"
 
-#: ads/models/ad.py:13
+#: ads/models/ad.py:14
 msgid "Slug"
 msgstr "Slug"
 
-#: ads/models/ad.py:14
+#: ads/models/ad.py:15
 msgid "Category"
 msgstr "Categoria"
 
-#: ads/models/ad.py:15
+#: ads/models/ad.py:16
 msgid "Description"
 msgstr "Descripción"
 
-#: ads/models/ad.py:16
+#: ads/models/ad.py:17
 msgid "Price"
 msgstr "Precio"
 
-#: ads/models/ad.py:17 ads/models/municipality.py:9 ads/models/province.py:12
+#: ads/models/ad.py:18 ads/models/municipality.py:9 ads/models/province.py:12
 msgid "Province"
 msgstr "Provincia"
 
-#: ads/models/ad.py:18 ads/models/municipality.py:14
+#: ads/models/ad.py:19 ads/models/municipality.py:14
 msgid "Municipality"
 msgstr "Minicipio"
 
-#: ads/models/ad.py:19
+#: ads/models/ad.py:20
 msgid "External source"
 msgstr "Fuente externa"
 
-#: ads/models/ad.py:20
+#: ads/models/ad.py:21
 msgid "External ID"
 msgstr "ID externo"
 
-#: ads/models/ad.py:21
+#: ads/models/ad.py:22
 msgid "External URL"
 msgstr "URL externa"
 
-#: ads/models/ad.py:24 ads/models/adimages.py:8
+#: ads/models/ad.py:23
+msgid "Created by"
+msgstr "Creado por"
+
+#: ads/models/ad.py:24
+msgid "Updated by"
+msgstr "Actualizado por"
+
+#: ads/models/ad.py:27 ads/models/adimages.py:8
 msgid "Ad"
 msgstr "Anuncio"
 
-#: ads/models/ad.py:25
+#: ads/models/ad.py:28
 msgid "Ads"
 msgstr "Anuncios"
 
@@ -99,7 +107,7 @@ msgstr "Municipios"
 msgid "Provinces"
 msgstr "Provincias"
 
-#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:38
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:35
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
@@ -132,22 +140,22 @@ msgstr "Incluir anuncio"
 msgid "Submit"
 msgstr "Enviar"
 
-#: ads/templates/ad/detail.html:27
+#: ads/templates/ad/detail.html:66
 msgid "You may also be interested in"
 msgstr "También le puede interesar"
 
-#: ads/templates/ad/index.html:16 ads/templates/ad/index.html:24
+#: ads/templates/ad/index.html:13 ads/templates/ad/index.html:21
 msgid "Search"
 msgstr "Buscar"
 
-#: ads/templates/ad/index.html:19
+#: ads/templates/ad/index.html:16
 msgid "Maybe you want to say"
 msgstr "Quzá quiso decir"
 
-#: ads/templates/ad/index.html:43
+#: ads/templates/ad/index.html:40
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:45
+#: ads/templates/ad/index.html:42
 msgid "Next"
 msgstr "Siguiente"
