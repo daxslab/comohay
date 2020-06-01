@@ -5,11 +5,8 @@ from actstream import action
 from categories.models import Category
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
-from django.http.response import HttpResponseRedirectBase
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
+from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
-from django.views.generic import RedirectView
 
 from django_filters.views import FilterView
 from haystack.views import SearchView
