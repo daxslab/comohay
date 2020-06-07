@@ -66,15 +66,15 @@ class TelegramBot:
     @staticmethod
     def get_ad_national_message(ad):
         if ad.province and ad.municipality:
-            return "{} ({} {}. {}, {})".format(ad.title, ad.price, ad.currency, ad.municipality, ad.province)
+            return "{} ({} {}. {}, {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.municipality, ad.province)
         elif ad.province:
-            return "{} ({} {}. {})".format(ad.title, ad.price, ad.currency, ad.province)
+            return "{} ({} {}. {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.province)
 
-        return "{} ({} {})".format(ad.title, ad.price, ad.currency)
+        return "{} ({} {})".format(ad.title, ad.get_user_price(), ad.user_currency)
 
     @staticmethod
     def get_ad_provincial_message(ad):
         if ad.municipality:
-            return "{} ({} {}. {})".format(ad.title, ad.price, ad.currency, ad.municipality)
+            return "{} ({} {}. {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.municipality)
 
-        return "{} ({} {})".format(ad.title, ad.price, ad.currency)
+        return "{} ({} {})".format(ad.title, ad.get_user_price(), ad.user_currency)

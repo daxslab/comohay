@@ -299,6 +299,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+CUC_TO_CUP_CHANGE = 25
 
 try:
     from .settings_local import *

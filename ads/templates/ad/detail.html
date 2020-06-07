@@ -57,7 +57,7 @@
         <div class="column">
             <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
             {% if ad.price %}
-                <h4 class="list-item-price">{{ ad.price }} {{ ad.currency }}</h4>
+                <h4 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h4>
             {% endif %}
             <p>{{ ad.description }}</p>
             {% more_like_this ad as related_contents limit 5 %}
