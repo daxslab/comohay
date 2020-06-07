@@ -3,17 +3,17 @@
 
 {% block content %}
 
-    <h1>Como Hay</h1>
     {% if subcategory %}
-        <h2>{{ subcategory.name }}</h2>
+        <div class="list-title"><h2>{{ subcategory.parent.name }}. {{ subcategory.name }}</h2></div>
     {% elif category %}
-        <h2>{{ category.name }}</h2>
+        <div class="list-title"><h2>{{ category.name }}</h2></div>
     {% endif %}
+
 
     {% if object_list %}
         <ul>
         {% for ad in object_list %}
-            <li><a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank"  class="external"  data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %} data-ad="{{ ad.id }}">{{ ad.title }}</a></li>
+            {% include 'ad/_list-item.html' %}
         {% endfor %}
         </ul>
     {% else %}

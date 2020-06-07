@@ -2,6 +2,7 @@ from categories.models import Category
 from django.core.management.base import BaseCommand, CommandError
 from django_seed import Seed
 
+from ads.models import User
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
@@ -30,6 +31,8 @@ class Command(BaseCommand):
             'category': lambda x: Category.objects.exclude(parent=None).order_by('?')[0],
             'province': lambda x: tmp_province,
             'municipality': lambda x: Municipality.objects.order_by('?')[0],
+            'created_by': User.objects.all()[0],
+            'updated_by': User.objects.all()[0]
         })
         seeder.execute()
         # incude valid provinces

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-01 12:07-0400\n"
+"POT-Creation-Date: 2020-06-07 18:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,28 +107,28 @@ msgstr "Municipios"
 msgid "Provinces"
 msgstr "Provincias"
 
-#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:35
+#: ads/templates/ad/ads.html:19 ads/templates/ad/index.html:33
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
-#: ads/templates/ad/ads.html:26
+#: ads/templates/ad/ads.html:25
 msgid "first"
 msgstr "primera"
 
-#: ads/templates/ad/ads.html:27
+#: ads/templates/ad/ads.html:26
 msgid "previous"
 msgstr "anterior"
 
-#: ads/templates/ad/ads.html:31
+#: ads/templates/ad/ads.html:30
 #, python-format
 msgid "Page %(number)s of %(num_pages)s."
 msgstr "Página %(number)s de %(num_pages)s."
 
-#: ads/templates/ad/ads.html:35
+#: ads/templates/ad/ads.html:34
 msgid "next"
 msgstr "siguiente"
 
-#: ads/templates/ad/ads.html:36
+#: ads/templates/ad/ads.html:35
 msgid "last"
 msgstr "último"
 
@@ -152,10 +152,10 @@ msgstr "Buscar"
 msgid "Maybe you want to say"
 msgstr "Quzá quiso decir"
 
-#: ads/templates/ad/index.html:40
+#: ads/templates/ad/index.html:38
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:42
+#: ads/templates/ad/index.html:40
 msgid "Next"
 msgstr "Siguiente"

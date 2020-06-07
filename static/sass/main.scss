@@ -36,3 +36,43 @@ code {
 .login-logout .button {
   width: 200px;
 }
+
+.list-item-container {
+  padding-top: 2px;
+  border-bottom: 2px solid #ddd;
+}
+
+.list-title {
+  border-bottom: 2px solid #ddd;
+}
+
+
+.list-item {
+  margin-bottom: 1rem;
+}
+
+.list-item-header {
+  margin-top: 8px;
+}
+
+.list-item-price {
+  color: #111 !important;
+  line-height: 1.6;
+}
+
+.list-item-location {
+  color: #606c76 !important;
+}
+
+.list-item-title, .list-item-location {
+  margin-bottom: 1rem;
+}
+
+.list-item-price {
+  margin-bottom: 0.5rem;
+}
+
+.list-item-price-symbol {
+  top: -.4em;
+  font-size: 1.3rem;
+}

@@ -15,6 +15,7 @@ class Ad(BaseModel):
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=1000000, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
+    currency = models.CharField(blank=True, null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP'), ('USD', 'USD')], default='CUC', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))

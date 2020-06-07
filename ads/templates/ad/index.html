@@ -27,10 +27,10 @@
 
 
         {% if query %}
-            <h2>Resultados</h2>
-
             {% for result in page.object_list %}
-                {% include 'ad/_search_result.html' %}
+                {% with ad=result.object %}
+                {% include 'ad/_list-item.html' %}
+                {% endwith %}
             {% empty %}
                 <p>{% trans 'No results where found' %}.</p>
             {% endfor %}
@@ -44,7 +44,7 @@
             {% endif %}
         {% else %}
 
-            <div class="row">
+            <div class="row categories">
             {% for parent_category in parent_categories %}
                 {% if forloop.counter0|divisibleby:4 %}
                 </div>

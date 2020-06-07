@@ -1,0 +1,21 @@
+{% load highlight %}
+
+<div class="list-item-container">
+    {% if ad.external_source %}
+        <span class="list-item-badge badge badge-secondary">{{ ad.external_source }}</span>
+    {% endif %}
+    <div class="list-item-header">
+        <a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank" class="external"
+           data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %}
+           data-ad="{{ ad.id }}">
+            <h4 class="list-item-title">{{ ad.title }}</h4>
+            <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
+            <h3 class="list-item-price">{{ ad.price }} {{ ad.currency }}</h3>
+        </a>
+    </div>
+    <div class="list-item-description">
+        <p>
+            {{ ad.description| truncatechars:260 }}
+        </p>
+    </div>
+</div>
