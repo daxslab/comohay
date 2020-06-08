@@ -9,6 +9,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form id="create_ad" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
     {{ ad_form|crispy }}
 
     <script>

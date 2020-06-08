@@ -99,7 +99,7 @@ def detail(request, ad_slug):
 
 
 @allow_lazy_user
-@csrf_exempt
+# @csrf_exempt
 def create(request):
 
     image_form_set = modelformset_factory(AdImage, form=AdImageForm, extra=3)
