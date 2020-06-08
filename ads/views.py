@@ -19,6 +19,7 @@ from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
+from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
@@ -98,6 +99,7 @@ def detail(request, ad_slug):
 
 
 @allow_lazy_user
+@csrf_exempt
 def create(request):
 
     image_form_set = modelformset_factory(AdImage, form=AdImageForm, extra=3)
