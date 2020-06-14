@@ -16,6 +16,10 @@
             <link type="text/css" href="{% static 'fontello/css/animation.css' %}" rel="stylesheet">
             <link type="text/css" href="{% static 'fontello/css/fontello-codes.css' %}" rel="stylesheet">
         {% endcompress %}
+
+        {% block css %}
+        {% endblock %}
+
     </head>
     <body>
         <header>
@@ -57,6 +61,9 @@
     {% compress js %}
         <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
     {% endcompress %}
+
+    {% block js %}
+    {% endblock %}
 
     </body>
 </html>

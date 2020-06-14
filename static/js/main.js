@@ -1,5 +1,5 @@
 window.addEventListener('load', function () {
-    let goToLink = function(event){
+    let goToLink = function (event) {
         let url = this.getAttribute('href');
         let currentUrl = window.location.href;
         let ref = btoa(currentUrl);
@@ -16,3 +16,42 @@ window.addEventListener('load', function () {
         link.addEventListener('mousedown', goToLink);
     });
 });
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function findParentByClass(elem, _class) {
+    let parent = elem.parentNode;
+    while (parent != null) {
+        if (hasClass(parent, _class)) {
+            return parent
+        }
+        parent = parent.parentNode;
+    }
+
+    return false;
+}
+
+function hasClass(element, className) {
+    return element.className.indexOf(className) > -1;
+
+}
+

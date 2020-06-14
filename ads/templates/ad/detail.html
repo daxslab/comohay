@@ -3,89 +3,86 @@
 {% load i18n %}
 {% load static %}
 {% load compress %}
+{% load thumbnail %}
+
+{% block css %}
+    {% compress css %}
+        <link type="text/x-scss" href="{% static 'img-lightbox/img-lightbox.scss' %}" rel="stylesheet">
+        {#        <link type="text/x-scss" href="{% static 'glihtbox/glightbox.scss' %}" rel="stylesheet">#}
+        {#        <link type="text/x-scss" href="{% static 'lightgallery/scss/lightgallery.scss' %}" rel="stylesheet">#}
+    {% endcompress %}
+{% endblock %}
 
 {% block content %}
     <h3>{{ ad.title }}</h3>
 
     <div class="row">
         {% if ad.adimage_set.all %}
-            <div class="column column-40" style="max-width: 100%">
-                {% for ad_image in ad.adimage_set.all %}
-
-                    <img src="{{ ad_image.image.url }}" class="img-gallery" alt="">
-
-                {% endfor %}
-                <div class="gallery-buttons">
-                    <button class="gallery-button display-left">&#10094</button>
-                    <button class="gallery-button display-right float-right">&#10095</button>
+            <div class="column column-40 responsive">
+                <div id="splide" class="splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            {% for ad_image in ad.adimage_set.all %}
+                                {% thumbnail ad_image.image "300x300" crop="center" as im %}
+                                    <li class="splide__slide lightgallery" style="text-align: center">
+                                        <a href="{{ ad_image.image.url }}" class="img-lightbox-link"
+                                           data-src="{{ ad_image.image.url }}"
+                                           aria-hidden="true"
+                                           rel="lightbox">
+                                            <img src="{{ im.url }}" width="{{ im.width }}">
+                                        </a>
+                                    </li>
+                                {% endthumbnail %}
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <script>
-
-                function showDivs(n) {
-                    let i;
-                    let x = document.getElementsByClassName('img-gallery');
-                    if (n > x.length) {
-                        slideIndex = 1;
-                    }
-                    if (n < 1) {
-                        slideIndex = x.length;
-                    }
-                    for (i = 0; i < x.length; i++) {
-                        x[i].style.display = "none";
-                    }
-                    x[slideIndex - 1].style.display = 'block';
-                }
-
-                function plusDivs(n) {
-                    showDivs(slideIndex += n);
-                }
-
-                let slideIndex = 1;
-                showDivs(slideIndex);
-
-                let nextButton = document.querySelector('.gallery-button.display-right');
-                let backButton = document.querySelector('.gallery-button.display-left');
-
-                nextButton.addEventListener('click', function () {
-                    plusDivs(+1);
-                });
-                backButton.addEventListener('click', function () {
-                    plusDivs(-1);
-                });
-
-            </script>
         {% endif %}
-    <div class="column" style="margin-top: 5px">
-        <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
-        {% if ad.price %}
-            <h4 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h4>
-        {% endif %}
-        <p>{{ ad.description }}</p>
-        {% more_like_this ad as related_contents limit 5 %}
-        {% if related_contents %}
-            <h3>{% trans "You may also be interested in" %}:</h3>
-            <ul>
-                {% for related_content in related_contents %}
-                    <li>
-                        <a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+        <div class="column" style="margin-top: 5px">
+            <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
+            {% if ad.price %}
+                <h4 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h4>
+            {% endif %}
+            <p class="text-justify">{{ ad.description }}</p>
+            {% more_like_this ad as related_contents limit 5 %}
+            {% if related_contents %}
+                <h3>{% trans "You may also be interested in" %}:</h3>
+                <ul>
+                    {% for related_content in related_contents %}
+                        <li>
+                            <a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
     </div>
 
 {% endblock %}
 
 {% block js %}
-    <script type="application/javascript" src="{% static "js/splide/splide.min.js" %}"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{% static "splide/splide.js" %}"></script>
+        {#        <script type="text/javascript" src="{% static "lightgallery/js/lightgallery.js" %}"></script>#}
+        <script type="text/javascript" src="{% static "img-lightbox/img-lightbox.js" %}"></script>
+        {#        <script type="text/javascript" src="{% static "glihtbox/glightbox.js" %}"></script>#}
+    {% endcompress %}
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             new Splide('#splide', {
                 arrows: false,
-                lazyLoad: 'nearby'
+                lazyLoad: 'nearby',
+                rewind: true
+                {#width: '300px'#}
             }).mount();
+            {#lightGallery(document.querySelector('lightgallery'));#}
+            {#const lightbox = GLightbox({touchNavigation: true});#}
+            imgLightbox("img-lightbox-link", {
+                rate: 50 /* default: 500 */,
+            });
         });
     </script>
 {% endblock %}
