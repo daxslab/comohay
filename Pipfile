@@ -26,6 +26,7 @@ django-lazysignup = {git = "https://github.com/cccaballero/django-lazysignup.git
 python-telegram-bot = "*"
 django-allauth = "*"
 django-currentuser = "*"
+sorl-thumbnail = "*"
 
 [requires]
 python_version = "3.7"

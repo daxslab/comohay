@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "30dbef945459241e6b6fcfbaa78bcfbf563a561227b7448750d5fd9442f1dc38"
+            "sha256": "de153ff39229c3199c1c3eaa0beeb0f661196e3c7daef778e0da21a838de6390"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,7 +18,7 @@
     "default": {
         "actstream": {
             "git": "https://github.com/justquick/django-activity-stream.git",
-            "ref": "8d38fd45b4bef1f7137fb8185b04ee0d8cdb5e3b"
+            "ref": "6781960facc18d0d4e3bb28f2ab4acf4ec173989"
         },
         "asgiref": {
             "hashes": [
@@ -38,10 +38,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304",
-                "sha256:51fcb31174be6e6664c5f69e3e1691a2d72a1a12e90f872cbdb1567eb47b6519"
+                "sha256:5ad7e9a056d25ffa5082862e36f119f7f7cec6457fa07ee2f8c339814b80c9b1",
+                "sha256:9cd41137dc19af6a5e03b630eefe7d1f458d964d406342dd3edf625839b944cc"
             ],
-            "version": "==2020.4.5.1"
+            "version": "==2020.4.5.2"
         },
         "cffi": {
             "hashes": [
@@ -398,6 +398,14 @@
                 "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"
             ],
             "version": "==1.15.0"
+        },
+        "sorl-thumbnail": {
+            "hashes": [
+                "sha256:66771521f3c0ed771e1ce8e1aaf1639ebff18f7f5a40cfd3083da8f0fe6c7c99",
+                "sha256:7162639057dff222a651bacbdb6bd6f558fc32946531d541fc71e10c0167ebdf"
+            ],
+            "index": "pypi",
+            "version": "==12.6.3"
         },
         "soupsieve": {
             "hashes": [
