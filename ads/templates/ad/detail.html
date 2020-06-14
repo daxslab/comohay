@@ -1,6 +1,8 @@
 {% extends 'layout.html' %}
 {% load more_like_this %}
 {% load i18n %}
+{% load static %}
+{% load compress %}
 
 {% block content %}
     <h3>{{ ad.title }}</h3>
@@ -54,24 +56,36 @@
 
             </script>
         {% endif %}
-        <div class="column">
-            <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
-            {% if ad.price %}
-                <h4 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h4>
-            {% endif %}
-            <p>{{ ad.description }}</p>
-            {% more_like_this ad as related_contents limit 5 %}
-            {% if related_contents %}
-                <h3>{% trans "You may also be interested in" %}:</h3>
-                <ul>
-                    {% for related_content in related_contents %}
-                        <li>
-                            <a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+    <div class="column" style="margin-top: 5px">
+        <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
+        {% if ad.price %}
+            <h4 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h4>
+        {% endif %}
+        <p>{{ ad.description }}</p>
+        {% more_like_this ad as related_contents limit 5 %}
+        {% if related_contents %}
+            <h3>{% trans "You may also be interested in" %}:</h3>
+            <ul>
+                {% for related_content in related_contents %}
+                    <li>
+                        <a href="{{ related_content.object.get_absolute_url }}">{{ related_content.object.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
     </div>
 
+{% endblock %}
+
+{% block js %}
+    <script type="application/javascript" src="{% static "js/splide/splide.min.js" %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Splide('#splide', {
+                arrows: false,
+                lazyLoad: 'nearby'
+            }).mount();
+        });
+    </script>
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-07 18:34+0000\n"
+"POT-Creation-Date: 2020-06-13 14:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,10 +39,14 @@ msgid "Add ad"
 msgstr "Incluir anuncio"
 
 #: templates/layout.html:30
+msgid "My Ads"
+msgstr ""
+
+#: templates/layout.html:31
 msgid "Logout"
 msgstr ""
 
-#: templates/layout.html:32
+#: templates/layout.html:33
 msgid "Login"
 msgstr ""
 

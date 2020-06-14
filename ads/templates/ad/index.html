@@ -8,61 +8,68 @@
     <div class="row">
         <div class="column row-center">
             <form method="get" action="." class="">
-                <div style="display: flex">
-                    <div class="">
-                        <input placeholder="{% trans 'Search' %}" class="" value="{{ query }}" type="search" name="q" id="id_q">
-                        {% if suggestion and query != suggestion %}
+                <div class="search-container">
+                    <input placeholder="{% trans 'Search' %}" class="" value="{{ query }}" type="search" name="q"
+                           id="id_q">
+                    {% if suggestion and query != suggestion %}
                         <div>
-                            <p>{% trans 'Maybe you want to say' %}: <a href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
+                            <p>{% trans 'Maybe you want to say' %}: <a
+                                    href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
                         </div>
-                        {% endif %}
-                    </div>
-                    <div class="">
-                        <input type="submit" value="{% trans 'Search' %}" class="btn btn-lg btn-success">
-                    </div>
+                    {% endif %}
+                    <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span
+                            class="icon-search"></span></button>
                 </div>
             </form>
         </div>
     </div>
 
 
-        {% if query %}
-            {% for result in page.object_list %}
-                {% with ad=result.object %}
+    {% if query %}
+        {% for result in page.object_list %}
+            {% with ad=result.object %}
                 {% include 'ad/_list-item.html' %}
-                {% endwith %}
-            {% empty %}
-                <p>{% trans 'No results where found' %}.</p>
-            {% endfor %}
+            {% endwith %}
+        {% empty %}
+            <p>{% trans 'No results where found' %}.</p>
+        {% endfor %}
 
-            {% if page.has_previous or page.has_next %}
-                <div>
-                    {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; {% trans 'Previous' %}{% if page.has_previous %}</a>{% endif %}
-                    |
-                    {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}{% trans 'Next' %} &raquo;{% if page.has_next %}</a>{% endif %}
-                </div>
-            {% endif %}
-        {% else %}
+        {% if page.has_previous or page.has_next %}
+            <div>
+                {% if page.has_previous %}
+                    <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo;
+                {% trans 'Previous' %}{% if page.has_previous %}</a>{% endif %}
+                |
+                {% if page.has_next %}
+                    <a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}{% trans 'Next' %} &raquo;
+                {% if page.has_next %}</a>{% endif %}
+            </div>
+        {% endif %}
+    {% else %}
 
-            <div class="row categories">
+        <div class="row categories">
             {% for parent_category in parent_categories %}
                 {% if forloop.counter0|divisibleby:4 %}
-                </div>
-                <div class="row">
+                    </div>
+                    <div class="row">
                 {% endif %}
 
                 <div class="column">
                     {% if parent_category.children.count %}
-                    <h4><a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a></h4>
-                    <ul>
-                    {% for subcategory in parent_category.children.all %}
-                        <li><a href="{% url 'ads:list_by_categories' parent_category.slug subcategory.slug %}">{{ subcategory.name }}</a></li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
+                        <h4>
+                            <a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a>
+                        </h4>
+                        <ul>
+                            {% for subcategory in parent_category.children.all %}
+                                <li>
+                                    <a href="{% url 'ads:list_by_categories' parent_category.slug subcategory.slug %}">{{ subcategory.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
                 </div>
             {% endfor %}
             </div>
-        {% endif %}
+    {% endif %}
 
 {% endblock %}

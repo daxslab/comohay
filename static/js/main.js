@@ -1,5 +1,3 @@
-
-
 window.addEventListener('load', function () {
     let goToLink = function(event){
         let url = this.getAttribute('href');

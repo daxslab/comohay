@@ -3,8 +3,10 @@ from encodings.base64_codec import base64_decode
 
 from actstream import action
 from categories.models import Category
-from django.forms import modelformset_factory
-from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.forms import modelformset_factory, inlineformset_factory
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
@@ -13,15 +15,19 @@ from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD
+from ads.filters.ad_filter import AdFilter
 from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
 from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
+import django_tables2 as table
+
 from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
+
 
 class IndexView(SearchView):
     template = 'ad/index.html'
@@ -101,7 +107,6 @@ def detail(request, ad_slug):
 @allow_lazy_user
 # @csrf_exempt
 def create(request):
-
     image_form_set = modelformset_factory(AdImage, form=AdImageForm, extra=3)
 
     if request.method == 'POST':
@@ -125,6 +130,8 @@ def create(request):
             except Exception as e:
                 logger.error('Error broadcasting AD: ' + str(e))
 
+            if request.user.is_authenticated:
+                return HttpResponseRedirect('/my_ads')
             return HttpResponseRedirect('/')
     else:
         ad_form = AdForm()
@@ -150,3 +157,56 @@ def to_external_url(request):
     response['Referer'] = from_url
     action.send(request.user, verb=ACTION_FOLLOW_EXTERNAL_AD, target=ad)
     return response
+
+
+@login_required
+def user_ads(request):
+    filter = AdFilter(request.GET, queryset=Ad.objects.filter(created_by=request.user))
+    return render(request, 'ad/user_ads.html', {"filter": filter})
+
+
+@login_required
+def edit(request, id):
+    ad = get_object_or_404(Ad, id=id)
+    ad.price = ad.get_user_price()
+
+    if request.user.id != ad.created_by_id:
+        raise ValidationError(u'Permission denied')
+
+    extra = 3 - ad.adimage_set.count()
+    image_form_set = inlineformset_factory(Ad, AdImage, form=AdImageForm, extra=extra)
+
+    if request.method == 'POST':
+        ad_form = AdForm(request.POST, instance=ad)
+        ad_image_formset = image_form_set(
+            request.POST,
+            request.FILES,
+            instance=ad
+        )
+
+        if ad_form.is_valid() and ad_image_formset.is_valid():
+            ad = ad_form.save()
+            ad_image_formset.save()
+
+            if request.user.is_authenticated:
+                return HttpResponseRedirect('/my_ads')
+            return HttpResponseRedirect('/')
+    else:
+        ad_form = AdForm(instance=ad)
+        ad_image_formset = image_form_set(instance=ad)
+    return render(request, 'ad/edit.html', {'ad_form': ad_form, 'ad_image_formset': ad_image_formset})
+
+
+@login_required
+def delete(request, id):
+    ad = get_object_or_404(Ad, id=id)
+
+    if request.user.id != ad.created_by_id:
+        raise ValidationError(u'Permission denied')
+
+    for ad_image in ad.adimage_set.all():
+        ad_image.delete()
+
+    ad.delete()
+
+    return JsonResponse({'success': True})
