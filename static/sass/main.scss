@@ -2,6 +2,7 @@
 @import "../miligram/milligram";
 @import "navbar";
 @import "badge";
+@import "../splide/_splide";
 
 main > .container {
   padding: 60px 15px 0;
@@ -75,4 +76,15 @@ code {
 .list-item-price-symbol {
   top: -.4em;
   font-size: 1.3rem;
+}
+
+.text-justify{
+  text-align: justify;
+}
+
+@media (max-width: 40rem) {
+    .row .column.responsive[class*=" column-"] {
+        margin-left: 0;
+        max-width: 100%;
+    }
 }

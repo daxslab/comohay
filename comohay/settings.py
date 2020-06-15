@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = ')37qpqif(e+nc$(%gkzjnrlxi6q#-bk*5xxu6$jar72865-b8$'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -52,7 +50,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -68,11 +67,10 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-  'django.contrib.auth.backends.ModelBackend',
-  'allauth.account.auth_backends.AuthenticationBackend',
-  'lazysignup.backends.LazySignupBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+    'lazysignup.backends.LazySignupBackend',
 )
-
 
 ROOT_URLCONF = 'comohay.urls'
 
@@ -256,7 +254,7 @@ LAZYSIGNUP_USER_MODEL = AUTH_USER_MODEL
 
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-SOCIALACCOUNT_EMAIL_VERIFICATION ='none'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 # ACCOUNT_USERNAME_REQUIRED = False
