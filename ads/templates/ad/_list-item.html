@@ -15,7 +15,12 @@
     </div>
     <div class="list-item-description">
         <p>
-            {{ ad.description| truncatechars:260 }}
+            {# text highlight for haystack results #}
+            {% if query and result %}
+                {% highlight result.description with query max_lenght 260 %}
+            {% else %}
+                {{ ad.description| truncatechars:260 }}
+            {% endif %}
         </p>
     </div>
 </div>
