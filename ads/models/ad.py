@@ -15,7 +15,7 @@ class Ad(BaseModel):
     slug = AutoSlugField(populate_from=['title'], verbose_name=_('Slug'))
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
-    price = models.DecimalField(max_digits=1000, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
+    price = models.DecimalField(max_digits=64, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
     user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP')], default='CUC', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
