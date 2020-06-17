@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "de153ff39229c3199c1c3eaa0beeb0f661196e3c7daef778e0da21a838de6390"
+            "sha256": "f560211d33ee67d1ab8f5b828db46d455440337624ede451620fa082b1bb889e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,16 +16,12 @@
         ]
     },
     "default": {
-        "actstream": {
-            "git": "https://github.com/justquick/django-activity-stream.git",
-            "ref": "6781960facc18d0d4e3bb28f2ab4acf4ec173989"
-        },
         "asgiref": {
             "hashes": [
-                "sha256:8036f90603c54e93521e5777b2b9a39ba1bad05773fcf2d208f0299d1df58ce5",
-                "sha256:9ca8b952a0a9afa61d30aa6d3d9b570bb3fd6bafcf7ec9e6bed43b936133db1c"
+                "sha256:7ea1922cfd63c4ac7687069f8bb0e7768ab9b7fc78ff227577d4240b52d6cb7a",
+                "sha256:f803d8b4962cc338d48a72fa498c52f913b160eb16712e2ecdf2a81904daead9"
             ],
-            "version": "==3.2.7"
+            "version": "==3.2.9"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -129,6 +125,14 @@
             "index": "pypi",
             "version": "==3.0.7"
         },
+        "django-activity-stream": {
+            "hashes": [
+                "sha256:9d63c83147867d9a3da7cf02389fda16b2694236b90b43489b42e6e6f2aaacc5",
+                "sha256:a381511d82168ab912b2fbecdbc49c98cd187cda39385f8dff5080914c1a9c50"
+            ],
+            "index": "pypi",
+            "version": "==0.9.0"
+        },
         "django-allauth": {
             "hashes": [
                 "sha256:f17209410b7f87da0a84639fd79d3771b596a6d3fc1a8e48ce50dabc7f441d30"
@@ -192,8 +196,9 @@
             "version": "==2.3.0"
         },
         "django-haystack": {
+            "editable": true,
             "git": "https://github.com/django-haystack/django-haystack.git",
-            "ref": "ac7b750a88f2fa53d7e05da4c539676df6e3688d"
+            "ref": "ea3f8c961934e8871b89881d7fab09e038191899"
         },
         "django-js-asset": {
             "hashes": [
@@ -238,10 +243,10 @@
         },
         "faker": {
             "hashes": [
-                "sha256:103c46b9701a151299c5bffe6fefcd4fb5fb04c3b5d06bee4952d36255d44ea2",
-                "sha256:34ae397aef03a0a17910452f1e8430d57fa59e2d67b20e9b637218e8f7dd22b3"
+                "sha256:1290f589648bc470b8d98fff1fdff773fe3f46b4ca2cac73ac74668b12cf008e",
+                "sha256:c006b3664c270a2cfd4785c5e41ff263d48101c4e920b5961cf9c237131d8418"
             ],
-            "version": "==4.1.0"
+            "version": "==4.1.1"
         },
         "future": {
             "hashes": [
