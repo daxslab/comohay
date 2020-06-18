@@ -1,3 +1,5 @@
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import requests
 from bs4 import BeautifulSoup
 from categories.models import Category
@@ -138,6 +140,68 @@ class RevolicoImporter(BaseImporter):
         external_ids = [data['external_id'] for data in self.normalized_data]
         Ad.objects.filter(external_source=self.source).exclude(external_id__in=external_ids).delete()
 
+    def get_item(self, item):
+        anchors = item.select('a')
+        product_link = None
+        for anchor in anchors:
+            if anchor.has_attr('href'):
+                product_link = anchor['href']
+        try:
+            item_response = requests.get(self.base_url + product_link, headers=self.custom_headers)
+            item_soup = BeautifulSoup(item_response.content, 'html.parser')
+
+            title = item_soup.select('h4[data-cy=adTitle]')[0].find(text=True, recursive=False)
+
+            rv_category = item_soup.select('main .container-fluid ol[data-cy=breadcrumb] span > li > a > span')[
+                1].getText()
+            category_tree = get_category_tree(rv_category)
+            category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
+
+            rv_first_data_div = item_soup.select('main .container-fluid > div:first-of-type > div:first-of-type')
+            rv_location_div = rv_first_data_div[0].select('div')[1]
+            rv_location = rv_location_div.select('div')[2].getText()
+            location_elements = rv_location.split(',')
+
+            rv_municipality = None
+            if len(location_elements) > 1:
+                rv_municipality = location_elements[0].strip()
+                rv_province = location_elements[1].strip()
+            else:
+                rv_province = location_elements[0].strip()
+            province = Province.objects.get(name=rv_province) if rv_province else None
+            try:
+                municipality = Municipality.objects.get(name=rv_municipality) if rv_municipality else None
+            except:
+                municipality = None
+
+            description = item_soup.select('div[data-cy=adDescription]')[0].get_text()
+
+            _price_title_container = rv_first_data_div[0].select('div')[0]
+            e = _price_title_container.select('h4')
+            if len(e) > 1:
+                price = e[1].getText().split(' ')[0]
+            else:
+                price = 0
+
+            external_source = self.source
+            external_id = item_soup.select('div[data-cy=adId]')[0].get_text()
+            external_url = self.base_url + product_link
+            print(external_id, external_source)
+
+            self.normalized_data.append(dict(
+                title=title,
+                category=category,
+                description=description,
+                price=float(price),
+                province=province,
+                municipality=municipality,
+                external_source=external_source,
+                external_id=external_id,
+                external_url=external_url
+            ))
+        except Exception as e:
+            self.logger.error('could not load product "%s". %s', product_link, e)
+
     def get_normalized_data(self):
         self.normalized_data = []
         for page in self.product_pages:
@@ -146,67 +210,10 @@ class RevolicoImporter(BaseImporter):
                 items_list_soup = BeautifulSoup(response.content, 'html.parser')
                 elements = items_list_soup.select('.container-fluid ul li[data-cy=adRow]')
 
-                for item in elements:
-                    anchors = item.select('a')
-                    product_link = None
-                    for anchor in anchors:
-                        if anchor.has_attr('href'):
-                            product_link = anchor['href']
-                    try:
-                        item_response = requests.get(self.base_url+product_link, headers=self.custom_headers)
-                        item_soup = BeautifulSoup(item_response.content, 'html.parser')
+                with ThreadPoolExecutor(max_workers=self.workers) as executor:
+                    for item in elements:
+                        executor.submit(self.get_item, item)
 
-                        title = item_soup.select('h4[data-cy=adTitle]')[0].find(text=True, recursive=False)
-
-                        rv_category = item_soup.select('main .container-fluid ol[data-cy=breadcrumb] span > li > a > span')[1].getText()
-                        category_tree = get_category_tree(rv_category)
-                        category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
-
-                        rv_first_data_div = item_soup.select('main .container-fluid > div:first-of-type > div:first-of-type')
-                        rv_location_div = rv_first_data_div[0].select('div')[1]
-                        rv_location = rv_location_div.select('div')[2].getText()
-                        location_elements = rv_location.split(',')
-
-                        rv_municipality = None
-                        if len(location_elements) > 1:
-                            rv_municipality = location_elements[0].strip()
-                            rv_province = location_elements[1].strip()
-                        else:
-                            rv_province = location_elements[0].strip()
-                        province = Province.objects.get(name=rv_province) if rv_province else None
-                        try:
-                            municipality = Municipality.objects.get(name=rv_municipality) if rv_municipality else None
-                        except:
-                            municipality = None
-
-                        description = item_soup.select('div[data-cy=adDescription]')[0].get_text()
-
-
-                        _price_title_container = rv_first_data_div[0].select('div')[0]
-                        e = _price_title_container.select('h4')
-                        if len(e) > 1:
-                            price = e[1].getText().split(' ')[0]
-                        else:
-                            price = 0
-
-                        external_source = self.source
-                        external_id = item_soup.select('div[data-cy=adId]')[0].get_text()
-                        external_url = self.base_url+product_link
-                        print(external_id, external_source)
-
-                        self.normalized_data.append(dict(
-                            title=title,
-                            category=category,
-                            description=description,
-                            price=price,
-                            province=province,
-                            municipality=municipality,
-                            external_source=external_source,
-                            external_id=external_id,
-                            external_url=external_url
-                        ))
-                    except Exception as e:
-                        self.logger.error('could not load product "%s". %s', product_link, e)
             except Exception as e:
                 self.logger.error('could not load products page "%s". %s', page, e)
 

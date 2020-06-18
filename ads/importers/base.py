@@ -12,6 +12,8 @@ class BaseImporter(abc.ABC):
 
     category_mapping:list
 
+    workers:int = 10
+
     def __init__(self):
         self.get_normalized_data()
 

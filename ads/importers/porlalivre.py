@@ -1,4 +1,5 @@
 import re
+from concurrent.futures.thread import ThreadPoolExecutor
 
 import requests
 from bs4 import BeautifulSoup
@@ -127,14 +128,14 @@ class PorlalivreImporter(BaseImporter):
 
     base_pages = [
         '/viviendas/',
-        '/celulares/',
-        '/autos/',
-        '/portatiles/',
-        '/comunidad/',
-        '/se-vende/',
-        '/computadoras/',
-        '/consolas-juegos/',
-        '/servicios/',
+        # '/celulares/',
+        # '/autos/',
+        # '/portatiles/',
+        # '/comunidad/',
+        # '/se-vende/',
+        # '/computadoras/',
+        # '/consolas-juegos/',
+        # '/servicios/',
     ]
 
     source = 'porlalivre.com'
@@ -182,6 +183,60 @@ class PorlalivreImporter(BaseImporter):
         external_ids = [data['external_id'] for data in self.normalized_data]
         Ad.objects.filter(external_source=self.source).exclude(external_id__in=external_ids).delete()
 
+    def get_item(self, item, page):
+        product_link = item.select('a.classified-link')[0]['href']
+        try:
+            item_response = requests.get(self.base_url + product_link, headers=self.custom_headers)
+            item_soup = BeautifulSoup(item_response.content, 'html.parser')
+
+            title = item_soup.select('h1')[0].find(text=True, recursive=False)[:-2].replace("\n", "")
+
+            pl_category_container = item_soup.select('div#classified-header ul li')[3]
+            pl_category = pl_category_container.find(text=True, recursive=False)
+            category_tree = self.get_category_tree(str(pl_category.strip()))
+            if len(category_tree) == 1:
+                category = Category.objects.filter(name=category_tree[0], parent=None).get()
+            else:
+                category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
+
+            pl_location_container = item_soup.select('div#classified-header ul li')[2]
+            pl_location = pl_location_container.find(text=True, recursive=False)
+            pl_municipality = None
+            if re.findall('\(([^)]+)', pl_location):
+                pl_municipality = re.findall('\(([^)]+)', pl_location)[0]
+            pl_province = self._get_province(page)
+            try:
+                municipality = Municipality.objects.get(name=pl_municipality) if pl_municipality else None
+            except:
+                municipality = None
+            province = Province.objects.get(name=pl_province) if pl_province else None
+
+            description = item_soup.select('div.classified-content > div.panel')[0].get_text()
+
+            price = 0
+            a = item_soup.select('h1 span')
+            if item_soup.select('h1 span'):
+                price = item_soup.select('h1 span')[0].getText().strip().replace(',', '')[1:]
+
+            external_source = self.source
+            external_id = item_soup.select('div#classified-header ul li')[0].find(text=True, recursive=False).strip()
+            external_url = self.base_url + product_link
+            print(external_id, external_source)
+
+            self.normalized_data.append(dict(
+                title=title,
+                category=category,
+                description=description,
+                price=float(price),
+                province=province,
+                municipality=municipality,
+                external_source=external_source,
+                external_id=external_id,
+                external_url=external_url
+            ))
+        except Exception as e:
+            self.logger.error('could not load product "%s". %s', product_link, e)
+
     def get_normalized_data(self):
         self.normalized_data = []
         for page in self.product_pages:
@@ -190,59 +245,10 @@ class PorlalivreImporter(BaseImporter):
                 items_list_soup = BeautifulSoup(response.content, 'html.parser')
                 elements = items_list_soup.select('div.classified-wrapper')
 
-                for item in elements:
-                    product_link = item.select('a.classified-link')[0]['href']
-                    try:
-                        item_response = requests.get(self.base_url+product_link, headers=self.custom_headers)
-                        item_soup = BeautifulSoup(item_response.content, 'html.parser')
+                with ThreadPoolExecutor(max_workers=self.workers) as executor:
+                    for item in elements:
+                        executor.submit(self.get_item, item, page)
 
-                        title = item_soup.select('h1')[0].find(text=True, recursive=False)[:-2].replace("\n", "")
-
-                        pl_category_container = item_soup.select('div#classified-header ul li')[3]
-                        pl_category = pl_category_container.find(text=True, recursive=False)
-                        category_tree = self.get_category_tree(str(pl_category.strip()))
-                        if len(category_tree) == 1:
-                            category = Category.objects.filter(name=category_tree[0], parent=None).get()
-                        else:
-                            category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
-
-                        pl_location_container = item_soup.select('div#classified-header ul li')[2]
-                        pl_location = pl_location_container.find(text=True, recursive=False)
-                        pl_municipality = None
-                        if re.findall('\(([^)]+)', pl_location):
-                            pl_municipality = re.findall('\(([^)]+)', pl_location)[0]
-                        pl_province = self._get_province(page)
-                        try:
-                            municipality = Municipality.objects.get(name=pl_municipality) if pl_municipality else None
-                        except:
-                            municipality = None
-                        province = Province.objects.get(name=pl_province) if pl_province else None
-
-                        description = item_soup.select('div.classified-content > div.panel')[0].get_text()
-
-                        price = 0
-                        a = item_soup.select('h1 span')
-                        if item_soup.select('h1 span'):
-                            price = item_soup.select('h1 span')[0].getText().strip().replace(',', '')[1:]
-
-                        external_source = self.source
-                        external_id = item_soup.select('div#classified-header ul li')[0].find(text=True, recursive=False).strip()
-                        external_url = self.base_url+product_link
-                        print(external_id, external_source)
-
-                        self.normalized_data.append(dict(
-                            title=title,
-                            category=category,
-                            description=description,
-                            price=price,
-                            province=province,
-                            municipality=municipality,
-                            external_source=external_source,
-                            external_id=external_id,
-                            external_url=external_url
-                        ))
-                    except Exception as e:
-                        self.logger.error('could not load product "%s". %s', product_link, e)
             except Exception as e:
                 self.logger.error('could not load products page "%s". %s', page, e)
 
