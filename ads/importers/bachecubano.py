@@ -1,3 +1,5 @@
+from concurrent.futures.thread import ThreadPoolExecutor
+
 import requests
 from bs4 import BeautifulSoup
 from categories.models import Category
@@ -126,6 +128,54 @@ class BachecubanoImporter(BaseImporter):
         external_ids = [data['external_id'] for data in self.normalized_data]
         Ad.objects.filter(external_source=self.source).exclude(external_id__in=external_ids).delete()
 
+    def get_item(self, item):
+        product_link = item.select('.product-title > a')[0]['href']
+        try:
+            item_response = requests.get(product_link, headers=self.custom_headers)
+            item_soup = BeautifulSoup(item_response.content, 'html.parser')
+
+            title = item_soup.select('h1.product-title')[0].text
+
+            category = None
+            province = None
+            _advertisement = item_soup.select('ul.advertisement > li')
+            for a in _advertisement:
+                e = a.select('strong')[0]
+                if e.text == 'Categoría:':
+                    bc_category = a.select('a')[0].text
+                    category_tree = get_category_tree(bc_category)
+                    category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
+                elif e.text == ' Ubicación:':
+                    bc_province = a.select('a')[0].text
+                    province = Province.objects.get(name=bc_province) if bc_province else None
+
+            description = item_soup.select('#content')[0].get_text()
+
+            _price_element = item_soup.select('.description-info .short-info .ads-btn h3')[0]
+            if _price_element and _price_element.text:
+                price = _price_element.text.split(' ')[1]
+            else:
+                price = 0
+
+            external_source = self.source
+            external_id = product_link.split('/')[-1]
+            external_url = product_link
+            print(external_id, external_source)
+
+            self.normalized_data.append(dict(
+                title=title,
+                category=category,
+                description=description,
+                price=float(price),
+                province=province,
+                # municipality=municipality,
+                external_source=external_source,
+                external_id=external_id,
+                external_url=external_url
+            ))
+        except Exception as e:
+            self.logger.error('could not load product "%s". %s', product_link, e)
+
     def get_normalized_data(self):
         self.normalized_data = []
         for page in self.product_pages:
@@ -134,53 +184,10 @@ class BachecubanoImporter(BaseImporter):
                 items_list_soup = BeautifulSoup(response.content, 'html.parser')
                 elements = items_list_soup.select('.product-item')
 
-                for item in elements:
-                    product_link = item.select('.product-title > a')[0]['href']
-                    try:
-                        item_response = requests.get(product_link, headers=self.custom_headers)
-                        item_soup = BeautifulSoup(item_response.content, 'html.parser')
+                with ThreadPoolExecutor(max_workers=self.workers) as executor:
+                    for item in elements:
+                        executor.submit(self.get_item, item)
 
-                        title = item_soup.select('h1.product-title')[0].text
-
-                        category = None
-                        province = None
-                        _advertisement = item_soup.select('ul.advertisement > li')
-                        for a in _advertisement:
-                            e = a.select('strong')[0]
-                            if e.text == 'Categoría:':
-                                bc_category = a.select('a')[0].text
-                                category_tree = get_category_tree(bc_category)
-                                category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
-                            elif e.text == ' Ubicación:':
-                                bc_province = a.select('a')[0].text
-                                province = Province.objects.get(name=bc_province) if bc_province else None
-
-                        description = item_soup.select('#content')[0].get_text()
-
-                        _price_element = item_soup.select('.description-info .short-info .ads-btn h3')[0]
-                        if _price_element and _price_element.text:
-                            price = _price_element.text.split(' ')[1]
-                        else:
-                            price = 0
-
-                        external_source = self.source
-                        external_id = product_link.split('/')[-1]
-                        external_url = product_link
-                        print(external_id, external_source)
-
-                        self.normalized_data.append(dict(
-                            title=title,
-                            category=category,
-                            description=description,
-                            price=price,
-                            province=province,
-                            # municipality=municipality,
-                            external_source=external_source,
-                            external_id=external_id,
-                            external_url=external_url
-                        ))
-                    except Exception as e:
-                        self.logger.error('could not load product "%s". %s', product_link, e)
             except Exception as e:
                 self.logger.error('could not load products page "%s". %s', page, e)
 

@@ -1,12 +1,14 @@
 -i https://pypi.org/simple
-asgiref==3.2.7
+-e git+https://github.com/django-haystack/django-haystack.git@ea3f8c961934e8871b89881d7fab09e038191899#egg=django-haystack
+asgiref==3.2.9
 beautifulsoup4==4.9.1
-certifi==2020.4.5.1
+certifi==2020.4.5.2
 cffi==1.14.0
 chardet==3.0.4
 cryptography==2.9.2
 decorator==4.4.2
 defusedxml==0.6.0
+django-activity-stream==0.9.0
 django-allauth==0.42.0
 django-appconf==1.0.4
 django-categories==1.7.2
@@ -21,11 +23,9 @@ django-mptt==0.10.0
 django-seed==0.2.2
 django==3.0.7
 djangorestframework==3.11.0
-faker==4.1.0
+faker==4.1.1
 future==0.18.2
 git+https://github.com/cccaballero/django-lazysignup.git@2845c312ca0c8ddfd3226bad610481f7129ae328#egg=django-lazysignup
-git+https://github.com/django-haystack/django-haystack.git@ac7b750a88f2fa53d7e05da4c539676df6e3688d#egg=django-haystack
-git+https://github.com/justquick/django-activity-stream.git@8d38fd45b4bef1f7137fb8185b04ee0d8cdb5e3b#egg=actstream
 idna==2.9
 libsass==0.20.0
 markdown==3.2.2
@@ -41,6 +41,7 @@ requests-oauthlib==1.3.0
 requests==2.23.0
 rjsmin==1.1.0
 six==1.15.0
+sorl-thumbnail==12.6.3
 soupsieve==2.0.1
 sqlparse==0.3.1
 text-unidecode==1.3

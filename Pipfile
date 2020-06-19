@@ -14,19 +14,19 @@ django-crispy-forms = "*"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
-django-haystack = {git = "https://github.com/django-haystack/django-haystack.git",ref = "v3.0b1"}
+django-haystack = {editable = true,git = "https://github.com/django-haystack/django-haystack.git",ref = "v3.0b2"}
 whoosh = "*"
 pillow = "*"
 django-categories = "*"
 django-seed = "*"
 beautifulsoup4 = "*"
 requests = "*"
-actstream = {git = "https://github.com/justquick/django-activity-stream.git"}
 django-lazysignup = {git = "https://github.com/cccaballero/django-lazysignup.git",ref = "master"}
 python-telegram-bot = "*"
 django-allauth = "*"
 django-currentuser = "*"
 sorl-thumbnail = "*"
+django-activity-stream = "*"
 
 [requires]
 python_version = "3.7"
