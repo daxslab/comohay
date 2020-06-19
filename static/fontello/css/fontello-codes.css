@@ -1,3 +1,7 @@
 
+.icon-pencil:before { content: '\e800'; } /* '' */
+.icon-search:before { content: '\e801'; } /* '' */
+.icon-spin1:before { content: '\e830'; } /* '' */
 .icon-facebook:before { content: '\f09a'; } /* '' */
 .icon-google:before { content: '\f1a0'; } /* '' */
+.icon-trash:before { content: '\f1f8'; } /* '' */

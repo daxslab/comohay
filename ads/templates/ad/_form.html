@@ -1,0 +1,59 @@
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+<form id="ad-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ ad_form|crispy }}
+
+    <script>
+        let province_select = document.getElementById('id_province');
+        let municipality_select = document.getElementById('id_municipality');
+
+        let selectListElement = function(id, valueToSelect){
+            let element = document.getElementById(id);
+            element.value = valueToSelect;
+        };
+
+        province_select.addEventListener('change', function (e) {
+            let elements = '<option value="" selected="">---------</option>';
+            municipality_select.innerHTML = elements;
+
+            var r = new XMLHttpRequest();
+            r.open("GET", "/api/v1/municipalities/?size=200&province="+province_select.value, true);
+            r.onreadystatechange = function () {
+                if (r.readyState != 4 || r.status != 200) return;
+                JSON.parse(r.responseText).results.forEach(function (item) {
+                    elements += `<option value="${item.id}">${item.name}</option>`
+                });
+                municipality_select.innerHTML = elements;
+            };
+            r.send();
+        });
+
+        municipality_select.addEventListener('change', function (e) {
+            var r = new XMLHttpRequest();
+            r.open("GET", "/api/v1/provinces/?municipality__id="+municipality_select.value, true);
+            r.onreadystatechange = function () {
+                if (r.readyState != 4 || r.status != 200) return;
+
+                let data = JSON.parse(r.responseText);
+                if (data.results && data.results.length > 0){
+                    province_select.value = data.results[0].id;
+                } else {
+                    province_select.value = null;
+                    province_select.selectedIndex = 0;
+                }
+            };
+            r.send();
+        });
+
+
+    </script>
+
+    {{ ad_image_formset.management_form }}
+    {% for form in ad_image_formset %}
+        {{ form|crispy }}
+    {% endfor %}
+
+    <input type="submit" value="{% trans 'Submit' %}">
+</form>

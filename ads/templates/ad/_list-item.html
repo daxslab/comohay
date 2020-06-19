@@ -1,7 +1,13 @@
 {% load highlight %}
 
 <div class="list-item-container">
-    {% if ad.external_source %}
+    {% if back %}
+        <a href="{% url "ads:edit" id=ad.id %}" class="button button-outline button-sm"><span
+                class="icon-pencil"></span> Editar</a>
+        <button class="button button-outline button-sm ajax-delete"
+                data-delete-url="{% url "ads:delete" id=ad.id %}"><span class="icon-trash"></span> Eliminar
+        </button>
+    {% elif ad.external_source %}
         <span class="list-item-badge badge badge-secondary">{{ ad.external_source }}</span>
     {% endif %}
     <div class="list-item-header">
@@ -9,7 +15,7 @@
            data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %}
            data-ad="{{ ad.id }}">
             <h4 class="list-item-title">{{ ad.title }}</h4>
-            <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }}</span>
+            <span class="list-item-location">{{ ad.province }}, {{ ad.municipality }} ({{ ad.created_at | date:"SHORT_DATE_FORMAT" }})</span>
             <h3 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h3>
         </a>
     </div>
@@ -23,4 +29,22 @@
             {% endif %}
         </p>
     </div>
+
+    {% if back %}
+        <div class="list-telegram-switch">
+            <!-- Rectangular switch -->
+            {#                    <label class="switch">#}
+            {#                        <input type="checkbox">#}
+            {#                        <span class="slider"></span>#}
+            {#                    </label>#}
+
+            <!-- Rounded switch -->
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+            <label class="telegram-switch-label">Republicar en grupos de Telegram</label>
+        </div>
+    {% endif %}
+
 </div>

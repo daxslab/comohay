@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-07 18:34+0000\n"
+"POT-Creation-Date: 2020-06-13 14:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,64 +18,73 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: ads/filters/ad_filter.py:11 ads/templates/ad/index.html:12
+#: ads/templates/ad/index.html:20
+msgid "Search"
+msgstr "Buscar"
+
 #: ads/forms/adimageform.py:8 ads/models/adimages.py:9
 #: ads/models/adimages.py:12
 msgid "Image"
 msgstr "Imagen"
 
-#: ads/models/ad.py:13
+#: ads/models/ad.py:14
 msgid "Title"
 msgstr "Título"
 
-#: ads/models/ad.py:14
+#: ads/models/ad.py:15
 msgid "Slug"
 msgstr "Slug"
 
-#: ads/models/ad.py:15
+#: ads/models/ad.py:16
 msgid "Category"
 msgstr "Categoria"
 
-#: ads/models/ad.py:16
+#: ads/models/ad.py:17
 msgid "Description"
 msgstr "Descripción"
 
-#: ads/models/ad.py:17
+#: ads/models/ad.py:18
 msgid "Price"
 msgstr "Precio"
 
-#: ads/models/ad.py:18 ads/models/municipality.py:9 ads/models/province.py:12
+#: ads/models/ad.py:19
+msgid "Currency"
+msgstr ""
+
+#: ads/models/ad.py:20 ads/models/municipality.py:9 ads/models/province.py:12
 msgid "Province"
 msgstr "Provincia"
 
-#: ads/models/ad.py:19 ads/models/municipality.py:14
+#: ads/models/ad.py:21 ads/models/municipality.py:14
 msgid "Municipality"
 msgstr "Minicipio"
 
-#: ads/models/ad.py:20
+#: ads/models/ad.py:22
 msgid "External source"
 msgstr "Fuente externa"
 
-#: ads/models/ad.py:21
+#: ads/models/ad.py:23
 msgid "External ID"
 msgstr "ID externo"
 
-#: ads/models/ad.py:22
+#: ads/models/ad.py:24
 msgid "External URL"
 msgstr "URL externa"
 
-#: ads/models/ad.py:23
+#: ads/models/ad.py:25
 msgid "Created by"
 msgstr "Creado por"
 
-#: ads/models/ad.py:24
+#: ads/models/ad.py:26
 msgid "Updated by"
 msgstr "Actualizado por"
 
-#: ads/models/ad.py:27 ads/models/adimages.py:8
+#: ads/models/ad.py:29 ads/models/adimages.py:8
 msgid "Ad"
 msgstr "Anuncio"
 
-#: ads/models/ad.py:28
+#: ads/models/ad.py:30
 msgid "Ads"
 msgstr "Anuncios"
 
@@ -107,28 +116,28 @@ msgstr "Municipios"
 msgid "Provinces"
 msgstr "Provincias"
 
-#: ads/templates/ad/ads.html:19 ads/templates/ad/index.html:33
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:34
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
-#: ads/templates/ad/ads.html:25
+#: ads/templates/ad/ads.html:26
 msgid "first"
 msgstr "primera"
 
-#: ads/templates/ad/ads.html:26
+#: ads/templates/ad/ads.html:27
 msgid "previous"
 msgstr "anterior"
 
-#: ads/templates/ad/ads.html:30
+#: ads/templates/ad/ads.html:31
 #, python-format
 msgid "Page %(number)s of %(num_pages)s."
 msgstr "Página %(number)s de %(num_pages)s."
 
-#: ads/templates/ad/ads.html:34
+#: ads/templates/ad/ads.html:35
 msgid "next"
 msgstr "siguiente"
 
-#: ads/templates/ad/ads.html:35
+#: ads/templates/ad/ads.html:36
 msgid "last"
 msgstr "último"
 
@@ -140,22 +149,22 @@ msgstr "Incluir anuncio"
 msgid "Submit"
 msgstr "Enviar"
 
-#: ads/templates/ad/detail.html:66
+#: ads/templates/ad/detail.html:65
 msgid "You may also be interested in"
 msgstr "También le puede interesar"
-
-#: ads/templates/ad/index.html:13 ads/templates/ad/index.html:21
-msgid "Search"
-msgstr "Buscar"
 
 #: ads/templates/ad/index.html:16
 msgid "Maybe you want to say"
 msgstr "Quzá quiso decir"
 
-#: ads/templates/ad/index.html:38
+#: ads/templates/ad/index.html:41
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:40
+#: ads/templates/ad/index.html:44
 msgid "Next"
 msgstr "Siguiente"
+
+#: ads/templates/ad/user_ads.html:7
+msgid "My Ads"
+msgstr ""

@@ -1,3 +1,7 @@
 
+.icon-pencil { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe800;&nbsp;'); }
+.icon-search { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe801;&nbsp;'); }
+.icon-spin1 { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xe830;&nbsp;'); }
 .icon-facebook { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf09a;&nbsp;'); }
 .icon-google { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf1a0;&nbsp;'); }
+.icon-trash { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xf1f8;&nbsp;'); }

@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="list-title">
+        <h2>{% trans 'My Ads' %}</h2>
+        <form method="get">
+            <div class="search-container">
+                {{ filter.form.title }}
+                <button class="button button-search" type="submit"><span class="icon-search"></span></button>
+            </div>
+
+        </form>
+    </div>
+
+    {% for ad in filter.qs %}
+        {% with back='true' %}
+            {% include 'ad/_list-item.html' %}
+        {% endwith %}
+    {% endfor %}
+
+    <script>
+        let deleteBtns = document.getElementsByClassName('ajax-delete');
+        for (let deleteBtn of deleteBtns) {
+            deleteBtn.addEventListener('click', function (event) {
+                if (confirm('{% trans 'Are you sure you want to delete this ad?' %}')) {
+                    let btn = event.target;
+                    let btnHtml = btn.innerHTML;
+                    disableBtn(btn);
+                    let deleteUrl = btn.getAttribute('data-delete-url');
+
+                    var r = new XMLHttpRequest();
+                    let crsfToken = getCookie('csrftoken');
+                    r.open("POST", deleteUrl, true);
+                    r.setRequestHeader('X-CSRFToken', crsfToken);
+                    r.onreadystatechange = function () {
+                        if (r.readyState == 4 && r.status != 200) {
+                            enableBtn(btn, btnHtml);
+                            alert('{% trans 'An unexpected error has occurred' %}');
+                            return;
+                        }
+                        if (JSON.parse(r.responseText).success) {
+                            let elemToRemove = findParentByClass(btn, 'list-item-container');
+                            if (elemToRemove)
+                                elemToRemove.parentNode.removeChild(elemToRemove);
+                        } else {
+                            enableBtn(btn, btnHtml);
+                        }
+                    };
+                    r.send();
+                }
+            });
+        }
+
+        function disableBtn(btn) {
+            btn.setAttribute('disabled', true);
+            btn.innerHTML = '<span class="icon-spin1 animate-spin" style="font-family: initial;"></span>';
+        }
+
+        function enableBtn(btn, html) {
+            btn.innerHTML = html;
+            btn.removeAttribute('disabled');
+        }
+    </script>
+
+{% endblock %}
