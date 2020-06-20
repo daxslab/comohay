@@ -42,7 +42,7 @@ Autocomplete.prototype.fetch = function (query) {
     let request = new XMLHttpRequest();
     request.open("GET", this.url + '?q=' + query, true);
     request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
+        if (this.readyState == 4 && this.status == 200) {
             let data = JSON.parse(request.responseText)
             self.show_results(data)
         }
@@ -59,24 +59,18 @@ Autocomplete.prototype.show_results = function (data) {
 
     if (results.length > 0) {
 
-        let searchArr = this.query_box?.value.split(' ')
+        let searchExp = this.query_box?.value.trim().split(' ').join('|')
 
         for (let res_offset in results) {
             let elem = document.createElement('li');
             let filteredText = results[res_offset]
 
-            searchArr.forEach(function (item, index) {
-                let regEx = new RegExp(item, "ig")
-                let matches = filteredText.match(regEx)
-
-                if (matches)
-                    matches.forEach(function (match, idx) {
-                        filteredText = filteredText.replace(match, "<strong>" + match + "</strong>")
-                    })
-                // if (filteredText.includes(regEx)) {
-                //     filteredText = filteredText.replace(/item/ig, "<strong>" + item + "</strong>")
-                // }
-            })
+            let regEx = new RegExp(searchExp, "ig")
+            let matches = filteredText.match(regEx)
+            if (matches)
+                matches.forEach(function (match, idx) {
+                    filteredText = filteredText.replace(match, "<strong>" + match + "</strong>")
+                })
 
             elem.innerHTML = filteredText
 
