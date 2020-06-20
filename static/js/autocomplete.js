@@ -59,7 +59,7 @@ Autocomplete.prototype.show_results = function (data) {
 
     if (results.length > 0) {
 
-        let searchExp = this.query_box?.value.trim().replace(' ', '|')
+        let searchExp = this.query_box?.value.trim().replace(' ', '|').replace('\\',"\\\\")
 
         for (let res_offset in results) {
             let elem = document.createElement('li');
