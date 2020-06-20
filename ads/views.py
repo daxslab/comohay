@@ -24,9 +24,6 @@ from ads.helpers.telegrambot import TelegramBot
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 
-import django_tables2 as table
-
-from django.views.decorators.csrf import csrf_exempt
 
 logger = logging.getLogger(__name__)
 
