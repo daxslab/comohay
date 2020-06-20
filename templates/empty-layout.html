@@ -1,0 +1,37 @@
+{% load compress %}
+{% load static %}
+{% load i18n %}
+<!doctype html>
+<html lang="en" class="h-100">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="Daxslab, and contributors">
+        <title>Como Hay</title>
+
+        {% compress css %}
+            <link type="text/x-scss" href="{% static 'sass/main.scss' %}" rel="stylesheet">
+            <link type="text/css" href="{% static 'fontello/css/fontello.css' %}" rel="stylesheet">
+            <link type="text/css" href="{% static 'fontello/css/animation.css' %}" rel="stylesheet">
+            <link type="text/css" href="{% static 'fontello/css/fontello-codes.css' %}" rel="stylesheet">
+        {% endcompress %}
+
+        {% block css %}
+        {% endblock %}
+
+    </head>
+    <body>
+
+        {% block essence %}
+        {% endblock %}
+
+        {% compress js %}
+            <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+        {% endcompress %}
+
+        {% block js %}
+        {% endblock %}
+
+    </body>
+</html>

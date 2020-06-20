@@ -6,13 +6,15 @@ from categories.models import Category
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory, inlineformset_factory
-from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
+from haystack.query import SearchQuerySet
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
+from rest_framework.utils import json
 
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD
 from ads.filters.ad_filter import AdFilter
@@ -37,6 +39,15 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         return context
+
+
+def autocomplete(request):
+    sqs = SearchQuerySet().autocomplete(content_auto=request.GET.get('q', ''))[:5]
+    suggestions = [result.title for result in sqs]
+    the_data = json.dumps({
+        'results': suggestions
+    })
+    return HttpResponse(the_data, content_type='application/json')
 
 
 class AdsByMainCategoryView(FilterView):

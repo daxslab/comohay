@@ -12,6 +12,9 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
     province = indexes.CharField(model_attr='province__name')
     municipality = indexes.CharField(model_attr='municipality__name')
 
+    # autocomplete field
+    content_auto = indexes.EdgeNgramField(model_attr='title')
+
     # suggestions = indexes.FacetCharField()
 
     def get_model(self):

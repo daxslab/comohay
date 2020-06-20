@@ -1,69 +1,47 @@
+{% extends 'empty-layout.html' %}
 {% load compress %}
 {% load static %}
 {% load i18n %}
-<!doctype html>
-<html lang="en" class="h-100">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="Daxslab, and contributors">
-        <title>Como Hay</title>
 
-        {% compress css %}
-            <link type="text/x-scss" href="{% static 'sass/main.scss' %}" rel="stylesheet">
-            <link type="text/css" href="{% static 'fontello/css/fontello.css' %}" rel="stylesheet">
-            <link type="text/css" href="{% static 'fontello/css/animation.css' %}" rel="stylesheet">
-            <link type="text/css" href="{% static 'fontello/css/fontello-codes.css' %}" rel="stylesheet">
-        {% endcompress %}
-
-        {% block css %}
-        {% endblock %}
-
-    </head>
-    <body>
-        <header>
-
-            <nav class="navigation">
-                    <section class="container">
-                       <a class="navigation-title" href="{% url 'ads:index' %}">
-                          <h1 class="title">Como Hay</h1>
-                       </a>
-                       <ul class="navigation-list float-right">
-                          <li class="navigation-item"><a class="navigation-link" href="{% url 'ads:index' %}">{% trans 'Index' %}</a></li>
-                          <li class="navigation-item"><a class="navigation-link" href="{% url 'ads:create' %}">{% trans 'Add ad' %}</a></li>
-                           {% if user.is_authenticated %}
-                               <li class="navigation-item"><a class="navigation-link" href="{% url 'ads:user_ads' %}">{% trans 'My Ads' %}</a></li>
-                               <li class="navigation-item"><a class="navigation-link" href="{% url 'account_logout' %}">{% trans 'Logout' %}</a></li>
-                           {% else %}
-                               <li class="navigation-item"><a class="navigation-link" href="{% url 'account_login' %}">{% trans 'Login' %}</a></li>
-                           {% endif %}
-                       </ul>
-                    </section>
-                 </nav>
-
-        </header>
+{% block essence %}
+    <header>
+        <nav class="navigation">
+            <section class="container">
+                <a class="navigation-title" href="{% url 'ads:index' %}">
+                    <h1 class="title">Como Hay</h1>
+                </a>
+                <ul class="navigation-list float-right">
+                    <li class="navigation-item"><a class="navigation-link"
+                                                   href="{% url 'ads:index' %}">{% trans 'Index' %}</a></li>
+                    <li class="navigation-item"><a class="navigation-link"
+                                                   href="{% url 'ads:create' %}">{% trans 'Add ad' %}</a></li>
+                    {% if user.is_authenticated %}
+                        <li class="navigation-item"><a class="navigation-link"
+                                                       href="{% url 'ads:user_ads' %}">{% trans 'My Ads' %}</a></li>
+                        <li class="navigation-item"><a class="navigation-link"
+                                                       href="{% url 'account_logout' %}">{% trans 'Logout' %}</a></li>
+                    {% else %}
+                        <li class="navigation-item"><a class="navigation-link"
+                                                       href="{% url 'account_login' %}">{% trans 'Login' %}</a></li>
+                    {% endif %}
+                </ul>
+            </section>
+        </nav>
+    </header>
 
 
-        <main role="main">
-            <div class="container">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </main>
+    <main role="main">
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
 
-{#        <footer class="footer">#}
-{#            <div class="container">#}
-{#                <span class="text-muted">Place footer content here.</span>#}
-{#            </div>#}
-{#        </footer>#}
+    {#        <footer class="footer">#}
+    {#            <div class="container">#}
+    {#                <span class="text-muted">Place footer content here.</span>#}
+    {#            </div>#}
+    {#        </footer>#}
 
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
-    {% endcompress %}
+{% endblock %}
 
-    {% block js %}
-    {% endblock %}
-
-    </body>
-</html>
