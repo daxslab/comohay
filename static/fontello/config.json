@@ -41,6 +41,18 @@
       "css": "spin1",
       "code": 59440,
       "src": "fontelico"
+    },
+    {
+      "uid": "c709da589c923ba3c2ad48d9fc563e93",
+      "css": "cancel",
+      "code": 59394,
+      "src": "entypo"
+    },
+    {
+      "uid": "8da3ac534210aae9c0f0e13804c1df97",
+      "css": "cancel-1",
+      "code": 59395,
+      "src": "websymbols"
     }
   ]
 }

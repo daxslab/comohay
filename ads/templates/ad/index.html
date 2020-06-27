@@ -4,33 +4,14 @@
 {% load static %}
 
 {% block essence %}
-    {#    <div class="row">#}
-    {#        <div class="column row-center">#}
-    {#            <h1>Como Hay</h1>#}
-    {#            <form method="get" action="." class="">#}
-    {#                <div class="search-container">#}
-    {#                    <input placeholder="{% trans 'Search' %}" class="" value="{{ query }}" type="search" name="q"#}
-    {#                           id="id_q">#}
-    {#                    {% if suggestion and query != suggestion %}#}
-    {#                        <div>#}
-    {#                            <p>{% trans 'Maybe you want to say' %}: <a#}
-    {#                                    href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>#}
-    {#                        </div>#}
-    {#                    {% endif %}#}
-    {#                    <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span#}
-    {#                            class="icon-search"></span></button>#}
-    {#                </div>#}
-    {#            </form>#}
-    {#        </div>#}
-    {#    </div>#}
-
     {% if not query %}
         <div class="container">
             <div class="row main-search">
-                <div class="column">
-                    <div class="center-content">
-                        <h1>CómoHay!!</h1>
-                        <form method="get" action="." class="form-inline center search-container search-form" autocomplete="off">
+                <div class="center-content">
+                    <h1>CómoHay!!</h1>
+                    <div class="column" id="search-container">
+                        <form method="get" action="." class="form-inline center search-form"
+                              autocomplete="off">
                             <input placeholder="{% trans 'Search' %}" value="{{ query }}"
                                    type="search"
                                    name="q"
@@ -42,13 +23,16 @@
                                             href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
                                 </div>
                             {% endif %}
+                            <button type="reset" class="button button-search button-clear button-cancel"
+                                    id="button-cancel"><span
+                                    class="icon-cancel-1"></span></button>
                             <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span
                                     class="icon-search"></span></button>
                         </form>
-                    </div>
-                    <div class="autocomplete-container">
-                        <ul id="autocomplete-list" class="autocomplete-list">
-                        </ul>
+                        <div class="autocomplete-container">
+                            <ul id="autocomplete-list" class="autocomplete-list">
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,8 +44,9 @@
             </div>
             <div class="container">
                 <div class="row" style="padding-bottom: 1.5rem;">
-                    <div class="column">
-                        <form method="get" action="." class="form-inline center search-container search-form" autocomplete="off">
+                    <div class="column" id="search-container">
+                        <form method="get" action="." class="form-inline center search-form"
+                              autocomplete="off">
                             <input placeholder="{% trans 'Search' %}" value="{{ query }}"
                                    type="search"
                                    name="q"
@@ -73,6 +58,9 @@
                                             href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
                                 </div>
                             {% endif %}
+                            <button type="reset" class="button button-search button-clear button-cancel"
+                                    id="button-cancel"><span
+                                    class="icon-cancel-1"></span></button>
                             <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span
                                     class="icon-search"></span></button>
                         </form>

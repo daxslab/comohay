@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-13 14:09+0000\n"
+"POT-Creation-Date: 2020-06-27 14:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,13 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ads/filters/ad_filter.py:11 ads/templates/ad/index.html:12
-#: ads/templates/ad/index.html:20
+#: ads/filters/ad_filter.py:11 ads/models/search.py:8 ads/models/search.py:12
+#: ads/models/user_search.py:10 ads/templates/ad/index.html:15
+#: ads/templates/ad/index.html:29 ads/templates/ad/index.html:50
+#: ads/templates/ad/index.html:64
 msgid "Search"
 msgstr "Buscar"
 
-#: ads/forms/adimageform.py:8 ads/models/adimages.py:9
-#: ads/models/adimages.py:12
+#: ads/forms/adimageform.py:8 ads/models/adimages.py:11
+#: ads/models/adimages.py:14
 msgid "Image"
 msgstr "Imagen"
 
@@ -38,7 +40,7 @@ msgstr "Slug"
 
 #: ads/models/ad.py:16
 msgid "Category"
-msgstr "Categoria"
+msgstr "Categoría"
 
 #: ads/models/ad.py:17
 msgid "Description"
@@ -80,7 +82,7 @@ msgstr "Creado por"
 msgid "Updated by"
 msgstr "Actualizado por"
 
-#: ads/models/ad.py:29 ads/models/adimages.py:8
+#: ads/models/ad.py:29 ads/models/adimages.py:10
 msgid "Ad"
 msgstr "Anuncio"
 
@@ -88,17 +90,17 @@ msgstr "Anuncio"
 msgid "Ads"
 msgstr "Anuncios"
 
-#: ads/models/adimages.py:13
+#: ads/models/adimages.py:15
 msgid "Images"
-msgstr "Imagenes"
+msgstr "Imágenes"
 
 #: ads/models/basemodel.py:6
 msgid "Created at"
-msgstr "Fecha de creacion"
+msgstr "Fecha de creación"
 
 #: ads/models/basemodel.py:7
 msgid "Updated at"
-msgstr "Fecha de creacion"
+msgstr "Fecha de actualización"
 
 #: ads/models/municipality.py:10 ads/models/province.py:8
 msgid "Code"
@@ -116,7 +118,41 @@ msgstr "Municipios"
 msgid "Provinces"
 msgstr "Provincias"
 
-#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:34
+#: ads/models/search.py:9
+msgid "Rank"
+msgstr ""
+
+#: ads/models/search.py:13
+#, fuzzy
+#| msgid "Search"
+msgid "Searches"
+msgstr "Búsquedas"
+
+#: ads/models/user_search.py:9
+msgid "User"
+msgstr "Usuario"
+
+#: ads/models/user_search.py:11
+msgid "Daystamp"
+msgstr "Marca de día"
+
+#: ads/models/user_search.py:14
+#, fuzzy
+#| msgid "Search"
+msgid "UserSearch"
+msgstr "Buscar"
+
+#: ads/models/user_search.py:15
+#, fuzzy
+#| msgid "Search"
+msgid "UserSearches"
+msgstr "Buscar"
+
+#: ads/templates/ad/_form.html:58
+msgid "Submit"
+msgstr "Enviar"
+
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:82
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
@@ -141,30 +177,40 @@ msgstr "siguiente"
 msgid "last"
 msgstr "último"
 
-#: ads/templates/ad/create.html:7
+#: ads/templates/ad/create.html:6
 msgid "Create Ad"
 msgstr "Incluir anuncio"
 
-#: ads/templates/ad/create.html:65
-msgid "Submit"
-msgstr "Enviar"
-
-#: ads/templates/ad/detail.html:65
+#: ads/templates/ad/detail.html:50
 msgid "You may also be interested in"
 msgstr "También le puede interesar"
 
-#: ads/templates/ad/index.html:16
+#: ads/templates/ad/edit.html:6
+#, fuzzy
+#| msgid "Updated by"
+msgid "Update Ad"
+msgstr "Actualizado por"
+
+#: ads/templates/ad/index.html:22 ads/templates/ad/index.html:57
 msgid "Maybe you want to say"
 msgstr "Quzá quiso decir"
 
-#: ads/templates/ad/index.html:41
+#: ads/templates/ad/index.html:89
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:44
+#: ads/templates/ad/index.html:92
 msgid "Next"
 msgstr "Siguiente"
 
-#: ads/templates/ad/user_ads.html:7
+#: ads/templates/ad/user_ads.html:6
 msgid "My Ads"
+msgstr ""
+
+#: ads/templates/ad/user_ads.html:26
+msgid "Are you sure you want to delete this ad?"
+msgstr ""
+
+#: ads/templates/ad/user_ads.html:39
+msgid "An unexpected error has occurred"
 msgstr ""

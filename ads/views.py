@@ -1,4 +1,5 @@
 import logging
+import time
 from encodings.base64_codec import base64_decode
 
 from actstream import action
@@ -12,24 +13,40 @@ from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
 from haystack.query import SearchQuerySet
+from haystack.utils import Highlighter
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from rest_framework.utils import json
 
-from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD
+from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD, ACTION_SEARCH_AD
 from ads.filters.ad_filter import AdFilter
 from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
+from ads.forms.adsearchform import AdSearchForm
 from ads.helpers.telegrambot import TelegramBot
+from ads.models import UserSearch, Search
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
-
 
 logger = logging.getLogger(__name__)
 
 
 class IndexView(SearchView):
     template = 'ad/index.html'
+
+    def __init__(self, template=None, load_all=True, form_class=None, searchqueryset=None, results_per_page=None):
+        super().__init__(template, load_all, form_class, searchqueryset, results_per_page)
+        if form_class is None:
+            self.form_class = AdSearchForm
+
+    def __call__(self, request):
+        response = super().__call__(request)
+        if self.query != '' and not self.request.GET.get('page', False):
+            daystamp = int(time.time() / 60 / 60 / 24)
+            user_search = UserSearch(user=request.user, search=self.query, daystamp=daystamp)
+            user_search.save()
+            action.send(request.user, verb=ACTION_SEARCH_AD, target=user_search)
+        return response
 
     def get_context(self):
         context = super().get_context()
@@ -39,8 +56,12 @@ class IndexView(SearchView):
 
 
 def autocomplete(request):
-    sqs = SearchQuerySet().autocomplete(content_auto=request.GET.get('q', ''))[:5]
-    suggestions = [result.title for result in sqs]
+    # TODO: fix item list view, use the template values in order to no acces to db
+    # TODO: fix pagination
+    query = request.GET.get('q', '')
+    sqs = SearchQuerySet().models(Search).autocomplete(content_auto=query)[:5]
+    highlight = Highlighter(query, css_class='no-highlight')
+    suggestions = [highlight.highlight(result.search) for result in sqs]
     the_data = json.dumps({
         'results': suggestions
     })

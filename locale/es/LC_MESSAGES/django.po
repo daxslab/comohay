@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-13 14:09+0000\n"
+"POT-Creation-Date: 2020-06-27 14:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,23 +30,23 @@ msgstr ""
 msgid "Are you sure you want to sign out?"
 msgstr ""
 
-#: templates/layout.html:27
+#: templates/layout.html:15
 msgid "Index"
 msgstr "Inicio"
 
-#: templates/layout.html:28
+#: templates/layout.html:17
 msgid "Add ad"
 msgstr "Incluir anuncio"
 
-#: templates/layout.html:30
+#: templates/layout.html:20
 msgid "My Ads"
 msgstr ""
 
-#: templates/layout.html:31
+#: templates/layout.html:22
 msgid "Logout"
 msgstr ""
 
-#: templates/layout.html:33
+#: templates/layout.html:25
 msgid "Login"
 msgstr ""
 
