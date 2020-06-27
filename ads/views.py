@@ -56,8 +56,6 @@ class IndexView(SearchView):
 
 
 def autocomplete(request):
-    # TODO: fix item list view, use the template values in order to no acces to db
-    # TODO: fix pagination
     query = request.GET.get('q', '')
     sqs = SearchQuerySet().models(Search).autocomplete(content_auto=query)[:5]
     highlight = Highlighter(query, css_class='no-highlight')
