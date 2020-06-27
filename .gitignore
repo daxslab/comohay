@@ -129,3 +129,6 @@ comohay/settings_local.py
 static/CACHE
 debug.log
 whoosh_index
+postgres_data
+.env.prod
+static_root
