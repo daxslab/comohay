@@ -26,8 +26,6 @@ services:
       - default
       - frontproxynet
     restart: always
-    expose:
-      - 80
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
