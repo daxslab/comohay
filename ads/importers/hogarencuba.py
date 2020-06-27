@@ -69,6 +69,7 @@ class HogarencubaImporter(BaseImporter):
                                 category=category,
                                 description=property['description'],
                                 price=property['price'],
+                                user_currency='CUC',
                                 province=province,
                                 municipality=municipality,
                                 external_source=self.source,
