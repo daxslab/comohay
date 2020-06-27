@@ -28,9 +28,6 @@ RUN apk add --no-cache \
 RUN apk add --no-cache \
         jpeg-dev zlib-dev libjpeg
 
-# install gettext
-RUN apk add --no-cache gettext
-
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements ./requirements
@@ -67,7 +64,7 @@ WORKDIR $APP_HOME
 #RUN chown -R app:app ../web
 
 # install dependencies
-RUN apk update && apk add --no-cache libpq libjpeg libstdc++
+RUN apk update && apk add --no-cache libpq libjpeg libstdc++ gettext
 COPY --from=builder /usr/src/app/wheels /wheels
 RUN pip install --no-cache /wheels/*
 
