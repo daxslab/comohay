@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.prod
     networks:
       - default
+    restart: always
     command: gunicorn comohay.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ../whoosh_index:/home/app/web/whoosh_index
@@ -24,6 +25,7 @@ services:
     networks:
       - default
       - frontproxynet
+    restart: always
     expose:
       - 80
     volumes:
@@ -55,6 +57,7 @@ services:
     image: postgres:12.0-alpine
     networks:
       - default
+    restart: always
     volumes:
       - ../postgres_data:/var/lib/postgresql/data/
     env_file:
