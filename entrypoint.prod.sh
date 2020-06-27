@@ -18,5 +18,6 @@ chown -R app:app /home/app/web/whoosh_index
 su -l app
 
 python manage.py collectstatic --no-input --clear
+python manage.py compilemessages
 
 exec "$@"
