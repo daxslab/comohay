@@ -1,0 +1,22 @@
+#!/bin/sh
+
+if [ "$DATABASE" = "postgres" ]
+then
+    echo "Waiting for postgres..."
+
+    while ! nc -z $SQL_HOST $SQL_PORT; do
+      sleep 0.1
+    done
+
+    echo "PostgreSQL started"
+fi
+
+chown -R app:app /home/app/web/static_root
+chown -R app:app /home/app/web/media
+chown -R app:app /home/app/web/whoosh_index
+
+su -l app
+
+python manage.py collectstatic --no-input --clear
+
+exec "$@"
