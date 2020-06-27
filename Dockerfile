@@ -24,6 +24,9 @@ RUN apk add --no-cache \
 RUN apk add --no-cache \
         jpeg-dev zlib-dev libjpeg
 
+# install gettext
+RUN apk add --no-cache gettext
+
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
