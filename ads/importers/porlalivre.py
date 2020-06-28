@@ -228,6 +228,7 @@ class PorlalivreImporter(BaseImporter):
                 category=category,
                 description=description,
                 price=float(price),
+                user_currency='CUC',
                 province=province,
                 municipality=municipality,
                 external_source=external_source,
