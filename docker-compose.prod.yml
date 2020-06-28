@@ -5,6 +5,9 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
+    networks:
+      - default
+    restart: always
     command: gunicorn comohay.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ../whoosh_index:/home/app/web/whoosh_index
@@ -19,16 +22,40 @@ services:
 
   nginx:
     build: ./nginx
-    ports:
-      - 1337:80
+    networks:
+      - default
+      - frontproxynet
+    restart: always
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
     depends_on:
       - web
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.comohay.rule=Host(`comohay.com`)"
+      - "traefik.http.routers.comohay.entrypoints=http"
+      - "traefik.http.routers.comohay.service=comohay"
+      - "traefik.http.middlewares.comohay-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.comohay-redirectscheme.redirectscheme.permanent=false"
+      - "traefik.http.routers.comohay.middlewares=comohay-redirectscheme"
+
+      - "traefik.http.routers.comohay-secure.rule=Host(`comohay.com`)"
+      - "traefik.http.routers.comohay-secure.entrypoints=https"
+      - "traefik.http.routers.comohay-secure.service=comohay"
+      - "traefik.http.routers.comohay-secure.tls=true"
+      - "traefik.http.routers.comohay-secure.tls.certresolver=letsencrypt"
+
+      - "traefik.http.services.comohay.loadbalancer.server.port=80"
+      - "traefik.http.services.comohay.loadbalancer.server.scheme=http"
+      - "traefik.http.services.comohay.loadbalancer.passhostheader=true"
 
   db:
     image: postgres:12.0-alpine
+    networks:
+      - default
+    restart: always
     volumes:
       - ../postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -36,3 +63,7 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  frontproxynet:
+    external: true
