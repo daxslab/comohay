@@ -23,7 +23,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "very_secret")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
-DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
+DEBUG = bool(int(os.environ.get("DEBUG", default=1)))
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1]").split(" ")
@@ -167,7 +167,7 @@ STATICFILES_FINDERS = [
 
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('text/x-sass', 'django_libsass.SassCompiler'),
 )
 
 COMPRESS_ENABLED = True

@@ -11,6 +11,8 @@ class Command(BaseCommand):
     logger = logging.getLogger('console')
 
     def handle(self, *args, **options):
+        #TODO: Option 1: add all database operations inside a transaction and use the SQL TRUNCATE command
+        #TODO: Option 2: add a postgresql function to compute the rankings inside transaction and using truncate also
         Search.objects.all().delete()
 
         searches = UserSearch.objects.values('search').annotate(Count('search'), Avg('daystamp'))
