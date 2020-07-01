@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import urls
 from django.db import models
 from django_currentuser.db.models import CurrentUserField
@@ -39,7 +41,7 @@ class Ad(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.user_currency == 'CUC':
-            self.price = self.price * settings.CUC_TO_CUP_CHANGE
+            self.price = Decimal(self.price) * settings.CUC_TO_CUP_CHANGE
 
         super().save(force_insert, force_update, using, update_fields)
 
