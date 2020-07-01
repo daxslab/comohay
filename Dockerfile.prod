@@ -64,7 +64,7 @@ WORKDIR $APP_HOME
 #RUN chown -R app:app ../web
 
 # install dependencies
-RUN apk update && apk add --no-cache libpq libjpeg libstdc++ gettext gcc libxml2-dev libxslt-dev libxml2 libxslt python3-dev
+RUN apk update && apk add --no-cache libpq libjpeg libstdc++ gettext gcc libxml2-dev libxslt-dev libxml2 libxslt musl-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 RUN pip install --no-cache /wheels/*
 
