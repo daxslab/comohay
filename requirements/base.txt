@@ -1,7 +1,6 @@
 -i https://pypi.org/simple
 git+https://github.com/django-haystack/django-haystack.git@v3.0b1#egg=django-haystack
 asgiref==3.2.9
-beautifulsoup4==4.9.1
 certifi==2020.4.5.2
 cffi==1.14.0
 chardet==3.0.4
@@ -50,3 +49,6 @@ unidecode==1.1.1
 urllib3==1.25.9
 whoosh==2.7.4
 psycopg2-binary
+Scrapy==2.2.0
+scrapy-djangoitem==1.1.1
+html2text==2020.1.16
