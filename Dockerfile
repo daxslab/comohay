@@ -28,7 +28,7 @@ RUN apk add --no-cache \
 RUN apk add --no-cache gettext
 
 # install scrapy dependencies
-RUN apk add --no-cache libxml2 libxslt
+RUN apk add --no-cache libxml2-dev libxslt-dev
 
 # install dependencies
 RUN pip install --upgrade pip
