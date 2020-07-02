@@ -20,5 +20,4 @@ su -l app
 python manage.py collectstatic --no-input --clear
 python manage.py compilemessages
 
-RUN_COMMAND="$@ $EXTRA_RUN_PARAMS"
-exec $RUN_COMMAND
+exec "$@"
