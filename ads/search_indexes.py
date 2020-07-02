@@ -9,7 +9,7 @@ from ads.models.ad import Ad
 
 class AdIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
-    title = indexes.CharField(model_attr='title')
+    title = indexes.CharField(model_attr='title', boost=1.125)
     description = indexes.CharField(model_attr='description')
     price = indexes.DecimalField(model_attr='price')
     province = indexes.CharField(model_attr='province__name')
