@@ -132,3 +132,4 @@ whoosh_index
 postgres_data
 .env.prod
 static_root
+proxies.txt
