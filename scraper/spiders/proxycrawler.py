@@ -1,9 +1,4 @@
 import scrapy
-from categories.models import Category
-from html2text import HTML2Text
-
-from ads.models import Province, Municipality
-from scraper.items import AdItem
 
 class ProxycrawlerSpider(scrapy.Spider):
     name = "proxycrawler"
