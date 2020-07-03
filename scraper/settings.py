@@ -6,6 +6,8 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
+from os.path import isfile
 
 BOT_NAME = 'scraper'
 
@@ -49,11 +51,18 @@ ROBOTSTXT_OBEY = True
 #    'scraper.middlewares.ScraperSpiderMiddleware': 543,
 #}
 
+ROTATING_PROXY_LIST_PATH = 'proxies.txt'
+
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'scraper.middlewares.ScraperDownloaderMiddleware': 543,
-#}
+# DOWNLOADER_MIDDLEWARES = {
+#     'scraper.middlewares.ScraperDownloaderMiddleware': 543,
+# }
+if isfile(ROTATING_PROXY_LIST_PATH):
+    DOWNLOADER_MIDDLEWARES = {
+        'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+        'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+    }
 
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
