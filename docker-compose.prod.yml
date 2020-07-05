@@ -61,6 +61,12 @@ services:
     env_file:
       - ./.env.prod
 
+  redis:
+    restart: always
+    image: redis:5.0
+    expose:
+      - "6379"
+
 volumes:
   postgres_data:
 

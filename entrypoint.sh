@@ -11,7 +11,12 @@ then
     echo "PostgreSQL started"
 fi
 
-python manage.py flush --no-input
+if [ "$RESET_DATABASE" = "true" ]
+then
+  echo "Resting database..."
+  python manage.py reset_db -c --noinput
+fi
+
 python manage.py migrate
 
 exec "$@"

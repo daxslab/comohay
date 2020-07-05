@@ -32,18 +32,12 @@ RUN apk add --no-cache libxml2-dev libxslt-dev libxml2 libxslt
 
 # install dependencies
 RUN pip install --upgrade pip
-COPY ./requirements.txt .
+COPY ./requirements ./requirements
 RUN pip install -r requirements/dev.txt
 
 # remove unneeded cryptography dependencies
 RUN apk del \
         libressl-dev musl-dev libffi-dev
-
-## copy entrypoint.sh
-#COPY ./entrypoint.sh .
-#
-## copy project
-#COPY . .
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

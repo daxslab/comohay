@@ -5,6 +5,7 @@ from encodings.base64_codec import base64_decode
 from actstream import action
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
+from django.core.cache import caches
 from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory, inlineformset_factory
 from django.http import HttpResponseRedirect, Http404, HttpResponseBadRequest, JsonResponse, HttpResponse
@@ -27,6 +28,7 @@ from ads.helpers.telegrambot import TelegramBot
 from ads.models import UserSearch, Search
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
+from comohay import settings
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +42,18 @@ class IndexView(SearchView):
             self.form_class = AdSearchForm
 
     def __call__(self, request):
-        response = super().__call__(request)
+        cache = caches['search']
+        path = request.get_full_path()
+
+        self.request = request
+        self.form = self.build_form()
+        self.query = self.get_query()
+        self.results = self.get_results()
+
+        response = cache.get(path)
+        if not response:
+            response = self.create_response()
+            cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
             daystamp = int(time.time() / 60 / 60 / 24)
             user_search = UserSearch(user=request.user, search=self.query, daystamp=daystamp)
