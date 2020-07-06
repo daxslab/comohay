@@ -16,9 +16,6 @@ services:
     image: postgres:12.0-alpine
     volumes:
       - ../postgres_data_dev:/var/lib/postgresql/data/
-      - ../whoosh_index_dev:/home/app/web/whoosh_index
-      - ../static_volume_dev:/home/app/web/static_root
-      - ../media_volume_dev:/home/app/web/media
     environment:
       - POSTGRES_USER=comohay
       - POSTGRES_PASSWORD=comohay
@@ -30,6 +27,28 @@ services:
     image: redis:5.0
     expose:
       - "6379"
+  celery_worker:
+    build: ./
+    command: celery worker --app=comohay --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - web
+      - db
+      - redis
+  celery_beat:
+    build: ./
+    command: celery beat --app=comohay --loglevel=info
+    volumes:
+      - ./:/usr/src/app/
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - web
+      - db
+      - redis
 
 volumes:
   postgres_data:

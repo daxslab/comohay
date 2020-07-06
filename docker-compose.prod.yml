@@ -67,6 +67,37 @@ services:
     expose:
       - "6379"
 
+  celery_worker:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    command: celery worker --app=comohay --loglevel=info
+    volumes:
+      - ../whoosh_index:/home/app/web/whoosh_index
+      - ../static_volume:/home/app/web/static_root
+      - ../media_volume:/home/app/web/media
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - web
+      - db
+      - redis
+  celery_beat:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    command: celery beat --app=comohay --loglevel=info
+    volumes:
+      - ../whoosh_index:/home/app/web/whoosh_index
+      - ../static_volume:/home/app/web/static_root
+      - ../media_volume:/home/app/web/media
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - web
+      - db
+      - redis
+
 volumes:
   postgres_data:
 
