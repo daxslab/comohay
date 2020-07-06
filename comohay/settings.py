@@ -244,9 +244,6 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-CELERY_worker_max_tasks_per_child=1,
-CELERY_broker_pool_limit=None
-
 # logging config
 
 # Get loglevel from env
