@@ -103,13 +103,16 @@ Autocomplete.prototype.show_results = function (data) {
             let elem = document.createElement('li');
             let filteredText = results[res_offset];
 
-            // let regEx = new RegExp(searchExp, "ig")
-            // let matches = filteredText.match(regEx)
-            // console.log(matches)
-            // if (matches)
-            //     matches.forEach(function (match, idx) {
-            //         filteredText = filteredText.replace(match, "<strong>" + match + "</strong>")
-            //     })
+            let regEx = new RegExp(searchExp, "ig");
+            let matches = filteredText.match(regEx);
+
+            if (matches)
+                matches.forEach(function (match, idx) {
+                    filteredText = filteredText.replace(match, "%%%%" + match + "^^^^")
+                });
+
+            filteredText = filteredText.replaceAll("%%%%", "<span style='font-weight: initial'>");
+            filteredText = filteredText.replaceAll('^^^^', "</span>");
 
             elem.innerHTML = `<strong>${filteredText}</strong>`;
             elem.style.cursor = 'default';
