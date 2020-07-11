@@ -108,11 +108,11 @@ Autocomplete.prototype.show_results = function (data) {
 
             if (matches)
                 matches.forEach(function (match, idx) {
-                    filteredText = filteredText.replace(match, "%%%%" + match + "^^^^")
+                    filteredText = filteredText.replace(match, "%%%%" + match + "&&&&")
                 });
 
-            filteredText = filteredText.replaceAll("%%%%", "<span style='font-weight: initial'>");
-            filteredText = filteredText.replaceAll('^^^^', "</span>");
+            filteredText = filteredText.replace(/%%%%/gi, "<span style='font-weight: initial'>");
+            filteredText = filteredText.replace(/&&&&/gi, "</span>");
 
             elem.innerHTML = `<strong>${filteredText}</strong>`;
             elem.style.cursor = 'default';
