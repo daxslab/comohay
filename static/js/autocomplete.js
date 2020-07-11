@@ -17,26 +17,27 @@ Autocomplete.prototype.setup = function () {
 
     this.query_box = document.getElementsByClassName(this.search_input_class_name)[0];
     // Watch the input box.
+    this.query_box.addEventListener('input', function (event) {
+
+        self.show();
+
+        let query = this.value;
+
+        if (query.length < self.minimum_length) {
+            self.autocomplete_list.innerHTML = '';
+            return false
+        }
+
+        self.fetch(query);
+    });
+
+    // Close suggestion list on Escape
     this.query_box.addEventListener('keydown', function (event) {
-        //check if its a valid key and the query box has some string as value
-        let key = event.key;
-        if ((key.length === 1 || key === 'Backspace' || key === 'Process') && this.value.trim() !== '') {
-            self.show();
-
-            let query = self.query_box.value;
-
-            if (query.length < self.minimum_length) {
-                self.autocomplete_list.innerHTML = '';
-                return false
-            }
-
-            self.fetch(query);
-        } else if (key === 'Escape') {
+        if (event.key === 'Escape') {
             event.preventDefault();
             self.hide();
         }
     });
-
 
     // On selecting a result, populate the search field.
     this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0]
