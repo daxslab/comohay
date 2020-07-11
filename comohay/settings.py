@@ -15,6 +15,8 @@ import os
 from celery.schedules import crontab
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from fast_autocomplete import autocomplete_factory
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -332,6 +334,15 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 CUC_TO_CUP_CHANGE = 25
+
+# THIS IS HERE BECAUSE CESAR SAYS DJANGO NO SIRVE
+content_files = {
+            'words': {
+                'filepath': BASE_DIR + '/ads/autosuggest/suggestions',
+                'compress': True  # means compress the graph data in memory
+            }
+        }
+autocomplete = autocomplete_factory(content_files=content_files)
 
 try:
     from .settings_local import *

@@ -1,4 +1,5 @@
 import logging
+import sys
 import time
 from encodings.base64_codec import base64_decode
 
@@ -14,6 +15,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
+from fast_autocomplete.loader import populate_redis
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from rest_framework.utils import json
@@ -69,22 +71,12 @@ class IndexView(SearchView):
 
 def autocomplete(request):
     query = request.GET.get('q', '')
-    cache = caches['default']
-    autocomplete = cache.get('autocomplete')
 
-    if not autocomplete:
-        content_files = {
-            'words': {
-                'filepath': settings.BASE_DIR + '/ads/autosuggest/suggestions',
-                'compress': True  # means compress the graph data in memory
-            }
-        }
-        autocomplete = autocomplete_factory(content_files=content_files)
-
-    suggestions = autocomplete.search(query, max_cost=3, size=7)
+    suggestions = settings.autocomplete.search(query, max_cost=3, size=7)
 
     for pos in range(len(suggestions)):
-      suggestions[pos] = ' '.join(suggestions[pos])
+        if type(suggestions[pos]) != str:
+            suggestions[pos] = ' '.join(suggestions[pos])
 
     the_data = json.dumps({
         'results': suggestions
