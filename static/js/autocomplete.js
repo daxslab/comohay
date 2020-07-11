@@ -10,6 +10,53 @@ let Autocomplete = function (options) {
     this.query_box = null;
     this.autocomplete_list = null;
     this.search_from = null;
+    this.cache_version = options.cache_version || 1;
+    this.cache_name = options.cache_name || 'comohay_autocomplete';
+    this.cache_full_name = this.cache_name + '-' + this.cache_version;
+    this.cache_time = 30;
+
+    if (typeof(Storage) !== "undefined") {
+        if (localStorage.cache_timestamp){
+            let current_date = Date.now();
+            if (current_date-(this.cache_time*1000) > localStorage.cache_timestamp){
+                // deleteOldCaches(this.cache_full_name, this.cache_name);
+                this.deleteOldCaches();
+                localStorage.setItem("cache_timestamp", Date.now());
+            }
+        } else {
+            localStorage.setItem("cache_timestamp", Date.now());
+        }
+
+    } else {
+        // Sorry! No Web Storage support..
+    }
+
+};
+
+Autocomplete.prototype.getCachedData = async function( url ) {
+   cacheName = this.cache_full_name;
+   const cacheStorage   = await caches.open( cacheName );
+   const cachedResponse = await cacheStorage.match( url );
+
+   if ( ! cachedResponse || ! cachedResponse.ok ) {
+      return false;
+   }
+
+   return await cachedResponse.json();
+};
+
+Autocomplete.prototype.deleteOldCaches = async function() {
+   let currentCache = this.cache_full_name;
+   let cache_key_prefix = this.cache_name;
+   const keys = await caches.keys();
+
+   for ( const key of keys ) {
+       const isOurCache = cache_key_prefix === key.substr( 0, cache_key_prefix.length );
+
+       if ( currentCache === key || ! isOurCache ) {
+           caches.delete( key );
+       }
+   }
 };
 
 Autocomplete.prototype.setup = function () {
@@ -75,17 +122,25 @@ Autocomplete.prototype.show = function () {
     this.autocomplete_list.style.display = null;
 };
 
-Autocomplete.prototype.fetch = function (query) {
+Autocomplete.prototype.fetch =  function (query) {
     let self = this;
-    let request = new XMLHttpRequest();
-    request.open("GET", this.url + '?q=' + query, true);
-    request.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let data = JSON.parse(request.responseText);
-            self.show_results(data);
-        }
-    };
-    request.send();
+    let url = this.url + '?q=' + query;
+    let cacheName = self.cache_full_name;
+    self.getCachedData( url )
+        .then((cachedData) => {
+            if (cachedData){
+                self.show_results(cachedData);
+            } else {
+                caches.open( cacheName ).then((cacheStorage) => {
+                   cacheStorage.add( url ).then(() => {
+                       self.getCachedData( url ).then((cachedData)=>{
+                           self.show_results(cachedData);
+                       });
+                   });
+               });
+            }
+
+        });
 };
 
 Autocomplete.prototype.show_results = function (data) {
