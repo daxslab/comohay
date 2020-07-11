@@ -36,6 +36,13 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="center-content">
+                    <p>
+                        {% blocktrans with index_count as index_count %}{{ index_count }} indexed ads{% endblocktrans %}
+                    </p>
+                </div>
+            </div>
         </div>
     {% else %}
         <div class="search-navbar">

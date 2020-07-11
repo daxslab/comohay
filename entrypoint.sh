@@ -18,5 +18,6 @@ then
 fi
 
 python manage.py migrate
+python manage.py compilemessages
 
 exec "$@"
