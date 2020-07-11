@@ -17,10 +17,10 @@ Autocomplete.prototype.setup = function () {
 
     this.query_box = document.getElementsByClassName(this.search_input_class_name)[0];
     // Watch the input box.
-    this.query_box.addEventListener('keyup', function (event) {
-        //check if its a character press
-        if (event.key != 'Escape') {
-
+    this.query_box.addEventListener('keydown', function (event) {
+        //check if its a valid key and the query box has some string as value
+        let key = event.key;
+        if ((key.length === 1 || key === 'Backspace' || key === 'Process') && this.value.trim() !== '') {
             self.show();
 
             let query = self.query_box.value;
@@ -31,10 +31,12 @@ Autocomplete.prototype.setup = function () {
             }
 
             self.fetch(query);
-        } else {
+        } else if (key === 'Escape') {
+            event.preventDefault();
             self.hide();
         }
     });
+
 
     // On selecting a result, populate the search field.
     this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0]
@@ -77,23 +79,52 @@ Autocomplete.prototype.show = function () {
 
 Autocomplete.prototype.fetch = function (query) {
     let self = this;
-    let request = new XMLHttpRequest();
-    request.open("GET", this.url + '?q=' + query, true);
-    request.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            let data = JSON.parse(request.responseText);
-            self.show_results(data);
-        }
-    };
-    request.send();
+
+    let cached_response = this.get_cached_response(query);
+
+    if (cached_response) {
+        self.show_results(cached_response.results);
+    } else {
+        let request = new XMLHttpRequest();
+        request.open("GET", this.url + '?q=' + query, true);
+        request.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                self.save_response(query, request.responseText);
+                let data = JSON.parse(request.responseText);
+                self.show_results(data.results);
+            }
+        };
+        request.send();
+    }
 };
 
-Autocomplete.prototype.show_results = function (data) {
+Autocomplete.prototype.save_response = function (query, response) {
+    // Check for browser support
+    if (typeof Storage === "undefined")
+        return false;
+
+    sessionStorage.setItem(query.toLowerCase(), response);
+    return true;
+};
+
+Autocomplete.prototype.get_cached_response = function (query) {
+    // Check for browser support
+    if (typeof Storage === "undefined")
+        return false;
+
+    query = query.toLowerCase();
+
+    if (!sessionStorage.getItem(query))
+        return false;
+
+    return JSON.parse(sessionStorage.getItem(query));
+};
+
+Autocomplete.prototype.show_results = function (results) {
     let self = this;
+
     // Remove any existing results.
     this.clear_results();
-
-    let results = data.results || [];
 
     if (results.length > 0) {
 
