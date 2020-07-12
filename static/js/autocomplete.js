@@ -191,13 +191,16 @@ Autocomplete.prototype.list_item_on_click = function (event) {
     return false;
 };
 
+let input = document.getElementById('id_q');
+let cache_time = parseInt(input.dataset.autocompleteCache);
 document.addEventListener('DOMContentLoaded', function () {
     window.autocomplete = new Autocomplete({
         search_input_class_name: 'search-input',
         autocomplete_list_class_name: 'autocomplete-list',
         search_form_class_name: 'search-form',
         search_container_id: 'search-container',
-        button_cancel_id: 'button-cancel'
+        button_cancel_id: 'button-cancel',
+        cache_time: cache_time,
     });
     window.autocomplete.setup();
 });

@@ -16,7 +16,8 @@
                                    type="search"
                                    name="q"
                                    id="id_q"
-                                   class="search-input">
+                                   class="search-input"
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a
@@ -58,7 +59,8 @@
                                    type="search"
                                    name="q"
                                    id="id_q"
-                                   class="search-input">
+                                   class="search-input"
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a

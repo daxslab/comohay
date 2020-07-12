@@ -66,6 +66,7 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         context['index_count'] = Ad.objects.count()
+        context['cache_autocomplete_client'] = settings.CACHE_AUTOCOMPLETE_CLIENT
         return context
 
 

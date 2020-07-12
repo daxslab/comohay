@@ -230,6 +230,8 @@ CACHES = {
 }
 
 CACHE_SEARCH_RESPONSE_SECONDS = 30
+# caching for javascript autocomplete suggestions requests
+CACHE_AUTOCOMPLETE_CLIENT = 10*60*60*24 # 10 days
 
 # Celery
 
