@@ -64,21 +64,24 @@ Autocomplete.prototype.setup = function () {
 
     this.query_box = document.getElementsByClassName(this.search_input_class_name)[0];
     // Watch the input box.
-    this.query_box.addEventListener('keyup', function (event) {
-        //check if its a character press
-        if (event.key != 'Escape') {
+    this.query_box.addEventListener('input', function (event) {
 
-            self.show();
+        self.show();
 
-            let query = self.query_box.value;
+        let query = this.value;
 
-            if (query.length < self.minimum_length) {
-                self.autocomplete_list.innerHTML = '';
-                return false
-            }
+        if (query.length < self.minimum_length) {
+            self.autocomplete_list.innerHTML = '';
+            return false
+        }
 
-            self.fetch(query);
-        } else {
+        self.fetch(query);
+    });
+
+    // Close suggestion list on Escape
+    this.query_box.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
             self.hide();
         }
     });
@@ -122,7 +125,7 @@ Autocomplete.prototype.show = function () {
     this.autocomplete_list.style.display = null;
 };
 
-Autocomplete.prototype.fetch =  function (query) {
+Autocomplete.prototype.fetch = function (query) {
     let self = this;
     let url = this.url + '?q=' + query;
     let cacheName = self.cache_full_name;
