@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'sorl.thumbnail',
     'django_extensions',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -334,6 +335,11 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+# trigram similarity search threshold for duplicates
+TITLE_SIMILARITY=0.9
+DESCRIPTION_SIMILARITY=0.6
+
 
 CUC_TO_CUP_CHANGE = 25
 
