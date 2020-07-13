@@ -8,14 +8,14 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             '--similarity', default=0.7, type=float,
-            help='Define similarity limit',
+            help='Define similarity limit (Default: 0.7)',
         )
         parser.add_argument(
             '--chars', default=1000, type=int,
-            help='Limit of characters of Ad description to analise')
+            help='Limit of characters of Ad description to analise (Default: 1000)')
         parser.add_argument(
             '--days', default=3, type=int,
-            help='Days limit for ads analysis')
+            help='Days limit for ads analysis (Default: 3)')
         parser.add_argument(
             '--safe',
             action='store_true',
