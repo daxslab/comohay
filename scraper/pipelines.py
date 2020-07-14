@@ -7,16 +7,23 @@
 # useful for handling different item types with a single interface
 import logging
 
+from django.contrib.postgres.search import TrigramSimilarity
+
 from ads.models import Ad
+from comohay import settings
+
 
 class RemoveDuplicatedAdPipeline(object):
 
     def process_item(self, item, spider):
         try:
-            ad = Ad.objects.filter(
-                title=item['title'],
-                description=item['description']
-            ).delete()
+            Ad.objects.annotate(
+                title_similarity=TrigramSimilarity('title', item['title']),
+                desc_similarity=TrigramSimilarity('description', item['description'])
+            ).filter(
+                external_source__=item['external_source'],
+                title_similarity__gt=settings.TITLE_SIMILARITY,
+                desc_similarity__gt=settings.DESCRIPTION_SIMILARITY).delete()
         except Exception as e:
             logging.error("Error removing duplicated items: "+str(e))
         return item

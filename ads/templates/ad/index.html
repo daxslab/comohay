@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row main-search">
                 <div class="center-content">
-                    <h1>CómoHay!!</h1>
+                    <h1 class="logo">CómoHay!!</h1>
                     <div class="column" id="search-container">
                         <form method="get" action="." class="form-inline center search-form"
                               autocomplete="off">
@@ -16,7 +16,8 @@
                                    type="search"
                                    name="q"
                                    id="id_q"
-                                   class="search-input">
+                                   class="search-input"
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a
@@ -47,7 +48,7 @@
     {% else %}
         <div class="search-navbar">
             <div class="float-title">
-                <h1 style="font-size: 2.8rem; margin-bottom: 0.5rem">CómoHay!!</h1>
+                <h1 class="logo logo-search-bar"><a href="{% url "ads:index" %}">CómoHay!!</a></h1>
             </div>
             <div class="container">
                 <div class="row" style="padding-bottom: 1.5rem;">
@@ -58,7 +59,8 @@
                                    type="search"
                                    name="q"
                                    id="id_q"
-                                   class="search-input">
+                                   class="search-input"
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a

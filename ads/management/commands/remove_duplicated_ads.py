@@ -1,42 +1,42 @@
-import logging
-
 from django.core.management.base import BaseCommand
-from django.db import models
 
-from ads.models import Ad
-
+from utils.cli import confirm_input
+from utils.detect_similarity import detect_similarity
 
 class Command(BaseCommand):
-    logger = logging.getLogger('console')
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--similarity', default=0.7, type=float,
+            help='Define similarity limit (Default: 0.7)',
+        )
+        parser.add_argument(
+            '--chars', default=1000, type=int,
+            help='Limit of characters of Ad description to analise (Default: 1000)')
+        parser.add_argument(
+            '--days', default=3, type=int,
+            help='Days limit for ads analysis (Default: 3)')
+        parser.add_argument(
+            '--safe',
+            action='store_true',
+            help='Just prints the ads checked for deletion')
+        parser.add_argument(
+            '--no-interaction',
+            action='store_true',
+            help='Does not wait for user interaction')
 
     def handle(self, *args, **options):
-        self.remove_duplicated_records()
 
-    def remove_duplicated_records(self):
-        """
-        Removes records from `model` duplicated on `fields`
-        while leaving the most recent one (biggest `id`).
-        """
-        fields = ('title', 'description')
-        duplicates = Ad.objects.values(*fields).filter(external_source__isnull=False)
+        if options['no_interaction']:
+            user_agree = True
+        else:
+            print('WARNING: This command starts a heavy long running task that will remove ads from database.')
+            user_agree = confirm_input('Do you want to continue? ')
 
-        # override any model specific ordering (for `.annotate()`)
-        duplicates = duplicates.order_by()
-
-        # group by same values of `fields`; count how many rows are the same
-        duplicates = duplicates.annotate(
-            max_id=models.Max("id"), count_id=models.Count("id")
-        )
-
-        # leave out only the ones which are actually duplicated
-        duplicates = duplicates.filter(count_id__gt=1)
-
-        for duplicate in duplicates:
-            to_delete = Ad.objects.filter(**{x: duplicate[x] for x in fields})
-
-            # leave out the latest duplicated record
-            # you can use `Min` if you wish to leave out the first record
-            to_delete = to_delete.exclude(id=duplicate["max_id"])
-
-            to_delete.delete()
-
+        if user_agree:
+            duplicates = detect_similarity(options['similarity'], options['chars'], options['days'])
+            for element in duplicates:
+                if options['safe']:
+                    print(element.id, element)
+                else:
+                    element.delete()

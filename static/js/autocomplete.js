@@ -10,6 +10,53 @@ let Autocomplete = function (options) {
     this.query_box = null;
     this.autocomplete_list = null;
     this.search_from = null;
+    this.cache_version = options.cache_version || 1;
+    this.cache_name = options.cache_name || 'comohay_autocomplete';
+    this.cache_full_name = this.cache_name + '-' + this.cache_version;
+    this.cache_time = 30;
+
+    if (typeof(Storage) !== "undefined") {
+        if (localStorage.cache_timestamp){
+            let current_date = Date.now();
+            if (current_date-(this.cache_time*1000) > localStorage.cache_timestamp){
+                // deleteOldCaches(this.cache_full_name, this.cache_name);
+                this.deleteOldCaches();
+                localStorage.setItem("cache_timestamp", Date.now());
+            }
+        } else {
+            localStorage.setItem("cache_timestamp", Date.now());
+        }
+
+    } else {
+        // Sorry! No Web Storage support..
+    }
+
+};
+
+Autocomplete.prototype.getCachedData = async function( url ) {
+   cacheName = this.cache_full_name;
+   const cacheStorage   = await caches.open( cacheName );
+   const cachedResponse = await cacheStorage.match( url );
+
+   if ( ! cachedResponse || ! cachedResponse.ok ) {
+      return false;
+   }
+
+   return await cachedResponse.json();
+};
+
+Autocomplete.prototype.deleteOldCaches = async function() {
+   let currentCache = this.cache_full_name;
+   let cache_key_prefix = this.cache_name;
+   const keys = await caches.keys();
+
+   for ( const key of keys ) {
+       const isOurCache = cache_key_prefix === key.substr( 0, cache_key_prefix.length );
+
+       if ( currentCache === key || ! isOurCache ) {
+           caches.delete( key );
+       }
+   }
 };
 
 Autocomplete.prototype.setup = function () {
@@ -80,52 +127,31 @@ Autocomplete.prototype.show = function () {
 
 Autocomplete.prototype.fetch = function (query) {
     let self = this;
-
-    let cached_response = this.get_cached_response(query);
-
-    if (cached_response) {
-        self.show_results(cached_response.results);
-    } else {
-        let request = new XMLHttpRequest();
-        request.open("GET", this.url + '?q=' + query, true);
-        request.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                self.save_response(query, request.responseText);
-                let data = JSON.parse(request.responseText);
-                self.show_results(data.results);
+    let url = this.url + '?q=' + query;
+    let cacheName = self.cache_full_name;
+    self.getCachedData( url )
+        .then((cachedData) => {
+            if (cachedData){
+                self.show_results(cachedData);
+            } else {
+                caches.open( cacheName ).then((cacheStorage) => {
+                   cacheStorage.add( url ).then(() => {
+                       self.getCachedData( url ).then((cachedData)=>{
+                           self.show_results(cachedData);
+                       });
+                   });
+               });
             }
-        };
-        request.send();
-    }
+
+        });
 };
 
-Autocomplete.prototype.save_response = function (query, response) {
-    // Check for browser support
-    if (typeof Storage === "undefined")
-        return false;
-
-    sessionStorage.setItem(query.toLowerCase(), response);
-    return true;
-};
-
-Autocomplete.prototype.get_cached_response = function (query) {
-    // Check for browser support
-    if (typeof Storage === "undefined")
-        return false;
-
-    query = query.toLowerCase();
-
-    if (!sessionStorage.getItem(query))
-        return false;
-
-    return JSON.parse(sessionStorage.getItem(query));
-};
-
-Autocomplete.prototype.show_results = function (results) {
+Autocomplete.prototype.show_results = function (data) {
     let self = this;
-
     // Remove any existing results.
     this.clear_results();
+
+    let results = data.results || [];
 
     if (results.length > 0) {
 
@@ -165,13 +191,16 @@ Autocomplete.prototype.list_item_on_click = function (event) {
     return false;
 };
 
+let input = document.getElementById('id_q');
+let cache_time = parseInt(input.dataset.autocompleteCache);
 document.addEventListener('DOMContentLoaded', function () {
     window.autocomplete = new Autocomplete({
         search_input_class_name: 'search-input',
         autocomplete_list_class_name: 'autocomplete-list',
         search_form_class_name: 'search-form',
         search_container_id: 'search-container',
-        button_cancel_id: 'button-cancel'
+        button_cancel_id: 'button-cancel',
+        cache_time: cache_time,
     });
     window.autocomplete.setup();
 });
