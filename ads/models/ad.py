@@ -21,6 +21,8 @@ class Ad(BaseModel):
     user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP')], default='CUC', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
+    contact_phone = models.CharField(max_length=17, null=True, blank=True, verbose_name=_("Contact phone"))
+    contact_email = models.EmailField(null=True, blank=True, verbose_name=_("Contact email"))
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
     external_url = models.URLField(blank=True, null=True, verbose_name=_('External URL'))

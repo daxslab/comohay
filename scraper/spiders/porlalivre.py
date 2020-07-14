@@ -2,10 +2,11 @@ import re
 import scrapy
 from categories.models import Category
 from html2text import HTML2Text
+from scrapy import Selector
 
 from ads.models import Province, Municipality
 from scraper.items import AdItem
-
+from scraper.spiders.base import BaseSpider
 
 PROVINCE_MAPPING = {
     'habana': 'La Habana',
@@ -28,7 +29,7 @@ PROVINCE_MAPPING = {
 
 
 
-class PorlalivreSpider(scrapy.Spider):
+class PorlalivreSpider(BaseSpider):
     name = "porlalivre"
     source = 'porlalivre.com'
     category_mapping = {
@@ -208,6 +209,19 @@ class PorlalivreSpider(scrapy.Spider):
         if raw_price:
             price = raw_price.replace(',', '')[1:]
 
+        phone = None
+        contacts_elements = response.css('div.contact-info li').getall()
+        for element in contacts_elements:
+            if str(element).find('fa-phone') != -1:
+                raw_phone = Selector(text=str(element)).css('li::text').get()
+                if raw_phone:
+                    phone = self.clean_phone(raw_phone)
+
+        email = None
+        _email_url = extract_with_css('div.contact-info a[href^="mailto:"]::attr(href)')
+        if _email_url:
+            email = _email_url.split(':')[1]
+
         # external_id = item_soup.select('div#classified-header ul li')[0].find(text=True, recursive=False).strip()
         external_id = extract_with_css('div#classified-header ul li::text')
         external_url = response.request.url
@@ -220,6 +234,8 @@ class PorlalivreSpider(scrapy.Spider):
         item['user_currency'] = 'CUC'
         item['province'] = province
         item['municipality'] = municipality
+        item['contact_phone'] = phone
+        item['contact_email'] = email
         item['external_source'] = self.source
         item['external_id'] = external_id
         item['external_url'] = external_url

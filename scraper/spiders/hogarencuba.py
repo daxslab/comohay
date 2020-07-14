@@ -1,13 +1,13 @@
 import json
 
-import scrapy
 from categories.models import Category
 
 from ads.models import Province, Municipality
 from scraper.items import AdItem
+from scraper.spiders.base import BaseSpider
 
 
-class HogarencubaSpider(scrapy.Spider):
+class HogarencubaSpider(BaseSpider):
   name = "hogarencuba"
   source = 'hogarencuba.com'
   start_urls = ["https://hogarencuba.com/api.json"]
