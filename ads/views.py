@@ -51,12 +51,10 @@ class IndexView(SearchView):
         self.query = self.get_query()
         self.results = self.get_results()
 
-        response = self.create_response()
-
-        # response = cache.get(path)
-        # if not response:
-        #     response = self.create_response()
-        #     cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
+        response = cache.get(path)
+        if not response:
+            response = self.create_response()
+            cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
             daystamp = int(time.time() / 60 / 60 / 24)
             user_search = UserSearch(user=request.user, search=self.query, daystamp=daystamp)
@@ -69,7 +67,6 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         context['index_count'] = Ad.objects.count()
-        context['cache_autocomplete_client'] = settings.CACHE_AUTOCOMPLETE_CLIENT
         return context
 
 
