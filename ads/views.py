@@ -15,6 +15,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
+from fast_autocomplete.loader import populate_redis
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from rest_framework.utils import json
@@ -66,7 +67,6 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         context['index_count'] = Ad.objects.count()
-        context['cache_autocomplete_client'] = settings.CACHE_AUTOCOMPLETE_CLIENT
         return context
 
 
