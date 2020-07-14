@@ -21,7 +21,7 @@ class RemoveDuplicatedAdPipeline(object):
                 title_similarity=TrigramSimilarity('title', item['title']),
                 desc_similarity=TrigramSimilarity('description', item['description'])
             ).filter(
-                external_source__=item['external_source'],
+                external_source=item['external_source'],
                 title_similarity__gt=settings.TITLE_SIMILARITY,
                 desc_similarity__gt=settings.DESCRIPTION_SIMILARITY).delete()
         except Exception as e:
