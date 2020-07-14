@@ -40,7 +40,7 @@ Autocomplete.prototype.setup = function () {
     });
 
     // On selecting a result, populate the search field.
-    this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0]
+    this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0];
     this.autocomplete_list.childNodes.forEach(function (value, key, parent) {
         value.addEventListener('click', function (event) {
             self.list_item_on_click(event);

@@ -15,6 +15,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
+from fast_autocomplete.loader import populate_redis
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from rest_framework.utils import json
@@ -50,10 +51,12 @@ class IndexView(SearchView):
         self.query = self.get_query()
         self.results = self.get_results()
 
-        response = cache.get(path)
-        if not response:
-            response = self.create_response()
-            cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
+        response = self.create_response()
+
+        # response = cache.get(path)
+        # if not response:
+        #     response = self.create_response()
+        #     cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
             daystamp = int(time.time() / 60 / 60 / 24)
             user_search = UserSearch(user=request.user, search=self.query, daystamp=daystamp)
