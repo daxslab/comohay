@@ -15,10 +15,10 @@ let Autocomplete = function (options) {
     this.cache_full_name = this.cache_name + '-' + this.cache_version;
     this.cache_time = 30;
 
-    if (typeof(Storage) !== "undefined") {
-        if (localStorage.cache_timestamp){
+    if (typeof (Storage) !== "undefined") {
+        if (localStorage.cache_timestamp) {
             let current_date = Date.now();
-            if (current_date-(this.cache_time*1000) > localStorage.cache_timestamp){
+            if (current_date - (this.cache_time * 1000) > localStorage.cache_timestamp) {
                 // deleteOldCaches(this.cache_full_name, this.cache_name);
                 this.deleteOldCaches();
                 localStorage.setItem("cache_timestamp", Date.now());
@@ -33,30 +33,30 @@ let Autocomplete = function (options) {
 
 };
 
-Autocomplete.prototype.getCachedData = async function( url ) {
-   cacheName = this.cache_full_name;
-   const cacheStorage   = await caches.open( cacheName );
-   const cachedResponse = await cacheStorage.match( url );
+Autocomplete.prototype.getCachedData = async function (url) {
+    cacheName = this.cache_full_name;
+    const cacheStorage = await caches.open(cacheName);
+    const cachedResponse = await cacheStorage.match(url);
 
-   if ( ! cachedResponse || ! cachedResponse.ok ) {
-      return false;
-   }
+    if (!cachedResponse || !cachedResponse.ok) {
+        return false;
+    }
 
-   return await cachedResponse.json();
+    return await cachedResponse.json();
 };
 
-Autocomplete.prototype.deleteOldCaches = async function() {
-   let currentCache = this.cache_full_name;
-   let cache_key_prefix = this.cache_name;
-   const keys = await caches.keys();
+Autocomplete.prototype.deleteOldCaches = async function () {
+    let currentCache = this.cache_full_name;
+    let cache_key_prefix = this.cache_name;
+    const keys = await caches.keys();
 
-   for ( const key of keys ) {
-       const isOurCache = cache_key_prefix === key.substr( 0, cache_key_prefix.length );
+    for (const key of keys) {
+        const isOurCache = cache_key_prefix === key.substr(0, cache_key_prefix.length);
 
-       if ( currentCache === key || ! isOurCache ) {
-           caches.delete( key );
-       }
-   }
+        if (currentCache === key || !isOurCache) {
+            caches.delete(key);
+        }
+    }
 };
 
 Autocomplete.prototype.setup = function () {
@@ -86,13 +86,7 @@ Autocomplete.prototype.setup = function () {
         }
     });
 
-    // On selecting a result, populate the search field.
     this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0];
-    this.autocomplete_list.childNodes.forEach(function (value, key, parent) {
-        value.addEventListener('click', function (event) {
-            self.list_item_on_click(event);
-        });
-    });
 
     window.addEventListener('click', function (e) {
         if (!document.getElementById(self.search_container_id).contains(e.target)) {
@@ -129,18 +123,18 @@ Autocomplete.prototype.fetch = function (query) {
     let self = this;
     let url = this.url + '?q=' + query;
     let cacheName = self.cache_full_name;
-    self.getCachedData( url )
+    self.getCachedData(url)
         .then((cachedData) => {
-            if (cachedData){
+            if (cachedData) {
                 self.show_results(cachedData);
             } else {
-                caches.open( cacheName ).then((cacheStorage) => {
-                   cacheStorage.add( url ).then(() => {
-                       self.getCachedData( url ).then((cachedData)=>{
-                           self.show_results(cachedData);
-                       });
-                   });
-               });
+                caches.open(cacheName).then((cacheStorage) => {
+                    cacheStorage.add(url).then(() => {
+                        self.getCachedData(url).then((cachedData) => {
+                            self.show_results(cachedData);
+                        });
+                    });
+                });
             }
 
         });
@@ -175,7 +169,7 @@ Autocomplete.prototype.show_results = function (data) {
             elem.innerHTML = `<strong>${filteredText}</strong>`;
             elem.style.cursor = 'default';
             elem.addEventListener('click', function (event) {
-                self.list_item_on_click(event);
+                self.list_item_on_click(this);
             });
 
             this.autocomplete_list.appendChild(elem);
@@ -183,9 +177,9 @@ Autocomplete.prototype.show_results = function (data) {
     }
 };
 
-Autocomplete.prototype.list_item_on_click = function (event) {
+Autocomplete.prototype.list_item_on_click = function (list_item) {
     let self = this;
-    this.query_box.value = event.target.textContent;
+    this.query_box.value = list_item.textContent;
     this.clear_results();
     this.search_from.submit();
     return false;
