@@ -150,6 +150,7 @@ class BachecubanoSpider(BaseSpider):
         item['province'] = province
         # item['municipality'] = municipality
         item['contact_phone'] = phone
+        item['contact_email'] = ''
         item['external_source'] = self.source
         item['external_id'] = external_id
         item['external_url'] = external_url
