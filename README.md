@@ -1,5 +1,5 @@
 #Lo sentimos
 
 ## Hemos decidido deshabilitar temporalmente el repositorio.
-## Lamentamos las molestias que pueda ocasionar :(
+## Lamentamos las molestias que pueda ocasionar, :(
 
