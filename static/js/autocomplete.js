@@ -62,7 +62,9 @@ Autocomplete.prototype.deleteOldCaches = async function () {
 Autocomplete.prototype.setup = function () {
     let self = this;
 
+    this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0];
     this.query_box = document.getElementsByClassName(this.search_input_class_name)[0];
+
     // Watch the input box.
     this.query_box.addEventListener('input', function (event) {
 
@@ -78,24 +80,59 @@ Autocomplete.prototype.setup = function () {
         self.fetch(query);
     });
 
-    // Close suggestion list on Escape
+    this.query_in_process = null;
+
+    // Close suggestion list on Escape and on Tab
     this.query_box.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            event.preventDefault();
+        let key = event.key;
+        if (key === 'Escape' || key === 'Tab') {
             self.hide();
+            // Removing default behaviour specially for Chrome
+            if (event.key === 'Escape') {
+                event.preventDefault();
+            }
+        } else if ((key === 'ArrowDown' || key === 'ArrowUp') && self.autocomplete_list.childNodes.length > 0) {
+            event.preventDefault();
+
+            let to_highlight = null;
+
+            let highlighted_li = self.find_highlighted_list_item();
+
+            if (highlighted_li) {
+                self.clear_highlighted_list_item(highlighted_li);
+                let next_or_prev = key === 'ArrowDown' ? highlighted_li.nextElementSibling : highlighted_li.previousElementSibling;
+                to_highlight = next_or_prev ? next_or_prev : to_highlight;
+            } else {
+                to_highlight = key === 'ArrowDown' ? self.autocomplete_list.childNodes[0] : self.autocomplete_list.childNodes[self.autocomplete_list.childNodes.length - 1]
+                self.query_in_process = this.value;
+            }
+
+            if (to_highlight) {
+                self.highlight_list_item(to_highlight);
+                this.value = to_highlight.textContent;
+            } else {
+                this.value = self.query_in_process;
+            }
         }
     });
 
-    this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0];
+    let search_container = document.getElementById(this.search_container_id);
 
+    // show autocomplete list on focus in
+    search_container.addEventListener('focusin', function (event) {
+        self.show();
+    });
+
+    // hide autocomplete list  on click outside the box
     window.addEventListener('click', function (e) {
-        if (!document.getElementById(self.search_container_id).contains(e.target)) {
+        if (!search_container.contains(e.target)) {
             self.hide();
         } else {
             self.show();
         }
     });
 
+    // clear query on cancel button click
     let button_cancel = document.getElementById(this.button_cancel_id);
     button_cancel.addEventListener('click', function (e) {
         e.preventDefault();
@@ -153,6 +190,7 @@ Autocomplete.prototype.show_results = function (data) {
 
         for (let res_offset in results) {
             let elem = document.createElement('li');
+            elem.setAttribute('tabindex', '-1');
             let filteredText = results[res_offset];
 
             let regEx = new RegExp(searchExp, "ig");
@@ -168,13 +206,44 @@ Autocomplete.prototype.show_results = function (data) {
 
             elem.innerHTML = `<strong>${filteredText}</strong>`;
             elem.style.cursor = 'default';
+
             elem.addEventListener('click', function (event) {
                 self.list_item_on_click(this);
+            });
+
+            elem.addEventListener('mouseover', function (event) {
+                let to_clear = self.find_highlighted_list_item();
+
+                if (to_clear)
+                    self.clear_highlighted_list_item(to_clear);
+
+                self.highlight_list_item(this);
+            });
+
+            elem.addEventListener('mouseout', function (event) {
+                self.clear_highlighted_list_item(this);
             });
 
             this.autocomplete_list.appendChild(elem);
         }
     }
+};
+
+Autocomplete.prototype.find_highlighted_list_item = function () {
+    let elems = document.getElementsByClassName('autocomplete-highlight');
+
+    if (elems.length > 0)
+        return elems[0];
+
+    return false
+};
+
+Autocomplete.prototype.clear_highlighted_list_item = function (li) {
+    removeClass(li, 'autocomplete-highlight');
+};
+
+Autocomplete.prototype.highlight_list_item = function (li) {
+    addClass(li, 'autocomplete-highlight')
 };
 
 Autocomplete.prototype.list_item_on_click = function (list_item) {
@@ -198,3 +267,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     window.autocomplete.setup();
 });
+
