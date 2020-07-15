@@ -17,7 +17,7 @@ class Command(BaseCommand):
             help='Source to load (default loads all source)',
         )
         parser.add_argument(
-            '--depth', default=4,
+            '--depth', default=4, type=int,
             help='How depth recursively search in sites')
 
     def handle(self, *args, **options):
