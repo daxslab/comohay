@@ -56,8 +56,7 @@ class IndexView(SearchView):
             response = self.create_response()
             cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
-            daystamp = int(time.time() / 60 / 60 / 24)
-            user_search = UserSearch(user=request.user, search=self.query, daystamp=daystamp,
+            user_search = UserSearch(user=request.user, search=self.query,
                                      autosuggestion=bool(request.GET.get('a', False)))
             user_search.save()
             action.send(request.user, verb=ACTION_SEARCH_AD, target=user_search)
