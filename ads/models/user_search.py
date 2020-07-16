@@ -9,6 +9,7 @@ class UserSearch(Model):
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, verbose_name=_('User'))
     search = models.TextField(verbose_name=_('Search'))
     daystamp = models.IntegerField(verbose_name=_('Daystamp'))
+    autosuggestion = models.BooleanField(verbose_name=_('Autosuggestion'), default=False)
 
     class Meta:
         verbose_name = _('UserSearch')

@@ -17,7 +17,8 @@
                                    name="q"
                                    id="id_q"
                                    class="search-input"
-                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}">
+                            <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a
@@ -60,7 +61,8 @@
                                    name="q"
                                    id="id_q"
                                    class="search-input"
-                                   data-autocomplete-cache="{{ cache_autocomplete_client }}" >
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}">
+                            <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
                             {% if suggestion and query != suggestion %}
                                 <div>
                                     <p>{% trans 'Maybe you want to say' %}: <a

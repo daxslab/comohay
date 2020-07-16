@@ -4,6 +4,7 @@ let Autocomplete = function (options) {
     this.autocomplete_list_class_name = options.autocomplete_list_class_name;
     this.search_form_class_name = options.search_form_class_name;
     this.button_cancel_id = options.button_cancel_id;
+    this.autosuggestion_indicator_id = options.autosuggestion_indicator_id;
     this.url = options.url || 'search/autocomplete/';
     this.delay = parseInt(options.delay || 300);
     this.minimum_length = parseInt(options.minimum_length || 3);
@@ -64,9 +65,13 @@ Autocomplete.prototype.setup = function () {
 
     this.autocomplete_list = document.getElementsByClassName(this.autocomplete_list_class_name)[0];
     this.query_box = document.getElementsByClassName(this.search_input_class_name)[0];
+    this.autosuggestion_indicator = document.getElementById(this.autosuggestion_indicator_id);
 
     // Watch the input box.
     this.query_box.addEventListener('input', function (event) {
+
+        // remove query as an autosuggestion
+        self.autosuggestion_indicator.disabled = true;
 
         self.show();
 
@@ -110,8 +115,12 @@ Autocomplete.prototype.setup = function () {
             if (to_highlight) {
                 self.highlight_list_item(to_highlight);
                 this.value = to_highlight.textContent;
+                // set query as an autosuggestion
+                self.autosuggestion_indicator.disabled = false;
             } else {
                 this.value = self.query_in_process;
+                // remove query as an autosuggestion
+                self.autosuggestion_indicator.disabled = true;
             }
         }
     });
@@ -248,9 +257,16 @@ Autocomplete.prototype.highlight_list_item = function (li) {
 
 Autocomplete.prototype.list_item_on_click = function (list_item) {
     let self = this;
+
     this.query_box.value = list_item.textContent;
+
+    // set query as an autosuggestion
+    this.autosuggestion_indicator.disabled = false;
+
     this.clear_results();
+
     this.search_from.submit();
+
     return false;
 };
 
@@ -264,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         search_container_id: 'search-container',
         button_cancel_id: 'button-cancel',
         cache_time: cache_time,
+        autosuggestion_indicator_id: 'autosuggestion-hi'
     });
     window.autocomplete.setup();
 });
