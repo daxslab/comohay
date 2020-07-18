@@ -8,7 +8,7 @@ services:
     networks:
       - default
     restart: always
-    command: gunicorn comohay.wsgi:application --bind 0.0.0.0:8000 --workers=5
+    command: gunicorn comohay.wsgi:application --bind 0.0.0.0:8000 --workers=7
     security_opt:
       - seccomp:unconfined
     volumes:
