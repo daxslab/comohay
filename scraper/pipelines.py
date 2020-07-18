@@ -26,7 +26,7 @@ class RemoveDuplicatedAdPipeline(object):
                 Ad.objects.annotate(
                     desc_similarity=TrigramSimilarity('description', item['description'])
                 ).filter(
-                    a or b
+                    a | b
                 ).filter(
                     desc_similarity__gt=settings.DESCRIPTION_SIMILARITY,
                 ).exclude(

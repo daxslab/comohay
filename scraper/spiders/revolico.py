@@ -150,9 +150,9 @@ class RevolicoSpider(BaseSpider):
             phone = self.clean_phone(_phone_url.split(':')[1])
 
         email = None
-        _email_url = extract_with_css('a[data-cy="adEmail"]::attr(href)')
-        if _email_url:
-            email = _email_url.split(':')[1]
+        # _email_url = extract_with_css('a[data-cy="adEmail"]::attr(href)')
+        # if _email_url:
+        #     email = _email_url.split(':')[1]
 
         external_id = extract_with_css('div[data-cy=adId]::text')
         external_url = response.request.url
