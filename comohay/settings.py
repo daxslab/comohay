@@ -206,9 +206,7 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://solr:8983/solr/ads',
-        'ADMIN_URL': 'http://solr:8983/solr/admin/cores'
-        # 'ENGINE': 'utils.spanish_whoosh.SpanishWhooshEngine',
-        # 'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+        'ADMIN_URL': 'http://solr:8983/solr/admin/cores',
         # 'INCLUDE_SPELLING': True,
     },
 }

@@ -12,7 +12,6 @@ services:
     security_opt:
       - seccomp:unconfined
     volumes:
-      - ../whoosh_index:/home/app/web/whoosh_index
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
       - solr_data:/home/app/web/solr_data
@@ -77,9 +76,9 @@ services:
       dockerfile: Dockerfile.prod
     command: celery worker --app=comohay --loglevel=info
     volumes:
-      - ../whoosh_index:/home/app/web/whoosh_index
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
+      - solr_data:/home/app/web/solr_data
     env_file:
       - ./.env.prod
     depends_on:
@@ -92,9 +91,9 @@ services:
       dockerfile: Dockerfile.prod
     command: celery beat --app=comohay --loglevel=info
     volumes:
-      - ../whoosh_index:/home/app/web/whoosh_index
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
+      - solr_data:/home/app/web/solr_data
     env_file:
       - ./.env.prod
     depends_on:

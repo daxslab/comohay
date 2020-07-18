@@ -13,7 +13,6 @@ fi
 
 chown -R app:app /home/app/web/static_root
 chown -R app:app /home/app/web/media
-chown -R app:app /home/app/web/whoosh_index
 
 su -l app
 

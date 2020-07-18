@@ -37,6 +37,7 @@ services:
     command: celery worker --app=comohay --loglevel=info
     volumes:
       - ./:/usr/src/app/
+      - solr_data:/usr/src/app/solr_data
     env_file:
       - ./.env.dev
     depends_on:
@@ -48,6 +49,7 @@ services:
     command: celery beat --app=comohay --loglevel=info
     volumes:
       - ./:/usr/src/app/
+      - solr_data:/usr/src/app/solr_data
     env_file:
       - ./.env.dev
     depends_on:
@@ -56,13 +58,10 @@ services:
       - redis
   solr:
     image: solr:6.6
-    #    build: ./solr
     expose:
       - "8983"
     volumes:
       - solr_data:/opt/solr/server/solr/mycores/
-    #      - ../solr_data:/opt/solr/server/solr/mycores/
-    #      - ./solr/solr_config:/opt/solr/server/solr/configsets/ads:ro
     command:
       - solr-precreate
       - ads
