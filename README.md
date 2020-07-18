@@ -32,3 +32,18 @@ Once the production environment variables are defined,
 the application can be started using:
 
     docker-compose -f docker-compose.prod.yml up --build
+    
+## Preparing Solr
+
+Building the configuration schema and reloading the precreated core in docker-compose
+    
+    docker-compose exec web python manage.py build_solr_schema --configure-directory=solr_data/ads/conf --reload-core ads
+    
+Building Solr index. This may take a while depending on the amount of data
+
+    docker-compose exec web python manage.py rebuild_index
+    
+If, for some reason, you need to reacreate the index from scratch, it is necessary to clean the docker named volumes
+
+     docker-compose down -v
+

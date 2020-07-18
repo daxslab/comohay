@@ -204,8 +204,11 @@ REST_FRAMEWORK = {
 # haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'utils.spanish_whoosh.SpanishWhooshEngine',
-        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://solr:8983/solr/ads',
+        'ADMIN_URL': 'http://solr:8983/solr/admin/cores'
+        # 'ENGINE': 'utils.spanish_whoosh.SpanishWhooshEngine',
+        # 'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
         # 'INCLUDE_SPELLING': True,
     },
 }
@@ -232,7 +235,7 @@ CACHES = {
 
 CACHE_SEARCH_RESPONSE_SECONDS = 30
 # caching for javascript autocomplete suggestions requests
-CACHE_AUTOCOMPLETE_CLIENT = 10*60*60*24 # 10 days
+CACHE_AUTOCOMPLETE_CLIENT = 10 * 60 * 60 * 24  # 10 days
 
 # Celery
 
@@ -271,7 +274,7 @@ LOGGING = {
     'loggers': {
         '': {
             'level': LOGLEVEL,
-            'handlers': ['console',],
+            'handlers': ['console', ],
         },
     },
 }
@@ -337,19 +340,18 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # trigram similarity search threshold for duplicates
-TITLE_SIMILARITY=0.9
-DESCRIPTION_SIMILARITY=0.6
-
+TITLE_SIMILARITY = 0.9
+DESCRIPTION_SIMILARITY = 0.6
 
 CUC_TO_CUP_CHANGE = 25
 
 # THIS IS HERE BECAUSE CESAR SAYS DJANGO NO SIRVE
 content_files = {
-            'words': {
-                'filepath': BASE_DIR + '/ads/autosuggest/suggestions',
-                'compress': True  # means compress the graph data in memory
-            }
-        }
+    'words': {
+        'filepath': BASE_DIR + '/ads/autosuggest/suggestions',
+        'compress': True  # means compress the graph data in memory
+    }
+}
 autocomplete = autocomplete_factory(content_files=content_files)
 
 try:

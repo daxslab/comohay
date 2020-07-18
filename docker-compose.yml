@@ -8,6 +8,7 @@ services:
       - seccomp:unconfined
     volumes:
       - ./:/usr/src/app/
+      - solr_data:/usr/src/app/solr_data
     ports:
       - 8000:8000
     env_file:
@@ -15,6 +16,7 @@ services:
     depends_on:
       - db
       - redis
+      - solr
   db:
     image: postgres:12.0-alpine
     volumes:
@@ -52,6 +54,19 @@ services:
       - web
       - db
       - redis
-
+  solr:
+    image: solr:6.6
+    #    build: ./solr
+    expose:
+      - "8983"
+    volumes:
+      - solr_data:/opt/solr/server/solr/mycores/
+    #      - ../solr_data:/opt/solr/server/solr/mycores/
+    #      - ./solr/solr_config:/opt/solr/server/solr/configsets/ads:ro
+    command:
+      - solr-precreate
+      - ads
+      - /opt/solr/server/solr/configsets/basic_configs
 volumes:
   postgres_data:
+  solr_data:
