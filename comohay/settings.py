@@ -247,7 +247,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_BEAT_SCHEDULE = {
     'crawl': {
         'task': 'ads.tasks.crawl',
-        'schedule': crontab(hour=7, minute=1)  # execute every day at 3:01 AM cuban time
+        'schedule': crontab(minute=1)  # execute every hour at minute 1.
     }
 }
 
@@ -355,6 +355,7 @@ META_IMAGE_URL = STATIC_URL
 META_USE_OG_PROPERTIES = True
 META_USE_TWITTER_PROPERTIES = True
 META_USE_SCHEMAORG_PROPERTIES = True
+
 
 # THIS IS HERE BECAUSE CESAR SAYS DJANGO NO SIRVE
 content_files = {

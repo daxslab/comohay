@@ -43,7 +43,7 @@ Building Solr index. This may take a while depending on the amount of data
 
     docker-compose exec web python manage.py rebuild_index
     
-If, for some reason, you need to reacreate the index from scratch, it is necessary to clean the docker named volumes
+If, for some reason, you need to recreate the index from scratch, it is necessary to clean the docker named volumes
 
      docker-compose down -v
 
