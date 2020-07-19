@@ -76,7 +76,7 @@ class IndexView(SearchView):
                       ],
             title=settings.META_SITE_NAME,
             description='La manera más eficiente de buscar clasificados en Cuba, rápido y ligero. Indexamos constantemente los sitos más populares de anuncios en nuestro país.',
-            image=settings.STATIC_URL + 'logo-vertical.png',
+            image=settings.STATIC_URL + 'logo-vertical-adjusted.png',
             image_width=600,
             image_height=600,
             url=self.request.get_full_path(),
