@@ -18,6 +18,7 @@ from django_filters.views import FilterView
 from fast_autocomplete.loader import populate_redis
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
+from meta.views import Meta
 from rest_framework.utils import json
 
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD, ACTION_SEARCH_AD
@@ -67,6 +68,15 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         context['index_count'] = Ad.objects.count()
+        context['meta'] = Meta(
+            keywords=['indexado de clasificados en cuba', 'búsqueda de clasificados en cuba',
+                      'cuba indexado de clasificados', 'cuba búsqueda de clasificados',
+                      'indexado de anuncios en cuba', 'búsqueda de anuncios en cuba',
+                      'cuba indexado de anuncios', 'cuba búsqueda de anuncios'
+                      ],
+            title=settings.META_SITE_NAME,
+            description='La manera más eficiente de buscar clasificados en Cuba, rápido y ligero. Indexamos constantemente los sitos más populares de anuncios en nuestro país.'
+        )
         return context
 
 

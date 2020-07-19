@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'django_extensions',
     'django.contrib.postgres',
+    'meta',
 ]
 
 MIDDLEWARE = [
@@ -342,6 +343,18 @@ TITLE_SIMILARITY = 0.9
 DESCRIPTION_SIMILARITY = 0.6
 
 CUC_TO_CUP_CHANGE = 25
+
+# django-meta settings
+META_SITE_PROTOCOL = 'https'
+META_SITE_DOMAIN = 'comohay.com'
+META_SITE_TYPE = 'website'
+META_SITE_NAME = 'ComoHay'
+META_INCLUDE_KEYWORDS = ['cuba compra venta', 'cuba clasificados', 'cuba auncios', 'compra venta en cuba', 'clasificados en cuba', 'anuncios en cuba']
+META_DEFAULT_KEYWORDS = META_INCLUDE_KEYWORDS
+META_IMAGE_URL = STATIC_URL
+META_USE_OG_PROPERTIES = True
+META_USE_TWITTER_PROPERTIES = True
+META_USE_SCHEMAORG_PROPERTIES = True
 
 # THIS IS HERE BECAUSE CESAR SAYS DJANGO NO SIRVE
 content_files = {

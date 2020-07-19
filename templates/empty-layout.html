@@ -1,14 +1,18 @@
 {% load compress %}
 {% load static %}
 {% load i18n %}
+{% load meta %}
 <!doctype html>
 <html lang="en" class="h-100">
-    <head>
+    <head {% meta_namespaces %}>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
         <meta name="author" content="Daxslab, and contributors">
-        <title>Como Hay</title>
+
+        {% include 'meta/meta.html' %}
+
+        <title>CómoHay</title>
 
         {% compress css %}
             <link type="text/x-scss" href="{% static 'sass/main.scss' %}" rel="stylesheet">

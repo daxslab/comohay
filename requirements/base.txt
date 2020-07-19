@@ -55,4 +55,5 @@ scrapy-rotating-proxies==0.6.2
 django-redis==4.12.1
 celery[redis]==4.4.6
 fast-autocomplete==0.6.0
-pysolr
+pysolr==3.9.0
+django-meta==1.7.0
