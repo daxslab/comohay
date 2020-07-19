@@ -23,7 +23,7 @@ code {
   font-size: 80%;
 }
 
-img.logo-main{
+img.logo-main {
   margin-bottom: 2rem;
 }
 
@@ -103,21 +103,30 @@ h1.logo a {
 }
 
 @media (max-width: 40rem) {
+
   .row .column.responsive[class*=" column-"] {
     margin-left: 0;
     max-width: 100%;
   }
-}
 
-@media (max-width: 40rem) {
   .row.main-search {
     margin-top: 8rem;
   }
+
+  img.logo-main {
+    width: 20rem;
+  }
+
 }
 
 @media (min-width: 40rem) {
+
   .row.main-search {
     margin-top: 15rem;
+  }
+
+  img.logo-main {
+    width: 30rem;
   }
 }
 
