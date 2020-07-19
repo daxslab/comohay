@@ -26,7 +26,7 @@
         </a>
     </div>
     <div class="list-item-description">
-        <p>
+        <p style="word-break: break-word">
             {# text highlight for haystack results #}
             {% if query and result %}
                 {% highlight result.description with query max_lenght 260 %}
