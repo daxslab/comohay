@@ -23,6 +23,10 @@ code {
   font-size: 80%;
 }
 
+img.logo-main{
+  margin-bottom: 2rem;
+}
+
 h1.logo {
   @extend .no-select;
 }
