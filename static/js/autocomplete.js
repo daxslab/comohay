@@ -272,7 +272,8 @@ Autocomplete.prototype.list_item_on_click = function (list_item) {
 
 let input = document.getElementById('id_q');
 let cache_time = parseInt(input.dataset.autocompleteCache);
-document.addEventListener('DOMContentLoaded', function () {
+
+let load_autocomplete = function(){
     window.autocomplete = new Autocomplete({
         search_input_class_name: 'search-input',
         autocomplete_list_class_name: 'autocomplete-list',
@@ -283,5 +284,10 @@ document.addEventListener('DOMContentLoaded', function () {
         autosuggestion_indicator_id: 'autosuggestion-hi'
     });
     window.autocomplete.setup();
-});
+};
 
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', load_autocomplete); // Document still loading so DomContentLoaded can still fire :)
+} else {
+    load_autocomplete();
+}
