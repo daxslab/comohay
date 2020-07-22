@@ -1,3 +1,4 @@
+import logging
 import sys
 
 from django.core.management.base import BaseCommand
@@ -6,6 +7,7 @@ from scrapy.utils.project import get_project_settings
 
 from comohay import settings
 
+logger = logging.getLogger('main')
 
 class Command(BaseCommand):
     help = "Release the spiders"
@@ -26,7 +28,7 @@ class Command(BaseCommand):
             if settings.EXTERNAL_SOURCES.get(options['source'], None):
                 sources = {options['source']: settings.EXTERNAL_SOURCES[options['source']]}
             else:
-                self.logger.error('La fuente seleccionada "%s" no está definida', options['source'])
+                logger.error('La fuente seleccionada "%s" no está definida', options['source'])
                 sys.exit(2)
         else:
             sources = settings.EXTERNAL_SOURCES
