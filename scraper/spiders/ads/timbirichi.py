@@ -1,6 +1,5 @@
 from categories.models import Category
 from html2text import HTML2Text
-from scrapy import Selector
 
 from ads.models import Province, Municipality
 from scraper.items import AdItem
@@ -142,7 +141,7 @@ class TimbirichiParser(BaseParser):
         category_text = extract_with_css('ul.breadcrumb > li:nth-of-type(3) > a::text')
         category_tree = self.get_category_tree(category_text)
         category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).first()
-        province_text = extract_with_css('ul.publicado-por div.avatar > p::text')
+        province_text = extract_with_css('ul.publicado-por div.avatar > p:last-of-type::text')
         province = Province.objects.get(name=province_text) if province_text else None
 
         html_handler = HTML2Text()
