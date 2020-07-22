@@ -14,7 +14,6 @@ class HogarencubaSpider(BaseSpider):
 
 
   def parse(self, response):
-      # data = response.css("div.st-about-employee-pop-up")
 
       results = json.loads(response.body)
 

@@ -283,11 +283,17 @@ LOGGING = {
 }
 
 EXTERNAL_SOURCES = {
-    'hogarencuba': 'ads.importers.HogarencubaImporter',
-    'bachecubano': 'ads.importers.BachecubanoImporter',
-    'revolico': 'ads.importers.RevolicoImporter',
-    'porlalivre': 'ads.importers.PorlalivreImporter',
+    'hogarencuba': 'hogarencuba.com',
+    'bachecubano': 'bachecubano.com',
+    'revolico': 'revolico.com',
+    'porlalivre': 'porlalivre.com',
+    'timbirichi': 'timbirichi.com',
+    # 'clasificadoshlg': 'clasificadoshlg.com',
+    'uncuc': '1cuc.com',
 }
+
+# number of days that updater spider look for updates in an ad
+AD_UPDATE_PERIOD = 5
 
 TELEGRAM_BOT_TOKEN = 'bot_token'
 TELEGRAM_BOT_GROUPS = {}
