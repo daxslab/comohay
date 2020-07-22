@@ -9,6 +9,7 @@ import logging
 
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
+from django.utils import timezone
 
 from ads.models import Ad
 from comohay import settings
@@ -18,7 +19,7 @@ class RemoveDuplicatedAdPipeline(object):
 
     def process_item(self, item, spider):
 
-        if spider.name != 'hogarencuba': # hogarencuba has no duplicates
+        if spider.name not in ['hogarencuba', 'updater']: # hogarencuba has no duplicates and updater only updates
             try:
                 # Remove duplicated ads from same contact
                 a = Q(contact_email=item['contact_email']) & Q(contact_email__isnull=False) & ~Q(contact_email__exact='')
@@ -59,7 +60,7 @@ class BaseAdPipeline(object):
             instance = item.save(commit=False)
             instance.slug = ad.slug
             instance.created_at = ad.created_at
-            instance.updated_at = ad.updated_at
+            instance.updated_at = timezone.now()
             instance.created_by = ad.created_by
             instance.updated_by = ad.updated_by
             instance.pk = ad.pk
