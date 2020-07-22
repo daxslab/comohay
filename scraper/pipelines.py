@@ -24,25 +24,20 @@ class RemoveDuplicatedAdPipeline(object):
                 # Remove duplicated ads from same contact
                 a = Q(contact_email=item['contact_email']) & Q(contact_email__isnull=False) & ~Q(contact_email__exact='')
                 b = Q(contact_phone=item['contact_phone']) & Q(contact_phone__isnull=False) & ~Q(contact_phone__exact='')
+                c = Q(external_contact_id=item['external_contact_id']) \
+                    & Q(external_contact_id__isnull=False) \
+                    & ~Q(external_contact_id__exact='') \
+                    & Q(external_source=item['external_source'])
                 Ad.objects.annotate(
                     desc_similarity=TrigramSimilarity('description', item['description'])
                 ).filter(
-                    a | b
+                    a | b | c
                 ).filter(
                     desc_similarity__gt=settings.DESCRIPTION_SIMILARITY,
                 ).exclude(
                     external_source=item['external_source'],
                     external_id=item['external_id']
                 ).delete()
-
-                ## Remove duplicated ads
-                # Ad.objects.annotate(
-                #     title_similarity=TrigramSimilarity('title', item['title']),
-                #     desc_similarity=TrigramSimilarity('description', item['description'])
-                # ).filter(
-                #     external_source=item['external_source'],
-                #     title_similarity__gt=settings.TITLE_SIMILARITY,
-                #     desc_similarity__gt=settings.DESCRIPTION_SIMILARITY).delete()
             except Exception as e:
                 logging.error("Error removing duplicated items: "+str(e))
         return item

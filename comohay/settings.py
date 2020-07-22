@@ -284,6 +284,8 @@ EXTERNAL_SOURCES = {
     'revolico': 'revolico.com',
     'porlalivre': 'porlalivre.com',
     'timbirichi': 'timbirichi.com',
+    # 'clasificadoshlg': 'clasificadoshlg.com',
+    'uncuc': '1cuc.com',
 }
 
 # number of days that updater spider look for updates in an ad

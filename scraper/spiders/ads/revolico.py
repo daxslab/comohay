@@ -150,5 +150,6 @@ class RevolicoParser(BaseParser):
         item['external_source'] = self.source
         item['external_id'] = external_id
         item['external_url'] = external_url
+        item['external_contact_id'] = None
 
         return item

@@ -170,9 +170,10 @@ class TimbirichiParser(BaseParser):
         item['province'] = province
         # item['municipality'] = municipality
         item['contact_phone'] = phone
-        item['contact_email'] = ''
+        item['contact_email'] = None
         item['external_source'] = self.source
         item['external_id'] = external_id
         item['external_url'] = external_url
+        item['external_contact_id'] = None
 
         return item
