@@ -248,6 +248,10 @@ CELERY_BEAT_SCHEDULE = {
     'crawl': {
         'task': 'ads.tasks.crawl',
         'schedule': crontab(minute=1)  # execute every hour at minute 1.
+    },
+    'update_index': {
+        'task': 'ads.tasks.update_index',
+        'schedule': crontab(hour=8, minute=1)  # execute every day at 4:01 AM cuban time
     }
 }
 
@@ -349,14 +353,14 @@ META_SITE_PROTOCOL = 'https'
 META_SITE_DOMAIN = 'comohay.com'
 META_SITE_TYPE = 'website'
 META_SITE_NAME = 'ComoHay'
-META_INCLUDE_KEYWORDS = ['cuba compra venta', 'cuba clasificados', 'cuba auncios', 'compra venta en cuba', 'clasificados en cuba', 'anuncios en cuba']
+META_INCLUDE_KEYWORDS = ['cuba compra venta', 'cuba clasificados', 'cuba auncios', 'compra venta en cuba',
+                         'clasificados en cuba', 'anuncios en cuba']
 META_DEFAULT_KEYWORDS = META_INCLUDE_KEYWORDS
 META_IMAGE_URL = STATIC_URL
 META_USE_OG_PROPERTIES = True
 META_USE_TWITTER_PROPERTIES = True
 META_USE_SCHEMAORG_PROPERTIES = True
 META_TWITTER_TYPE = 'summary_large_image'
-
 
 # THIS IS HERE BECAUSE CESAR SAYS DJANGO NO SIRVE
 content_files = {
