@@ -68,19 +68,25 @@ class IndexView(SearchView):
         parent_categories = Category.objects.filter(parent=None).all()
         context['parent_categories'] = parent_categories
         context['index_count'] = Ad.objects.count()
-        context['meta'] = Meta(
+        meta = Meta(
             keywords=['indexado de clasificados en cuba', 'búsqueda de clasificados en cuba',
                       'cuba indexado de clasificados', 'cuba búsqueda de clasificados',
                       'indexado de anuncios en cuba', 'búsqueda de anuncios en cuba',
                       'cuba indexado de anuncios', 'cuba búsqueda de anuncios'
                       ],
-            title=settings.META_SITE_NAME,
-            description='La manera más eficiente de buscar clasificados en Cuba, rápido y ligero. Indexamos constantemente los sitos más populares de anuncios en nuestro país.',
             image=settings.STATIC_URL + 'logo-vertical-adjusted.png',
             image_width=600,
             image_height=600,
             url=self.request.get_full_path(),
+            title=settings.META_SITE_NAME,
+            description='La manera más eficiente de buscar clasificados en Cuba, rápido y ligero. Indexamos constantemente los sitos más populares de anuncios en nuestro país.',
         )
+
+        if self.query != '':
+            meta.title = '{} - {}'.format(self.query, settings.META_SITE_NAME)
+            meta.description = "{} resultados en \"{}\".".format(self.form.sqs.count(), self.query)
+
+        context['meta'] = meta
         return context
 
 
