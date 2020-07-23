@@ -6,6 +6,11 @@ from ads.models import Ad
 
 
 class AdSearchForm(ModelSearchForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sqs = None
+
     def search(self):
         if not self.is_valid():
             return self.no_query_found()
@@ -14,9 +19,11 @@ class AdSearchForm(ModelSearchForm):
             return self.no_query_found()
 
         q = self.cleaned_data['q']
-        sqs = self.searchqueryset.filter(SQ(content=AutoQuery(q)) | SQ(title=AutoQuery(q)) | SQ(province=AutoQuery(q)))
+
+        self.sqs = self.searchqueryset.filter(
+            SQ(content=AutoQuery(q)) | SQ(title=AutoQuery(q)) | SQ(province=AutoQuery(q)))
 
         if self.load_all:
-            sqs = sqs.load_all()
+            self.sqs = self.sqs.load_all()
 
-        return sqs.models(Ad)
+        return self.sqs.models(Ad)

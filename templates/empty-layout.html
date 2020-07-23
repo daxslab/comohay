@@ -7,12 +7,25 @@
     <head {% meta_namespaces %}>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta name="description" content="">
-        <meta name="author" content="Daxslab & friends">
 
         {% include 'meta/meta.html' %}
 
-        <title>CómoHay</title>
+        <meta name="author" content="Daxslab & friends">
+
+        <script type="application/ld+json">
+            {
+              "@context" : "http://schema.org",
+              "@type" : "{{ meta.type }}",
+              "name" : "{{ meta.title }}",
+              "author" : {
+                "@type" : "Company",
+                "name" : "Daxslab & friends"
+              },
+              "image" : "{{ meta.image }}",
+              "description": "{{ meta.description }}",
+              "url" : "{{ meta.url }}"
+            }
+        </script>
 
         <link rel="apple-touch-icon" sizes="76x76" href="{% static 'apple-touch-icon.png' %}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon-32x32.png' %}">
