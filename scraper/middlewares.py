@@ -2,7 +2,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
+from rotating_proxies.middlewares import RotatingProxyMiddleware
 from scrapy import signals
 
 # useful for handling different item types with a single interface
@@ -101,3 +101,11 @@ class ScraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+class ConditionalRotatingProxyMiddleware(RotatingProxyMiddleware):
+    # apply RotatingProxyMiddleware only for spiders containing the
+    # `use_proxy` attribute value on True
+
+    def process_request(self, request, spider):
+        if getattr(spider, 'use_proxy', None):
+            super().process_request(request, spider)

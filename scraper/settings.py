@@ -60,7 +60,7 @@ ROTATING_PROXY_LIST_PATH = 'proxies.txt'
 # }
 if isfile(ROTATING_PROXY_LIST_PATH):
     DOWNLOADER_MIDDLEWARES = {
-        'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+        'scraper.middlewares.ConditionalRotatingProxyMiddleware': 610,
         'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
     }
 
