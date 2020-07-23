@@ -12,6 +12,8 @@ from scraper.spiders.base import BaseSpider
 class UpdaterSpider(BaseSpider):
     name = "updater"
 
+    use_proxy = True
+
     def start_requests(self):
         ads_query_set = Ad.objects.filter(
             updated_at__lt=timezone.now()-timedelta(days=settings.AD_UPDATE_PERIOD)
