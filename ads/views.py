@@ -84,7 +84,7 @@ class IndexView(SearchView):
 
         if self.query != '':
             meta.title = '{} - {}'.format(self.query, settings.META_SITE_NAME)
-            meta.description = "Consulta los resultados para \"{}\" que hemos encontrado. Indexamos constantemente los sitos más populares de anuncios en nuestro país.".format(self.query)
+            meta.description = "Consulta los resultados para \"{}\" que hemos encontrado. Indexamos constantemente los sitos más populares de anuncios en nuestro país, para ofrecerte los mejores resultados.".format(self.query)
 
         context['meta'] = meta
         return context
