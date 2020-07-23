@@ -12,6 +12,8 @@ from scraper.spiders.base import BaseSpider
 class UpdaterSpider(BaseSpider):
     name = "updater"
 
+    use_proxy = True
+
     def start_requests(self):
         ads_query_set = Ad.objects.filter(
             updated_at__lt=timezone.now()-timedelta(days=settings.AD_UPDATE_PERIOD)
@@ -20,12 +22,16 @@ class UpdaterSpider(BaseSpider):
             external_url=''
         )
         for ad in ads_query_set:
+            meta = {
+                'external_source':ad.external_source
+            }
+            if ad.external_source != 'revolico.com':
+                meta['proxy'] = None
             yield Request(ad.external_url,
                           dont_filter=True,
                           errback=self.on_error,
-                          meta={
-                              'external_source':ad.external_source
-                          })
+                          meta=meta
+                          )
 
 
     def parse(self, response):

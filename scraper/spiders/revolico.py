@@ -9,6 +9,8 @@ class RevolicoSpider(BaseSpider):
 
     parser = RevolicoParser(source=source)
 
+    use_proxy = True
+
     start_urls = [
         'https://www.revolico.com/compra-venta/',
         'https://www.revolico.com/empleos/',
