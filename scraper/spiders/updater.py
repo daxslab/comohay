@@ -1,12 +1,14 @@
 from datetime import timedelta
-from importlib import import_module
 
 from django.utils import timezone
 from scrapy import Request
+from scrapy.spiderloader import SpiderLoader
+from scrapy.utils.project import get_project_settings
 
 from ads.models import Ad
 from comohay import settings
 from scraper.spiders.base import BaseSpider
+from scraper.utils import get_spider_name_by_source
 
 
 class UpdaterSpider(BaseSpider):
@@ -14,7 +16,10 @@ class UpdaterSpider(BaseSpider):
 
     use_proxy = True
 
+    spider_loader = SpiderLoader(get_project_settings())
+
     def start_requests(self):
+
         ads_query_set = Ad.objects.filter(
             updated_at__lt=timezone.now()-timedelta(days=settings.AD_UPDATE_PERIOD)
         ).exclude(
@@ -22,10 +27,12 @@ class UpdaterSpider(BaseSpider):
             external_url=''
         )
         for ad in ads_query_set:
+            spider_name = get_spider_name_by_source(ad.external_source)
+            spider = self.spider_loader.load(spider_name)
             meta = {
-                'external_source':ad.external_source
+                'spider': spider
             }
-            if ad.external_source != 'revolico.com':
+            if not getattr(spider, 'use_proxy', False):
                 meta['proxy'] = None
             yield Request(ad.external_url,
                           dont_filter=True,
@@ -35,21 +42,9 @@ class UpdaterSpider(BaseSpider):
 
 
     def parse(self, response):
-        external_source = response.meta['external_source']
-        parser_name = None
-        parser_class = None
-        for name, source in settings.EXTERNAL_SOURCES.items():
-            if source == external_source:
-                parser_name = name
-        try:
-            parser_module = import_module('scraper.spiders.ads.%s' % parser_name)
-            parser_class = getattr(parser_module, parser_name.capitalize()+'Parser')
-        except Exception as e:
-            self.logger.error(str(e))
-        if parser_class:
-            yield parser_class(source=external_source).parse_ad(response)
+        spider = response.meta['spider']
+        yield spider.parser.parse_ad(response)
 
     def on_error(self, failure):
         if failure.value.response.status == 404:
             Ad.objects.filter(external_url=failure.request.url).delete()
-
