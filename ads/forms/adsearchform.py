@@ -32,9 +32,6 @@ class AdSearchForm(ModelSearchForm):
 
         # self.sqs = self.searchqueryset.auto_query(self.cleaned_data["q"])
 
-        if self.sqs.count() > 0:
-            self.sqs = self.sqs.filter_or(SQ(title=AutoQuery(q)) | SQ(province=AutoQuery(q)))
-
         if self.load_all:
             self.sqs = self.sqs.load_all()
 
