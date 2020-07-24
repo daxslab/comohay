@@ -1,3 +1,4 @@
+import logging
 
 
 class BaseParser:
@@ -5,6 +6,8 @@ class BaseParser:
     category_mapping: dict = {}
 
     source:str
+
+    logger = logging.getLogger('console')
 
     def __init__(self, source):
         self.source = source
