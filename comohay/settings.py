@@ -290,6 +290,7 @@ EXTERNAL_SOURCES = {
     'timbirichi': 'timbirichi.com',
     # 'clasificadoshlg': 'clasificadoshlg.com',
     'uncuc': '1cuc.com',
+    'merolico': 'merolico.app',
 }
 
 # number of days that updater spider look for updates in an ad
