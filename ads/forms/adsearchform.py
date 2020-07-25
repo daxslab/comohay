@@ -1,6 +1,6 @@
 from haystack.backends import SQ
 from haystack.forms import ModelSearchForm
-from haystack.inputs import AutoQuery
+from haystack.inputs import AutoQuery, Raw
 
 from ads.models import Ad
 
@@ -20,8 +20,17 @@ class AdSearchForm(ModelSearchForm):
 
         q = self.cleaned_data['q']
 
+        # This is a hack because it seems that hasytack doesnt know solr uses OR operator by default
+        # processed_query = q.replace(' ', ' AND ')
+        # processed_query = '({})'.format(processed_query)
+        #
+        # self.sqs = self.searchqueryset.filter(
+        #     SQ(content=Raw(processed_query)) | SQ(title=AutoQuery(q)) | SQ(province=AutoQuery(q)))
+
         self.sqs = self.searchqueryset.filter(
-            SQ(content=AutoQuery(q)) | SQ(title=AutoQuery(q)) | SQ(province=AutoQuery(q)))
+            SQ(content=AutoQuery(q)) | SQ(title=AutoQuery(q)))
+
+        # self.sqs = self.searchqueryset.auto_query(self.cleaned_data["q"])
 
         if self.load_all:
             self.sqs = self.sqs.load_all()
