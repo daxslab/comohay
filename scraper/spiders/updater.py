@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.utils import timezone
+from django.db.models import Q
 from scrapy import Request
 from scrapy.spiderloader import SpiderLoader
 from scrapy.utils.project import get_project_settings
@@ -23,8 +24,7 @@ class UpdaterSpider(BaseSpider):
         ads_query_set = Ad.objects.filter(
             updated_at__lt=timezone.now()-timedelta(days=settings.AD_UPDATE_PERIOD)
         ).exclude(
-            external_url__isnull=True,
-            external_url=''
+            Q(external_url__isnull=True) | Q(external_url='')
         )
         for ad in ads_query_set:
             spider_name = get_spider_name_by_source(ad.external_source)
