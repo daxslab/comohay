@@ -1,11 +1,11 @@
 import datetime
 
-from django.db.models import Count, Min
 from haystack import indexes
 
-from ads.models import UserSearch, Search
 from ads.models.ad import Ad
 from datetime import datetime, timezone
+
+from haystack_custom.fields import TrigramField
 
 
 class AdIndex(indexes.SearchIndex, indexes.Indexable):
@@ -18,7 +18,8 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
 
     updated_at = indexes.DateTimeField(model_attr='updated_at', use_template=False, indexed=False)
 
-    # suggestions = indexes.FacetCharField()
+    # used for extract similar ads
+    description_length = indexes.IntegerField(use_template=False, indexed=False, stored=True)
 
     def get_model(self):
         return Ad
@@ -30,6 +31,9 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
         """
         self.prepared_data = super(AdIndex, self).prepare(object)
         self.prepared_data['boost'] = 1 - self.compute_antiquity_penalty(self.prepared_data['updated_at'])
+
+        self.prepared_data['description_length'] = len(self.prepared_data['description'])
+
         return self.prepared_data
 
     def compute_antiquity_penalty(self, updated_at):

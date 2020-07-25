@@ -205,9 +205,10 @@ REST_FRAMEWORK = {
 # haystack
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'ENGINE': 'haystack_custom.backends.custom_solr_backend.CustomSolrEngine',
         'URL': 'http://solr:8983/solr/ads',
         'ADMIN_URL': 'http://solr:8983/solr/admin/cores',
+        'TIMEOUT': 60 * 5,
         # 'INCLUDE_SPELLING': True,
     },
 }
@@ -351,7 +352,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # trigram similarity search threshold for duplicates
 TITLE_SIMILARITY = 0.9
-DESCRIPTION_SIMILARITY = 0.6
+DESCRIPTION_SIMILARITY = 0.9
+DESCRIPTION_LENGTH_DIFF = 0.15
 
 CUC_TO_CUP_CHANGE = 25
 

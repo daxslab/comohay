@@ -77,11 +77,19 @@
         </analyzer>
     </fieldType>
 
+    <fieldType name="trigram" class="solr.TextField" >
+         <analyzer>
+            <tokenizer class="solr.KeywordTokenizerFactory" />
+            <filter class="solr.LowerCaseFilterFactory"/>
+            <filter class="solr.NGramFilterFactory" minGramSize="3" maxGramSize="3" />
+        </analyzer>
+    </fieldType>
+
     <field name="{{ ID }}" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
     <field name="{{ DJANGO_CT }}" type="string" indexed="true" stored="true" multiValued="false"/>
     <field name="{{ DJANGO_ID }}" type="string" indexed="true" stored="true" multiValued="false"/>
     {% for field in fields %}
-    <field name="{{ field.field_name }}" type="{% if field.type == 'text_en' %}text_es{% else %}{{field.type}}{% endif %}" indexed="{{ field.indexed }}" stored="{{ field.stored }}" multiValued="{{ field.multi_valued }}" />
+    <field name="{{ field.field_name }}" type="{{ field.type }}" indexed="{{ field.indexed }}" stored="{{ field.stored }}" multiValued="{{ field.multi_valued }}" />
     {% endfor %}
     <uniqueKey>{{ ID }}</uniqueKey>
 

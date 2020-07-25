@@ -7,9 +7,8 @@ from scraper.spiders.ads.base import BaseParser
 
 
 class TimbirichiParser(BaseParser):
-
     category_mapping = {
-        'Computadoras':{
+        'Computadoras': {
             'PC Completa/Kits': 'PC',
             'Laptop': 'Laptop',
             'Laptop Accesorios': 'Accesorios y Componentes',
@@ -131,7 +130,6 @@ class TimbirichiParser(BaseParser):
         },
     }
 
-
     def parse_ad(self, response):
         def extract_with_css(query):
             return response.css(query).get(default='').strip()
@@ -149,7 +147,7 @@ class TimbirichiParser(BaseParser):
 
         _price_element = extract_with_css('h4.title-item-gris precio::text')
         if _price_element:
-            price = _price_element.split(' ')[1]
+            price = _price_element.split(' ')[1].replace(',', '')
         else:
             price = 0
 
