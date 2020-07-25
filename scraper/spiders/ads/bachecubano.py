@@ -117,7 +117,7 @@ class BachecubanoParser(BaseParser):
         phone = None
         _phone_url = extract_with_css('div.description-info .ads-btn > a[href^="tel:"]::attr(href)')
         if _phone_url:
-            phone = _phone_url.split(':')[1]
+            phone = self.clean_phone(_phone_url.split(':')[1])
 
         external_id = response.request.url.split('/')[-1]
         external_url = response.request.url
