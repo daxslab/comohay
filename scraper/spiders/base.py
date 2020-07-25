@@ -6,6 +6,7 @@ class BaseSpider(scrapy.Spider):
 
     name:str
     source:str
+    use_proxy:bool = False
 
     def start_requests(self):
         for url in self.start_urls:
