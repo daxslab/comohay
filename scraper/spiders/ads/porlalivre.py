@@ -1,5 +1,8 @@
 import re
+from datetime import datetime, timedelta
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 from scrapy import Selector
 
@@ -111,6 +114,34 @@ class PorlalivreParser(BaseParser):
         },
     }
 
+    months = {
+        'enero': '01',
+        'febrero':'02',
+        'marzo': '03',
+        'abril': '04',
+        'mayo': '05',
+        'junio': '06',
+        'julio': '07',
+        'agosto': '08',
+        'septiembre': '09',
+        'octubre': '10',
+        'noviembre': '11',
+        'diciembre': '12',
+
+        'ene.': '01',
+        'feb.': '02',
+        'mar.': '03',
+        'abr.': '04',
+        'may.': '05',
+        'jun.': '06',
+        'jul.': '07',
+        'ago.': '08',
+        'sep.': '09',
+        'oct.': '10',
+        'nov.': '11',
+        'dic.': '12',
+    }
+
     def _get_province(self, url):
         page = url.split('/')[2]
         page_parts = page.split('.')
@@ -189,6 +220,18 @@ class PorlalivreParser(BaseParser):
         if _email_url:
             email = _email_url.split(':')[1]
 
+        if 'hoy' in response.meta['ad_date']:
+            external_created_at = datetime.now()
+        elif 'ayer' in response.meta['ad_date']:
+            external_created_at = datetime.now() - timedelta(days=1)
+        else:
+            external_date_string = response.meta['ad_date']
+            for name, value in self.months.items():
+                external_date_string = external_date_string.replace(name, value)
+            external_created_at = datetime.strptime(external_date_string, "%m %d, %Y")
+
+        external_created_at = make_aware(external_created_at)
+
         # external_id = item_soup.select('div#classified-header ul li')[0].find(text=True, recursive=False).strip()
         external_id = extract_with_css('div#classified-header ul li::text')
         external_url = response.request.url
@@ -207,5 +250,6 @@ class PorlalivreParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = None
+        item['external_created_at'] = external_created_at
 
         return item

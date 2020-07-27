@@ -239,8 +239,8 @@ CACHE_AUTOCOMPLETE_CLIENT = 10 * 60 * 60 * 24  # 10 days
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = 'redis://redis:6379/2'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
