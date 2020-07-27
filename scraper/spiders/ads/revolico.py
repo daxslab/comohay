@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
 from ads.models import Province, Municipality
@@ -130,9 +133,10 @@ class RevolicoParser(BaseParser):
             phone = self.clean_phone(_phone_url.split(':')[1])
 
         email = None
-        # _email_url = extract_with_css('a[data-cy="adEmail"]::attr(href)')
-        # if _email_url:
-        #     email = _email_url.split(':')[1]
+
+        external_date_timestamp = extract_with_css('time::attr(datetime)')
+        external_created_at = datetime.fromtimestamp(float(external_date_timestamp) // 1000)
+        external_created_at = make_aware(external_created_at)
 
         external_id = extract_with_css('div[data-cy=adId]::text')
         external_url = response.request.url
@@ -151,5 +155,6 @@ class RevolicoParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = None
+        item['external_created_at'] = external_created_at
 
         return item

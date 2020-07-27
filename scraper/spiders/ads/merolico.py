@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
 from ads.models import Province, Municipality
@@ -147,6 +150,10 @@ class MerolicoParser(BaseParser):
         if len(contact_phone_info) > 1:
             contact_phone = self.clean_phone(contact_phone_info[1].rstrip().strip())
 
+        external_date_string = extract_with_css('span.date span::attr(date-time)')
+        external_created_at = datetime.strptime(external_date_string, "%Y-%m-%d %H:%M:%S")
+        external_created_at = make_aware(external_created_at)
+
         external_id = response.request.url
         external_url = response.request.url
 
@@ -164,5 +171,6 @@ class MerolicoParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = None
+        item['external_created_at'] = external_created_at
 
         return item

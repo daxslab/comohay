@@ -1,4 +1,5 @@
 from ads.models import Ad
+from scrapy import Selector
 from scraper.spiders.ads.porlalivre import PROVINCE_MAPPING, PorlalivreParser
 from scraper.spiders.base import BaseSpider
 
@@ -30,11 +31,13 @@ class PorlalivreSpider(BaseSpider):
             start_urls.append(base_url[:8] + province + '.' + base_url[8:] + base_page)
 
     def parse(self, response):
-        ad_page_links = response.css('a.classified-link::attr(href)').getall()
-        for ad_page_link in ad_page_links:
+        ads = response.css('div.classified-wrapper').getall()
+        for ad in ads:
+            link = Selector(text=ad).css('a.classified-link::attr(href)').get()
+            date_text = Selector(text=ad).css('.media-body > ul.list-inline li:nth-of-type(1)::text').get()
             try:
-                if not Ad.objects.filter(external_source=self.source, external_id=ad_page_link.split('-')[-1].strip('/')).first():
-                    yield response.follow(ad_page_link, self.parse_ad)
+                if not Ad.objects.filter(external_source=self.source, external_id=link.split('-')[-1].strip('/')).first():
+                    yield response.follow(link, self.parse_ad, meta=dict(ad_date=date_text))
 
             except Exception as error:
                 self.logger.error(str(error))

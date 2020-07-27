@@ -1,4 +1,7 @@
+from datetime import datetime
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 from scrapy import Selector
 
@@ -119,6 +122,10 @@ class BachecubanoParser(BaseParser):
         if _phone_url:
             phone = self.clean_phone(_phone_url.split(':')[1])
 
+        external_date_timestamp = extract_with_css('.tg-created-timestamp::text')
+        external_created_at = datetime.fromtimestamp(int(external_date_timestamp))
+        external_created_at = make_aware(external_created_at)
+
         external_id = response.request.url.split('/')[-1]
         external_url = response.request.url
 
@@ -136,5 +143,6 @@ class BachecubanoParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = None
+        item['external_created_at'] = external_created_at
 
         return item

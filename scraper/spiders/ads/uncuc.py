@@ -1,4 +1,8 @@
+import re
+from datetime import datetime
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
 from ads.models import Province, Municipality
@@ -42,6 +46,21 @@ class UncucParser(BaseParser):
         },
     }
 
+    months = {
+        'enero': '01',
+        'febrero': '02',
+        'marzo': '03',
+        'abril': '04',
+        'mayo': '05',
+        'junio': '06',
+        'julio': '07',
+        'agosto': '08',
+        'septiembre': '09',
+        'octubre': '10',
+        'noviembre': '11',
+        'diciembre': '12',
+    }
+
 
     def parse_ad(self, response):
         def extract_with_css(query):
@@ -77,6 +96,20 @@ class UncucParser(BaseParser):
         if external_contact_id:
             external_contact_id = external_contact_id.strip('/').split('/')[-1]
 
+        # external_date_string = extract_with_css('div.l-main__content div.hidden-phone div.v-info small::text')
+        # external_date_string = response.css('div.l-main__content div.hidden-phone div.v-info small').extract()
+        external_created_at = None
+        _info = response.css('div.l-main__content div.hidden-phone div.v-info small::text').extract()
+        for text in _info:
+            if 'Insertado' in text:
+                external_date_string = text.split(':')[1].strip()
+                pattern = re.compile("|".join(self.months.keys()))
+                processed_date_string = pattern.sub(lambda m: self.months[re.escape(m.group(0))], external_date_string)
+                external_created_at = datetime.strptime(processed_date_string, "%d %m %Y")
+
+        if external_created_at:
+            external_created_at = make_aware(external_created_at)
+
         external_id = extract_with_css('#sid::text')[1:]
         external_url = response.request.url
 
@@ -94,5 +127,6 @@ class UncucParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = external_contact_id
+        item['external_created_at'] = external_created_at
 
         return item

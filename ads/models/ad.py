@@ -27,6 +27,7 @@ class Ad(BaseModel):
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
     external_url = models.URLField(blank=True, null=True, verbose_name=_('External URL'))
     external_contact_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External contact ID'))
+    external_created_at = models.DateTimeField(blank=True, null=True, verbose_name=_('External created at'))
     created_by = CurrentUserField(verbose_name=_('Created by'))
     updated_by = CurrentUserField(on_update=True, related_name='%(class)s_updated_by', verbose_name=_('Updated by'))
 

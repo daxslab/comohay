@@ -1,4 +1,7 @@
+from datetime import datetime, timedelta
+
 from categories.models import Category
+from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
 from ads.models import Province, Municipality
@@ -156,6 +159,26 @@ class TimbirichiParser(BaseParser):
         if _phone_url:
             phone = self.clean_phone(_phone_url.split(':')[1])
 
+        external_date_text = extract_with_css('fecha::text')
+        external_created_at = None
+        if 'segundo' in external_date_text:
+            external_created_at = datetime.now() - timedelta(seconds=int(external_date_text.split(' ')[1]))
+        elif 'minuto' in external_date_text:
+            external_created_at = datetime.now() - timedelta(minutes=int(external_date_text.split(' ')[1]))
+        elif 'hora' in external_date_text:
+            external_created_at = datetime.now() - timedelta(hours=int(external_date_text.split(' ')[1]))
+        elif 'día' in external_date_text or 'dia' in external_date_text:
+            external_created_at = datetime.now() - timedelta(days=int(external_date_text.split(' ')[1]))
+        elif 'semana' in external_date_text:
+            external_created_at = datetime.now() - timedelta(days=7 * int(external_date_text.split(' ')[1]))
+        elif 'mes' in external_date_text:
+            external_created_at = datetime.now() - timedelta(days=30 * int(external_date_text.split(' ')[1]))
+        elif 'año' in external_date_text:
+            external_created_at = datetime.now() - timedelta(days=365 * int(external_date_text.split(' ')[1]))
+
+        if external_created_at:
+            external_created_at = make_aware(external_created_at)
+
         external_id = response.request.url.split('-')[-1]
         external_url = response.request.url
 
@@ -173,5 +196,6 @@ class TimbirichiParser(BaseParser):
         item['external_id'] = external_id
         item['external_url'] = external_url
         item['external_contact_id'] = None
+        item['external_created_at'] = external_created_at
 
         return item
