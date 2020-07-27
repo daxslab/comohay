@@ -1,6 +1,8 @@
 import json
+from datetime import datetime
 
 from categories.models import Category
+from django.utils.timezone import make_aware
 
 from ads.models import Province, Municipality
 from scraper.items import AdItem
@@ -24,8 +26,8 @@ class HogarencubaSpider(BaseSpider):
           municipality_text = None
 
           try:
-              province_text = location.split('/')[0]
-              municipality_text = location.split('/')[1]
+              province_text = location.split(',')[-1].strip()
+              municipality_text = location.split(',')[-2].strip()
           except:
               pass
 
@@ -54,5 +56,6 @@ class HogarencubaSpider(BaseSpider):
           item['external_source'] = self.source
           item['external_id'] = property['id']
           item['external_url'] = property['url']
+          item['external_created_at'] = make_aware(datetime.fromtimestamp(property['created_at']))
 
           yield item
