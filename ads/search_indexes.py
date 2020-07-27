@@ -20,6 +20,7 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
 
     # used for extract similar ads
     description_length = indexes.IntegerField(use_template=False, indexed=False, stored=True)
+    title_length = indexes.IntegerField(use_template=False, indexed=False, stored=True)
 
     def get_model(self):
         return Ad
@@ -33,6 +34,7 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
         self.prepared_data['boost'] = 1 - self.compute_antiquity_penalty(self.prepared_data['updated_at'])
 
         self.prepared_data['description_length'] = len(self.prepared_data['description'])
+        self.prepared_data['title_length'] = len(self.prepared_data['title'])
 
         return self.prepared_data
 
@@ -47,7 +49,6 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
     # def index_queryset(self, using=None):
     #     """Used when the entire index for model is updated."""
     #     return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
-
 
 # class SearchIndex(indexes.SearchIndex, indexes.Indexable):
 #     text = indexes.CharField(document=True, use_template=True)

@@ -1,29 +1,22 @@
 from django.core.management.base import BaseCommand
 
+from ads.models import Ad
 from utils.cli import confirm_input
 from utils.detect_similarity import detect_similarity
+from utils.remove_duplicates import remove_duplicates
+
 
 class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '--similarity', default=0.7, type=float,
-            help='Define similarity limit (Default: 0.7)',
-        )
-        parser.add_argument(
-            '--chars', default=1000, type=int,
-            help='Limit of characters of Ad description to analise (Default: 1000)')
-        parser.add_argument(
-            '--days', default=3, type=int,
-            help='Days limit for ads analysis (Default: 3)')
-        parser.add_argument(
-            '--safe',
-            action='store_true',
-            help='Just prints the ads checked for deletion')
-        parser.add_argument(
             '--no-interaction',
             action='store_true',
             help='Does not wait for user interaction')
+        parser.add_argument(
+            '--verbose',
+            action='store_true',
+            help='Prints useful info')
 
     def handle(self, *args, **options):
 
@@ -34,9 +27,5 @@ class Command(BaseCommand):
             user_agree = confirm_input('Do you want to continue? ')
 
         if user_agree:
-            duplicates = detect_similarity(options['similarity'], options['chars'], options['days'])
-            for element in duplicates:
-                if options['safe']:
-                    print(element.id, element)
-                else:
-                    element.delete()
+            for ad in Ad.objects.all():
+                remove_duplicates(ad, verbose=options['verbose'])
