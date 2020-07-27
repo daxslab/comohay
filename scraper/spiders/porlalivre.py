@@ -14,14 +14,14 @@ class PorlalivreSpider(BaseSpider):
 
     base_pages = [
         '/viviendas/',
-        # '/celulares/',
-        # '/autos/',
-        # '/portatiles/',
-        # '/comunidad/',
-        # '/se-vende/',
-        # '/computadoras/',
-        # '/consolas-juegos/',
-        # '/servicios/',
+        '/celulares/',
+        '/autos/',
+        '/portatiles/',
+        '/comunidad/',
+        '/se-vende/',
+        '/computadoras/',
+        '/consolas-juegos/',
+        '/servicios/',
     ]
 
     start_urls = []
