@@ -128,18 +128,18 @@ class PorlalivreParser(BaseParser):
         'noviembre': '11',
         'diciembre': '12',
 
-        'ene': '01',
-        'feb': '02',
-        'mar': '03',
-        'abr': '04',
-        'may': '05',
-        'jun': '06',
-        'jul': '07',
-        'ago': '08',
-        'sep': '09',
-        'oct': '10',
-        'nov': '11',
-        'dic': '12',
+        'ene.': '01',
+        'feb.': '02',
+        'mar.': '03',
+        'abr.': '04',
+        'may.': '05',
+        'jun.': '06',
+        'jul.': '07',
+        'ago.': '08',
+        'sep.': '09',
+        'oct.': '10',
+        'nov.': '11',
+        'dic.': '12',
     }
 
     def _get_province(self, url):
@@ -226,9 +226,9 @@ class PorlalivreParser(BaseParser):
             external_created_at = datetime.now() - timedelta(days=1)
         else:
             external_date_string = response.meta['ad_date']
-            pattern = re.compile("|".join(self.months.keys()))
-            processed_date_string = pattern.sub(lambda m: self.months[re.escape(m.group(0))], external_date_string)
-            external_created_at = datetime.strptime(processed_date_string, "%m. %d, %Y")
+            for name, value in self.months.items():
+                external_date_string = external_date_string.replace(name, value)
+            external_created_at = datetime.strptime(external_date_string, "%m %d, %Y")
 
         external_created_at = make_aware(external_created_at)
 
