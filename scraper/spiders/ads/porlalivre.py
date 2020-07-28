@@ -220,17 +220,20 @@ class PorlalivreParser(BaseParser):
         if _email_url:
             email = _email_url.split(':')[1]
 
-        if 'hoy' in response.meta['ad_date']:
-            external_created_at = datetime.now()
-        elif 'ayer' in response.meta['ad_date']:
-            external_created_at = datetime.now() - timedelta(days=1)
-        else:
-            external_date_string = response.meta['ad_date']
-            for name, value in self.months.items():
-                external_date_string = external_date_string.replace(name, value)
-            external_created_at = datetime.strptime(external_date_string, "%m %d, %Y")
+        if 'ad_date' in response.meta:
+            if 'hoy' in response.meta['ad_date']:
+                external_created_at = datetime.now()
+            elif 'ayer' in response.meta['ad_date']:
+                external_created_at = datetime.now() - timedelta(days=1)
+            else:
+                external_date_string = response.meta['ad_date']
+                for name, value in self.months.items():
+                    external_date_string = external_date_string.replace(name, value)
+                external_created_at = datetime.strptime(external_date_string, "%m %d, %Y")
 
-        external_created_at = make_aware(external_created_at)
+            external_created_at = make_aware(external_created_at)
+        else:
+            external_created_at = None
 
         # external_id = item_soup.select('div#classified-header ul li')[0].find(text=True, recursive=False).strip()
         external_id = extract_with_css('div#classified-header ul li::text')
