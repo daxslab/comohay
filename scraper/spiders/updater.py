@@ -19,11 +19,26 @@ class UpdaterSpider(BaseSpider):
 
     spider_loader = SpiderLoader(get_project_settings())
 
+    source:str
+
+    update_period:int
+
     def start_requests(self):
 
-        ads_query_set = Ad.objects.filter(
-            updated_at__lt=timezone.now()-timedelta(days=settings.AD_UPDATE_PERIOD)
-        ).exclude(
+        query = Q(updated_at__lt=timezone.now()-timedelta(days=self.update_period))
+
+        if self.source:
+            external_sources = []
+            for source in self.source:
+                if source in settings.EXTERNAL_SOURCES:
+                    external_sources.append(settings.EXTERNAL_SOURCES[source])
+            if external_sources:
+                query = query & Q(external_source__in=external_sources)
+
+
+        ads_query_set = Ad.objects.filter(query)
+
+        ads_query_set.exclude(
             Q(external_url__isnull=True) | Q(external_url='')
         )
         for ad in ads_query_set:
@@ -43,7 +58,10 @@ class UpdaterSpider(BaseSpider):
 
     def parse(self, response):
         spider = response.meta['spider']
-        yield spider.parser.parse_ad(response)
+        if spider.parser.is_not_found(response):
+            Ad.objects.filter(external_url=response.request.url).delete()
+        else:
+            yield spider.parser.parse_ad(response)
 
     def on_error(self, failure):
         if failure.value.response.status == 404:

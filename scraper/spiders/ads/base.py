@@ -29,3 +29,15 @@ class BaseParser:
         if len(cleaned_phone) > 17:
             cleaned_phone = cleaned_phone.split(' ')[0].strip()
         return cleaned_phone
+
+    def is_not_found(self, response):
+        """
+        this function will parse a page checking for a not found message.
+        This function is mainly because of Revolico right now, as revolico doesn't uses HTTP status codes
+        we need to parse the page checking if it is a not found page.
+        :param response: Response object
+        :type response: scrapy.http.Response
+        :return: true if the page has a not found message
+        :rtype: bool
+        """
+        return False
