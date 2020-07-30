@@ -1,12 +1,13 @@
-from rest_framework import serializers, viewsets
+from rest_framework import serializers
 
 from ads.models.ad import Ad
+from api.models.municipality import MunicipalitySerializer
+from api.models.province import ProvinceSerializer
 
 
 class AdSerializer(serializers.ModelSerializer):
-    # url = serializers.HyperlinkedIdentityField(view_name='api:ad-detail')
-    # province = serializers.HyperlinkedRelatedField(view_name='api:province-detail', read_only=True)
-    # municipality = serializers.HyperlinkedRelatedField(view_name='api:municipality-detail', read_only=True)
+    province = ProvinceSerializer()
+    municipality = MunicipalitySerializer()
     class Meta:
         model = Ad
         fields = '__all__'
