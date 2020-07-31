@@ -38,11 +38,16 @@ class BaseAdPipeline(object):
             )
             # Already exists, just update it
             instance = item.save(commit=False)
+            instance.id = ad.id
             instance.slug = ad.slug
             instance.created_at = ad.created_at
             instance.updated_at = timezone.now()
             instance.created_by = ad.created_by
             instance.updated_by = ad.updated_by
+            # Doesn't update external_created_at if has no new value
+            if not instance.external_created_at and ad.external_created_at:
+                instance.external_created_at = ad.external_created_at
+
             instance.pk = ad.pk
         except Ad.DoesNotExist:
             pass

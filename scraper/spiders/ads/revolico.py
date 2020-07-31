@@ -158,3 +158,8 @@ class RevolicoParser(BaseParser):
         item['external_created_at'] = external_created_at
 
         return item
+
+    def is_not_found(self, response):
+        if response.css('h2::text').get(default='').strip() in ['Anuncio eliminado.', 'Anuncio inválido.', 'Anuncio despublicado.']:
+            return True
+        return False
