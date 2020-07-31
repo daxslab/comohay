@@ -17,11 +17,11 @@ class CustomSolrSearchBackend(SolrSearchBackend):
 
         for field_name, field_class in fields.items():
             field_data = {
-                "field_name": field_class.index_fieldname,
+                "name": field_class.index_fieldname,
                 "type": field_class.field_type,
                 "indexed": "true",
                 "stored": "true",
-                "multi_valued": "false",
+                "multiValued": "false",
             }
 
             if field_class.document is True:
@@ -49,7 +49,7 @@ class CustomSolrSearchBackend(SolrSearchBackend):
                 field_data["type"] = "text_es"
 
             if field_class.is_multivalued:
-                field_data["multi_valued"] = "true"
+                field_data["multiValued"] = "true"
 
             if field_class.stored is False:
                 field_data["stored"] = "false"
@@ -68,6 +68,10 @@ class CustomSolrSearchBackend(SolrSearchBackend):
                 # If it's text, it ought to be a string.
                 if field_data["type"] == "text_en":
                     field_data["type"] = "string"
+
+            # joining field data with with extra_attr
+            if hasattr(field_class, "extra_attr"):
+                field_data = {**field_data, **field_class.extra_attr}
 
             schema_fields.append(field_data)
 

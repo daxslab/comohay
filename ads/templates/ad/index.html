@@ -53,7 +53,7 @@
                                                      width="150" alt="logo"></a>
             </div>
             <div class="container">
-                <div class="row" style="padding-bottom: 1.5rem;">
+                <div class="row">
                     <div class="column" id="search-container">
                         <form method="get" action="." class="form-inline center search-form"
                               autocomplete="off">
@@ -79,6 +79,9 @@
                         <div class="autocomplete-container">
                             <ul id="autocomplete-list" class="autocomplete-list">
                             </ul>
+                        </div>
+                        <div class="extra">
+                            <span>{% blocktrans with index_count as index_count %}Near {{index_count}} ads found{% endblocktrans %}</span>
                         </div>
                     </div>
                 </div>
@@ -107,31 +110,6 @@
                 </div>
             {% endif %}
         </div>
-        {#    {% else %}#}
-
-        {#        <div class="row categories">#}
-        {#            {% for parent_category in parent_categories %}#}
-        {#                {% if forloop.counter0|divisibleby:4 %}#}
-        {#                    </div>#}
-        {#                    <div class="row">#}
-        {#                {% endif %}#}
-        {##}
-        {#                <div class="column">#}
-        {#                    {% if parent_category.children.count %}#}
-        {#                        <h4>#}
-        {#                            <a href="{% url 'ads:list_by_main_category' parent_category.slug %}">{{ parent_category.name }}</a>#}
-        {#                        </h4>#}
-        {#                        <ul>#}
-        {#                            {% for subcategory in parent_category.children.all %}#}
-        {#                                <li>#}
-        {#                                    <a href="{% url 'ads:list_by_categories' parent_category.slug subcategory.slug %}">{{ subcategory.name }}</a>#}
-        {#                                </li>#}
-        {#                            {% endfor %}#}
-        {#                        </ul>#}
-        {#                    {% endif %}#}
-        {#                </div>#}
-        {#            {% endfor %}#}
-        {#            </div>#}
     {% endif %}
 {% endblock %}
 

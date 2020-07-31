@@ -245,3 +245,20 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance: none;
 }
+
+.text-cross-out {
+  text-decoration: line-through;
+}
+
+.list-item-description p {
+  margin-bottom: 1rem;
+}
+
+#search-container .extra {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.extra span{
+  font-size: 1.4rem
+}

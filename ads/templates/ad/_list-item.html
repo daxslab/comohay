@@ -1,4 +1,5 @@
 {% load highlight %}
+{% load i18n %}
 
 <div class="list-item-container">
     {% if back %}
@@ -18,7 +19,9 @@
             <span class="list-item-location">
                 {% if ad.province %}{{ ad.province }}{% endif %}{% if ad.municipality %},{% endif %}
                 {% if ad.municipality %}{{ ad.municipality }}{% endif %}
-                ({{ ad.created_at | date:"SHORT_DATE_FORMAT" }})
+                {% if ad.external_created_at %}
+                    ({{ ad.external_created_at | date:"SHORT_DATE_FORMAT" }})
+                {% endif %}
             </span>
             {% if ad.get_user_price %}
                 <h3 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h3>
@@ -34,6 +37,9 @@
                 {{ ad.description| truncatechars:260 }}
             {% endif %}
         </p>
+        {% if query and result and result.missing_terms %}
+            <div>{% trans 'Missing' %}: {% for missing_term in result.missing_terms %} <span class="text-cross-out">{{ missing_term }}</span>{% endfor %}</div>
+        {% endif %}
     </div>
 
     {% if back %}
