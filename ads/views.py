@@ -70,13 +70,12 @@ class IndexView(SearchView):
         result_count = self.results.count()
         context['index_count'] = result_count if result_count > 0 else Ad.objects.count()
 
-        query_escaped = unidecode(self.query)
-        query_split = query_escaped.split(' ')
+        query_split = self.query.split(' ')
 
         def find_missing_terms(search_result):
             missing_terms = []
             for term in query_split:
-                if not re.search(re.escape(term), unidecode(search_result.text), re.IGNORECASE | re.UNICODE):
+                if not re.search(re.escape(unidecode(term)), unidecode(search_result.text), re.IGNORECASE | re.UNICODE):
                     missing_terms.append(term)
 
             search_result.__dict__['missing_terms'] = missing_terms
