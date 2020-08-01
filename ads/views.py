@@ -75,7 +75,7 @@ class IndexView(SearchView):
         def find_missing_terms(search_result):
             missing_terms = []
             for term in query_split:
-                if not re.search(re.escape(unidecode(term)), unidecode(search_result.text), re.IGNORECASE | re.UNICODE):
+                if not re.search(re.escape(unidecode(term)), unidecode(search_result.text), re.IGNORECASE):
                     missing_terms.append(term)
 
             search_result.__dict__['missing_terms'] = missing_terms
