@@ -21,6 +21,7 @@ from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from meta.views import Meta
 from rest_framework.utils import json
+from text_unidecode import unidecode
 
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD, ACTION_SEARCH_AD
 from ads.filters.ad_filter import AdFilter
@@ -74,7 +75,7 @@ class IndexView(SearchView):
         def find_missing_terms(search_result):
             missing_terms = []
             for term in query_split:
-                if not re.search(re.escape(term), search_result.text, re.IGNORECASE):
+                if not re.search(re.escape(term), unidecode(search_result.text), re.IGNORECASE | re.UNICODE):
                     missing_terms.append(term)
 
             search_result.__dict__['missing_terms'] = missing_terms

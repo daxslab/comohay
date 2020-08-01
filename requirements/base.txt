@@ -57,3 +57,4 @@ celery[redis]==4.4.6
 fast-autocomplete==0.6.0
 pysolr==3.9.0
 django-meta==1.7.0
+Unidecode==1.1.1
