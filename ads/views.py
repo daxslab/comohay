@@ -1,4 +1,5 @@
 import logging
+import re
 import sys
 import time
 from encodings.base64_codec import base64_decode
@@ -20,6 +21,7 @@ from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from meta.views import Meta
 from rest_framework.utils import json
+from text_unidecode import unidecode
 
 from ads.actions import ACTION_FOLLOW_EXTERNAL_AD, ACTION_VIEW_AD, ACTION_SEARCH_AD
 from ads.filters.ad_filter import AdFilter
@@ -65,9 +67,22 @@ class IndexView(SearchView):
 
     def get_context(self):
         context = super().get_context()
-        parent_categories = Category.objects.filter(parent=None).all()
-        context['parent_categories'] = parent_categories
-        context['index_count'] = Ad.objects.count()
+        result_count = self.results.count()
+        context['index_count'] = result_count if result_count > 0 else Ad.objects.count()
+
+        query_split = self.query.split(' ')
+
+        def find_missing_terms(search_result):
+            missing_terms = []
+            for term in query_split:
+                if not re.search(re.escape(unidecode(term)), unidecode(search_result.text), re.IGNORECASE):
+                    missing_terms.append(term)
+
+            search_result.__dict__['missing_terms'] = missing_terms
+            return search_result
+
+        context['page'].object_list = map(find_missing_terms, context['page'].object_list)
+
         meta = Meta(
             keywords=['indexado de clasificados en cuba', 'búsqueda de clasificados en cuba',
                       'cuba indexado de clasificados', 'cuba búsqueda de clasificados',
@@ -84,7 +99,8 @@ class IndexView(SearchView):
 
         if self.query != '':
             meta.title = '{} - {}'.format(self.query, settings.META_SITE_NAME)
-            meta.description = "Consulta los resultados para \"{}\" que hemos encontrado. Indexamos constantemente los sitios cubanos de anuncios más populares para ofrecerte los mejores resultados.".format(self.query)
+            meta.description = "Consulta los resultados para \"{}\" que hemos encontrado. Indexamos constantemente los sitios cubanos de anuncios más populares para ofrecerte los mejores resultados.".format(
+                self.query)
 
         context['meta'] = meta
         return context

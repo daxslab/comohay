@@ -58,8 +58,8 @@ services:
       - redis
   solr:
     image: solr:6.6
-    expose:
-      - "8983"
+    ports:
+      - 8983:8983
     volumes:
       - solr_data:/opt/solr/server/solr/mycores/
     command:

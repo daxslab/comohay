@@ -41,6 +41,9 @@ def remove_duplicates(ad, verbose=False):
     sqs = SearchQuerySet()
     similarity = int(settings.DESCRIPTION_SIMILARITY * 100)
 
+    # If the query has less than 4 clauses then it has to match at 100%, otherwise the number computed in similarity
+    similarity = '3<{}'.format(similarity)
+
     clean_desc = double_clean(ad.description, sqs.query.backend)
     clean_desc = clean_desc.replace("'", "\\'")
     max_desc_len = len(ad.description) + int(len(ad.description) * settings.DESCRIPTION_LENGTH_DIFF)

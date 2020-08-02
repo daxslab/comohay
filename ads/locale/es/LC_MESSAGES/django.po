@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-11 17:10+0000\n"
+"POT-Creation-Date: 2020-07-31 23:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +19,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ads/filters/ad_filter.py:11 ads/models/search.py:8 ads/models/search.py:12
-#: ads/models/user_search.py:10 ads/templates/ad/index.html:15
-#: ads/templates/ad/index.html:29 ads/templates/ad/index.html:57
-#: ads/templates/ad/index.html:71
+#: ads/models/user_search.py:12 ads/templates/ad/index.html:15
+#: ads/templates/ad/index.html:31 ads/templates/ad/index.html:60
+#: ads/templates/ad/index.html:76
 msgid "Search"
 msgstr "Buscar"
 
@@ -63,30 +63,50 @@ msgid "Municipality"
 msgstr "Minicipio"
 
 #: ads/models/ad.py:24
+msgid "Contact phone"
+msgstr ""
+
+#: ads/models/ad.py:25
+msgid "Contact email"
+msgstr ""
+
+#: ads/models/ad.py:26
 msgid "External source"
 msgstr "Fuente externa"
 
-#: ads/models/ad.py:25
+#: ads/models/ad.py:27
 msgid "External ID"
 msgstr "ID externo"
 
-#: ads/models/ad.py:26
+#: ads/models/ad.py:28
 msgid "External URL"
 msgstr "URL externa"
 
-#: ads/models/ad.py:27
+#: ads/models/ad.py:29
+#, fuzzy
+#| msgid "External ID"
+msgid "External contact ID"
+msgstr "ID externo"
+
+#: ads/models/ad.py:30
+#, fuzzy
+#| msgid "External source"
+msgid "External created at"
+msgstr "Fuente externa"
+
+#: ads/models/ad.py:31
 msgid "Created by"
 msgstr "Creado por"
 
-#: ads/models/ad.py:28
+#: ads/models/ad.py:32
 msgid "Updated by"
 msgstr "Actualizado por"
 
-#: ads/models/ad.py:31 ads/models/adimages.py:10
+#: ads/models/ad.py:35 ads/models/adimages.py:10
 msgid "Ad"
 msgstr "Anuncio"
 
-#: ads/models/ad.py:32
+#: ads/models/ad.py:36
 msgid "Ads"
 msgstr "Anuncios"
 
@@ -94,7 +114,7 @@ msgstr "Anuncios"
 msgid "Images"
 msgstr "Imágenes"
 
-#: ads/models/basemodel.py:6
+#: ads/models/basemodel.py:6 ads/models/user_search.py:14
 msgid "Created at"
 msgstr "Fecha de creación"
 
@@ -128,21 +148,21 @@ msgstr ""
 msgid "Searches"
 msgstr "Búsquedas"
 
-#: ads/models/user_search.py:9
+#: ads/models/user_search.py:11
 msgid "User"
 msgstr "Usuario"
 
-#: ads/models/user_search.py:11
-msgid "Daystamp"
-msgstr "Marca de día"
+#: ads/models/user_search.py:13
+msgid "Autosuggestion"
+msgstr ""
 
-#: ads/models/user_search.py:14
+#: ads/models/user_search.py:17
 #, fuzzy
 #| msgid "Search"
 msgid "UserSearch"
 msgstr "Buscar"
 
-#: ads/models/user_search.py:15
+#: ads/models/user_search.py:18
 #, fuzzy
 #| msgid "Search"
 msgid "UserSearches"
@@ -152,7 +172,11 @@ msgstr "Buscar"
 msgid "Submit"
 msgstr "Enviar"
 
-#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:89
+#: ads/templates/ad/_list-item.html:41
+msgid "Missing"
+msgstr "Falta"
+
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:97
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
@@ -191,20 +215,25 @@ msgstr "También le puede interesar"
 msgid "Update Ad"
 msgstr "Actualizado por"
 
-#: ads/templates/ad/index.html:22 ads/templates/ad/index.html:64
+#: ads/templates/ad/index.html:24 ads/templates/ad/index.html:69
 msgid "Maybe you want to say"
 msgstr "Quzá quiso decir"
 
-#: ads/templates/ad/index.html:42
+#: ads/templates/ad/index.html:44
 #, python-format
 msgid "%(index_count)s indexed ads"
 msgstr "%(index_count)s anuncios indexados"
 
-#: ads/templates/ad/index.html:96
+#: ads/templates/ad/index.html:84
+#, python-format
+msgid "Near %(index_count)s ads found"
+msgstr "Cerca de %(index_count)s anuncios encontrados"
+
+#: ads/templates/ad/index.html:104
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:99
+#: ads/templates/ad/index.html:107
 msgid "Next"
 msgstr "Siguiente"
 
@@ -219,3 +248,6 @@ msgstr ""
 #: ads/templates/ad/user_ads.html:39
 msgid "An unexpected error has occurred"
 msgstr ""
+
+#~ msgid "Daystamp"
+#~ msgstr "Marca de día"

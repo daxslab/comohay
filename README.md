@@ -46,4 +46,8 @@ Building Solr index. This may take a while depending on the amount of data
 If, for some reason, you need to recreate the index from scratch, it is necessary to clean the docker named volumes
 
      docker-compose down -v
+     
+Re-init redis cache at pos 0
+
+     docker-compose -f docker-compose.prod.yml exec redis redis-cli -n 0 flushdb
 

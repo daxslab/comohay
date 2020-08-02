@@ -250,8 +250,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'ads.tasks.crawl',
         'schedule': crontab(minute=1)  # execute every hour at minute 1.
     },
-    'update_index': {
-        'task': 'ads.tasks.update_index',
+    'updater': {
+        'task': 'ads.tasks.updater',
         'schedule': crontab(hour=8, minute=1)  # execute every day at 4:01 AM cuban time
     },
     'updater': {
