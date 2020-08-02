@@ -13,3 +13,9 @@ def crawl():
     # using subprocess.Popen instead of call_command because of celery issues with multiprocessing
     subprocess.Popen(['python', 'manage.py', 'proxy_crawler'])
     subprocess.Popen(['python', 'manage.py', 'crawl'])
+
+@shared_task
+def updater():
+    # using subprocess.Popen instead of call_command because of celery issues with multiprocessing
+    subprocess.Popen(['python', 'manage.py', 'proxy_crawler'])
+    subprocess.Popen(['python', 'manage.py', 'updater'])
