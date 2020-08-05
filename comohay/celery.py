@@ -15,6 +15,12 @@ app = Celery('comohay')
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
+# This settings are not working from django settings
+app.conf.update(
+    worker_max_tasks_per_child=1,
+    broker_pool_limit=None
+)
+
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks()
 
