@@ -200,9 +200,11 @@
        the default is fine for most applications.
        For more info: http://wiki.apache.org/solr/SchemaXml#Similarity
     -->
+
     <!--
-     <similarity class="com.example.solr.CustomSimilarityFactory">
-       <str name="paramkey">param value</str>
+     <similarity class="solr.BM25SimilarityFactory">
+       <str name="k1">0.5</str>
+       <str name="b">0.3125</str>
      </similarity>
     -->
 

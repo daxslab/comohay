@@ -9,11 +9,11 @@ from haystack_custom import fields
 
 
 class AdIndex(indexes.SearchIndex, indexes.Indexable):
-    text = fields.CharField(document=True, use_template=True)
+    text = fields.CharField(document=True, use_template=True, extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
 
-    title = fields.CharField(model_attr='title', extra_attr={"omitNorms": "true"})
+    title = fields.CharField(model_attr='title', extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
 
-    description = indexes.CharField(model_attr='description')
+    description = fields.CharField(model_attr='description', extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
 
     # todo: change DecimalField by FloatField in order to allow range queries.
     price = indexes.DecimalField(model_attr='price')

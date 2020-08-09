@@ -46,8 +46,9 @@ class AdSearchForm(ModelSearchForm):
         clean_q = self.triple_clean(query)
         clean_q = clean_q.replace("'", "\\\\'")
         clean_q = clean_q.replace('"', '\\"')
-        # this will add the field to search and the boosting value for each term. Eg. 'split toyal' -> 'title:split^1.5 title:royal^1.5'
-        return 'title:' + clean_q.replace(' ', '^1.5 title:')
+        # this will add the field to search and the boosting value for each term.
+        # Eg. 'split royal' -> 'title:split^1.5 title:royal^1.5 description:split^1.1 description:royal^1.1'
+        return 'title:' + clean_q.replace(' ', '^1.5 title:') + ' description:' + clean_q.replace(' ', '^1.1 description:')
 
     def triple_clean(self, query_fragment):
         """
