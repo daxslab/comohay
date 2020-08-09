@@ -46,7 +46,7 @@ services:
       - redis
   celery_beat:
     build: ./
-    command: celery beat --app=comohay --loglevel=info
+    command: celery beat --app=comohay --loglevel=info --pidfile=
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data

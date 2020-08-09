@@ -51,3 +51,29 @@ Re-init redis cache at pos 0
 
      docker-compose -f docker-compose.prod.yml exec redis redis-cli -n 0 flushdb
 
+## Development
+
+for development proposes is convenient to create a new 
+`comohay/settings_local.py` file. In this file you can override default settings or define new ones. 
+
+### Scheduled tasks
+
+By default, ComoHay defines scheduled tasks for crawling and indexing. In the development environment
+you may want to avoid the tasks execution. For this you can override the 
+`CELERY_BEAT_SCHEDULE` variable including it in `comohay/settings_local.py`:
+
+      CELERY_BEAT_SCHEDULE = {}
+
+### Caching
+
+ComoHay uses caching by default. For development proposes you may want to disable the caching using the
+Django `DummyCache`. For this, you can override the `CACHES` setting in `comohay/settings_local.py`:
+
+    CACHES = {
+        "default": {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        },
+        "search": {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }

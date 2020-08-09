@@ -246,13 +246,17 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
+    'get_proxies': {
+        'task': 'ads.tasks.get_proxies',
+        'schedule': crontab(minute=1)  # execute every hour at minute 1.
+    },
     'crawl': {
         'task': 'ads.tasks.crawl',
-        'schedule': crontab(minute=1)  # execute every hour at minute 1.
+        'schedule': crontab(minute=3)  # execute every hour at minute 3.
     },
     'updater': {
         'task': 'ads.tasks.updater',
-        'schedule': crontab(hour=8, minute=1)  # execute every day at 4:01 AM cuban time
+        'schedule': crontab(hour=8, minute=3)  # execute every day at 4:03 AM cuban time
     }
 }
 

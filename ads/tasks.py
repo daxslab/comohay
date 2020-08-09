@@ -1,22 +1,20 @@
-import subprocess
-
 from celery import shared_task
+from django.core.management import call_command
 
 
 @shared_task
 def update_index():
-    subprocess.Popen(['python', 'manage.py', 'update_index'])
+    call_command('update_index')
 
+@shared_task
+def get_proxies():
+    call_command('proxy_crawler')
 
 @shared_task
 def crawl():
-    # using subprocess.Popen instead of call_command because of celery issues with multiprocessing
-    subprocess.Popen(['python', 'manage.py', 'proxy_crawler'])
-    subprocess.Popen(['python', 'manage.py', 'crawl', '--depth' '10'])
+    call_command('crawl', '--depth', '10')
 
 
 @shared_task
 def updater():
-    # using subprocess.Popen instead of call_command because of celery issues with multiprocessing
-    subprocess.Popen(['python', 'manage.py', 'proxy_crawler'])
-    subprocess.Popen(['python', 'manage.py', 'updater'])
+    call_command('crawl', 'updater')
