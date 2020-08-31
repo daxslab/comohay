@@ -8,7 +8,7 @@
         <div class="container">
             <div class="row main-search">
                 <div class="center-content">
-                    <img class="logo-main" src="{% static 'logo-adjusted.png' %}">
+                  <h1><img class="logo-main" src="{% static 'logo-adjusted.png' %}" alt="ComoHay"></h1>
                     <div class="column" id="search-container">
                         <form method="get" action="." class="form-inline center search-form"
                               autocomplete="off">
@@ -49,8 +49,7 @@
     {% else %}
         <div class="search-navbar">
             <div class="float-title">
-                <a href="{% url "ads:index" %}"><img class="logo-search" src="{% static 'logo-adjusted.png' %}"
-                                                     width="150" alt="logo"></a>
+              <h1 style="margin-bottom: 0"><a href="{% url "ads:index" %}"><img class="logo-search" src="{% static 'logo-adjusted.png' %}" width="313" alt="ComoHAY"/></a></h1>
             </div>
             <div class="container">
                 <div class="row">
