@@ -12,6 +12,7 @@ class CharField(fields.CharField):
 
 
 class DateTimeField(fields.DateTimeField):
+    extra_attr = {}
     field_type = "tdate"
 
     def __init__(self, **kwargs, ):

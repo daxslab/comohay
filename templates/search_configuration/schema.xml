@@ -201,6 +201,9 @@
        For more info: http://wiki.apache.org/solr/SchemaXml#Similarity
     -->
 
+    <similarity class="org.apache.lucene.search.similarities.BooleanSimilarity">
+    </similarity>
+
     <!--
      <similarity class="solr.BM25SimilarityFactory">
        <str name="k1">0.5</str>

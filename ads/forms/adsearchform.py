@@ -35,7 +35,12 @@ class AdSearchForm(ModelSearchForm):
         #   https://www.youtube.com/watch?v=3E8jOUgj6L8to
         boost = "recip(ms(NOW,external_created_at),3.16e-11,1,1)"
 
-        sqs = self.searchqueryset.filter(content=AltParser('edismax', q, bq=bq, boost=boost))
+        pf = "title^2.5 description^0.15"
+        pf3 = "title^1.5 description^0.10"
+        pf2 = "title^0.5 description^0.05"
+
+        sqs = self.searchqueryset.filter(
+            content=AltParser('edismax', q, bq=bq, boost=boost, pf=pf, pf3=pf3, pf2=pf2, ps=2, ps3=2, ps2=1))
 
         if self.load_all:
             sqs = sqs.load_all()
@@ -43,12 +48,16 @@ class AdSearchForm(ModelSearchForm):
         return sqs.models(Ad)
 
     def create_boosting_query(self, query):
+        # Removing '"' because its not necessary for query boosting
+        query = query.replace('"', '')
+
         clean_q = self.triple_clean(query)
         clean_q = clean_q.replace("'", "\\\\'")
-        clean_q = clean_q.replace('"', '\\"')
+
         # this will add the field to search and the boosting value for each term.
         # Eg. 'split royal' -> 'title:split^1.5 title:royal^1.5 description:split^1.1 description:royal^1.1'
-        return 'title:' + clean_q.replace(' ', '^1.5 title:') + ' description:' + clean_q.replace(' ', '^1.1 description:')
+        return 'title:' + clean_q.replace(' ', '^1.5 title:') + '^1.5' + ' description:' + clean_q.replace(' ',
+                                                                                                           '^0.1 description:') + '^0.1'
 
     def triple_clean(self, query_fragment):
         """

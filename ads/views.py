@@ -70,7 +70,9 @@ class IndexView(SearchView):
         result_count = self.results.count()
         context['index_count'] = result_count if result_count > 0 else Ad.objects.count()
 
-        query_split = self.query.split(' ')
+        # Before split the query its necessary to remove the '"' characters because those are part of the syntax to
+        # phrase query
+        query_split = self.query.replace('"', '').split(' ')
 
         def find_missing_terms(search_result):
             missing_terms = []
