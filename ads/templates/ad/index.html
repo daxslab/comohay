@@ -8,27 +8,24 @@
         <div class="container">
             <div class="row main-search">
                 <div class="center-content">
-                  <h1><img class="logo-main" src="{% static 'logo-adjusted.png' %}" alt="ComoHay"></h1>
+                    <h1><img class="logo-main" src="{% static 'logo-adjusted.png' %}" alt="ComoHay"></h1>
                     <div class="column" id="search-container">
                         <form method="get" action="." class="form-inline center search-form"
                               autocomplete="off">
-                            <input placeholder="{% trans 'Search' %}" value="{{ query }}"
-                                   type="search"
-                                   name="q"
-                                   id="id_q"
-                                   class="search-input"
-                                   data-autocomplete-cache="{{ cache_autocomplete_client }}">
-                            <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
-                            {% if suggestion and query != suggestion %}
-                                <div>
-                                    <p>{% trans 'Maybe you want to say' %}: <a
-                                            href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
-                                </div>
-                            {% endif %}
-                            <button type="reset" class="button button-search button-clear button-cancel"
-                                    id="button-cancel"><span
-                                    class="icon-cancel-1"></span></button>
-                            <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span
+                            <div class="input-box form-inline">
+                                <input placeholder="{% trans 'Search' %}" value="{{ query }}"
+                                       type="search"
+                                       name="q"
+                                       id="id_q"
+                                       class="search-input"
+                                       data-autocomplete-cache="{{ cache_autocomplete_client }}">
+                                <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
+                                <button type="reset" class="button button-search button-clear"
+                                        id="button-cancel"><span
+                                        class="icon-cancel-1"></span></button>
+                            </div>
+                            <button type="submit" value="{% trans 'Search' %}"
+                                    class="button button-search button-submit"><span
                                     class="icon-search"></span></button>
                         </form>
                         <div class="autocomplete-container">
@@ -39,7 +36,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="center-content">
+                <div class="center-content ads-quantity">
                     <p>
                         {% blocktrans with index_count as index_count %}{{ index_count }} indexed ads{% endblocktrans %}
                     </p>
@@ -49,30 +46,28 @@
     {% else %}
         <div class="search-navbar">
             <div class="float-title">
-              <h1 style="margin-bottom: 0"><a href="{% url "ads:index" %}"><img class="logo-search" src="{% static 'logo-adjusted.png' %}" width="313" alt="ComoHAY"/></a></h1>
+                <h1><a href="{% url "ads:index" %}"><img class="logo-search" src="{% static 'logo-adjusted.png' %}"
+                                                         width="150" alt="ComoHAY"/></a></h1>
             </div>
             <div class="container">
                 <div class="row">
                     <div class="column" id="search-container">
                         <form method="get" action="." class="form-inline center search-form"
                               autocomplete="off">
-                            <input placeholder="{% trans 'Search' %}" value="{{ query }}"
-                                   type="search"
-                                   name="q"
-                                   id="id_q"
-                                   class="search-input"
-                                   data-autocomplete-cache="{{ cache_autocomplete_client }}">
-                            <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
-                            {% if suggestion and query != suggestion %}
-                                <div>
-                                    <p>{% trans 'Maybe you want to say' %}: <a
-                                            href="{% url 'ads:index' %}?q={{ suggestion }}">{{ suggestion }}</a></p>
-                                </div>
-                            {% endif %}
-                            <button type="reset" class="button button-search button-clear button-cancel"
-                                    id="button-cancel"><span
-                                    class="icon-cancel-1"></span></button>
-                            <button type="submit" value="{% trans 'Search' %}" class="button button-search"><span
+                            <div class="input-box form-inline">
+                                <input placeholder="{% trans 'Search' %}" value="{{ query }}"
+                                       type="search"
+                                       name="q"
+                                       id="id_q"
+                                       class="search-input"
+                                       data-autocomplete-cache="{{ cache_autocomplete_client }}">
+                                <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
+                                <button type="reset" class="button button-search button-clear"
+                                        id="button-cancel"><span
+                                        class="icon-cancel-1"></span></button>
+                            </div>
+                            <button type="submit" value="{% trans 'Search' %}"
+                                    class="button button-search button-submit"><span
                                     class="icon-search"></span></button>
                         </form>
                         <div class="autocomplete-container">
@@ -80,7 +75,8 @@
                             </ul>
                         </div>
                         <div class="extra">
-                            <span>{% blocktrans with index_count as index_count %}Near {{index_count}} ads found{% endblocktrans %}</span>
+                            <span>{% blocktrans with index_count as index_count %}Near {{ index_count }} ads
+                                found{% endblocktrans %}</span>
                         </div>
                     </div>
                 </div>
@@ -97,7 +93,7 @@
             {% endfor %}
 
             {% if page.has_previous or page.has_next %}
-                <div>
+                <div class="pagination text-center">
                     {% if page.has_previous %}
                         <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo;
                     {% trans 'Previous' %}{% if page.has_previous %}</a>{% endif %}

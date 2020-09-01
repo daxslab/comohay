@@ -1,33 +1,30 @@
 {% load highlight %}
-{% load i18n %}
 
 <div class="list-item-container">
+    {% if back %}
+        <a href="{% url "ads:edit" id=ad.id %}" class="button button-outline button-sm"><span
+                class="icon-pencil"></span> Editar</a>
+        <button class="button button-outline button-sm ajax-delete"
+                data-delete-url="{% url "ads:delete" id=ad.id %}"><span class="icon-trash"></span> Eliminar
+        </button>
+    {% elif ad.external_source %}
+        <span class="list-item-badge badge badge-secondary">{{ ad.external_source }}</span>
+    {% endif %}
     <div class="list-item-header">
-        {% if ad.external_source %}
-            <span class="list-item-badge badge badge-secondary">{{ ad.external_source }}</span>
-            {% if ad.external_created_at %}
-                <span style="float: right; padding-top: 5px;">{{ ad.external_created_at | date:"SHORT_DATE_FORMAT" }}</span>
-            {% endif %}
-        {% elif ad.external_created_at  %}
-              <span style="float: right; padding-top: 5px;">{{ ad.external_created_at | date:"SHORT_DATE_FORMAT" }}</span>
-        {% endif %}
-    </div>
-    <div class="list-item-title">
         <a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank" class="external"
            data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %}
            data-ad="{{ ad.id }}">
-            <h2>{{ ad.title }}</h2>
-        </a>
-    </div>
-    <div class="list-item-location">
-        <span>
+            <h4 class="list-item-title">{{ ad.title }}</h4>
+            <span class="list-item-location">
                 {% if ad.province %}{{ ad.province }}{% endif %}{% if ad.municipality %},{% endif %}
                 {% if ad.municipality %}{{ ad.municipality }}{% endif %}
+                ({{ ad.created_at | date:"SHORT_DATE_FORMAT" }})
             </span>
+            {% if ad.get_user_price %}
+                <h3 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h3>
+            {% endif %}
+        </a>
     </div>
-    {% if ad.get_user_price %}
-        <div class="list-item-price"><h3>{{ ad.get_user_price }} {{ ad.user_currency }}</h3></div>
-    {% endif %}
     <div class="list-item-description">
         <p>
             {# text highlight for haystack results #}
@@ -37,10 +34,6 @@
                 {{ ad.description| truncatechars:260 }}
             {% endif %}
         </p>
-        {% if query and result and result.missing_terms %}
-            <div>{% trans 'Missing' %}: {% for missing_term in result.missing_terms %}
-                <span class="text-cross-out">{{ missing_term }}</span>{% endfor %}</div>
-        {% endif %}
     </div>
 
     {% if back %}
