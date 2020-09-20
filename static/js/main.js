@@ -74,10 +74,19 @@ function isNumberKey(evt) {
 }
 
 function submitSearchForm(search_form) {
+    let query_input = document.getElementById('id_q');
     let provinces_select = document.querySelector(`#${search_form.id} select[name="provinces"]`);
     let price_from_input = document.querySelector(`#${search_form.id} input[name="price_from"]`);
     let price_to_input = document.querySelector(`#${search_form.id} input[name="price_to"]`);
     let price_currency_select = document.querySelector(`#${search_form.id} select[name="price_currency"]`);
+
+    if (!query_input.value){
+        provinces_select.remove();
+        price_from_input.remove();
+        price_to_input.remove();
+        price_currency_select.remove();
+        return true;
+    }
 
     if (!provinces_select.value)
         provinces_select.remove();
