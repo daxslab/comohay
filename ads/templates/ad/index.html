@@ -119,8 +119,9 @@
                                 </div>
                             </div>
                             <div class="extra">
-                            <span>{% blocktrans with index_count as index_count %}Near {{ index_count }} ads
-                                found{% endblocktrans %}</span>
+                            <span>
+                                {% blocktrans with index_count as index_count %}Near {{ index_count }} ads found{% endblocktrans %}
+                            </span>
                                 <button id="dropdown-filters-btn" type="button"
                                         class="button button-sm button-clear dropdown-filters-btn">
                                     <span>{% trans 'Filters' %}</span>

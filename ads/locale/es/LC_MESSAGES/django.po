@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-20 03:54+0000\n"
+"POT-Creation-Date: 2020-09-20 18:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgstr "Nombre"
 msgid "Municipalities"
 msgstr "Municipios"
 
-#: ads/models/province.py:14 ads/templates/ad/index.html:136
+#: ads/models/province.py:14 ads/templates/ad/index.html:137
 msgid "Provinces"
 msgstr "Provincias"
 
@@ -228,20 +228,16 @@ msgstr "Desde"
 msgid "To"
 msgstr "Hasta"
 
-#: ads/templates/ad/index.html:122
-#, fuzzy, python-format
+#: ads/templates/ad/index.html:123
 #| msgid "Near %(index_count)s ads found"
-msgid ""
-"Near %(index_count)s ads\n"
-"                                found"
+msgid "Near %(index_count)s ads found"
 msgstr "Cerca de %(index_count)s anuncios encontrados"
 
-#: ads/templates/ad/index.html:126
+#: ads/templates/ad/index.html:127
 msgid "Filters"
-msgstr ""
+msgstr "Filtros"
 
 #: ads/templates/ad/index.html:156
-#, fuzzy
 #| msgid "Price"
 msgid "Prices"
 msgstr "Precios"
@@ -260,11 +256,11 @@ msgstr "Mis anuncios"
 
 #: ads/templates/ad/user_ads.html:26
 msgid "Are you sure you want to delete this ad?"
-msgstr ""
+msgstr "¿Está seguro que desea eliminar este anuncio?"
 
 #: ads/templates/ad/user_ads.html:39
 msgid "An unexpected error has occurred"
-msgstr ""
+msgstr "Ha ocurrido un error inesperado"
 
 #~ msgid "Maybe you want to say"
 #~ msgstr "Quzá quiso decir"
