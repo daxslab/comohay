@@ -160,7 +160,7 @@ h1.logo a {
     max-width: 100%;
   }
 
-  .row.main-search {
+  .main-search {
     margin-top: 8rem;
   }
 
@@ -172,7 +172,7 @@ h1.logo a {
 
 @media (min-width: 40rem) {
 
-  .row.main-search {
+  .main-search {
     margin-top: 15rem;
   }
 
@@ -315,6 +315,15 @@ input[type="search"]::-webkit-search-results-decoration {
   align-items: center;
 }
 
+.main-search #search-form {
+  margin-bottom: 3rem;
+}
+
+.main-search #search-form .extra {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 #search-form .extra .dropdown-filters-btn {
   margin-left: auto;
   padding: 0;
@@ -437,7 +446,7 @@ input[type="search"]::-webkit-search-results-decoration {
   white-space: nowrap;
 }
 
-.filters-selected .item-container .item .remove-filter.button{
+.filters-selected .item-container .item .remove-filter.button {
   padding-left: 0.4rem;
   padding-right: 0.4rem;
   height: 2.9rem;
@@ -464,15 +473,14 @@ input[type="search"]::-webkit-search-results-decoration {
   -moz-appearance: textfield;
 }
 
-#prices-filter select{
+#prices-filter select {
   border-radius: 0;
   margin-bottom: 0;
 }
 
-#prices-filter .column{
+#prices-filter .column {
   margin-top: 1rem;
 }
-
 
 
 // ----------TESTING--------------

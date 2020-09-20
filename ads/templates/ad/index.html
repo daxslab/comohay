@@ -5,43 +5,52 @@
 
 {% block essence %}
     {% if not query %}
-        <div class="container">
-            <div class="row main-search">
+        <div class="main-search container">
+            <div class="row ">
                 <div class="center-content">
                     <h1><img class="logo-main" src="{% static 'logo-adjusted.png' %}" alt="ComoHay"></h1>
-                    <div class="column" id="search-container">
-                        <form method="get" action="." class="form-inline center search-form"
-                              autocomplete="off">
-                            <div class="input-box form-inline">
-                                <input placeholder="{% trans 'Search' %}" value="{{ query }}"
-                                       type="search"
-                                       name="q"
-                                       id="id_q"
-                                       class="search-input"
-                                       data-autocomplete-cache="{{ cache_autocomplete_client }}">
-                                <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
-                                <button type="reset" class="button button-search button-clear"
-                                        id="button-cancel"><span
-                                        class="icon-cancel-1"></span></button>
-                            </div>
-                            <button type="submit" value="{% trans 'Search' %}"
-                                    class="button button-search button-submit"><span
-                                    class="icon-search"></span></button>
-                        </form>
-                        <div class="autocomplete-container">
-                            <ul id="autocomplete-list" class="autocomplete-list">
-                            </ul>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="center-content ads-quantity">
-                    <p>
-                        {% blocktrans with index_count as index_count %}{{ index_count }} indexed ads{% endblocktrans %}
-                    </p>
-                </div>
+                <form method="get" action="." id="search-form" class="column search-form"
+                      autocomplete="off" onsubmit="submitSearchForm(this)">
+                    <div class="form-inline center">
+                        <div class="input-box form-inline">
+                            <input placeholder="{% trans 'Search' %}" value="{{ query }}"
+                                   type="search"
+                                   name="q"
+                                   id="id_q"
+                                   class="search-input"
+                                   data-autocomplete-cache="{{ cache_autocomplete_client }}">
+                            <input type="hidden" name="a" id="autosuggestion-hi" value='1' disabled>
+                            <button type="reset" class="button button-search button-clear"
+                                    id="button-cancel"><span
+                                    class="icon-cancel-1"></span></button>
+                        </div>
+                        <button type="submit" value="{% trans 'Search' %}"
+                                class="button button-search button-submit"><span
+                                class="icon-search"></span></button>
+                    </div>
+                    <div class="autocomplete-container">
+                        <ul id="autocomplete-list" class="autocomplete-list">
+                        </ul>
+                    </div>
+                    <div class="center-content ads-quantity">
+                            <span class="extra">
+                                {% blocktrans with index_count as index_count %}{{ index_count }} indexed ads{% endblocktrans %}
+                            </span>
+                        <button id="dropdown-filters-btn" type="button"
+                                class="button button-sm button-clear dropdown-filters-btn">
+                            <span>{% trans 'Filters' %}</span>
+                            <span id="dropdown-filters-icon" class="icon-right-open-big"></span>
+                        </button>
+                    </div>
+                    {% include 'ad/_filters-container.html' %}
+                </form>
             </div>
+        </div>
+        </div>
+        </div>
         </div>
     {% else %}
         <div class="search-navbar">
@@ -75,49 +84,7 @@
                                 <ul id="autocomplete-list" class="autocomplete-list">
                                 </ul>
                             </div>
-                            <div class="filters-selected">
-                                <div id="prices-selected" class="row">
-                                    {% if price_from is not empty %}
-                                        <div class="item-container column column-xs-100 column-sm-50">
-                                            <div class="item">
-                                                <button type="button"
-                                                        class="remove-filter button button-sm button-clear"
-                                                        data-reference="price_from"
-                                                        onclick="window.search_filter_manager.removePriceSelection(this.getAttribute('data-reference'))">
-                                                    <span class="icon-cancel-1"></span></button>
-                                                {% trans 'From' %}: {{ price_from }} {{ price_currency }}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    {% if price_to is not empty %}
-                                        <div class="item-container column column-xs-100 column-sm-50">
-                                            <div class="item">
-                                                <button type="button"
-                                                        class="remove-filter button button-sm button-clear"
-                                                        data-reference="price_to"
-                                                        onclick="window.search_filter_manager.removePriceSelection(this.getAttribute('data-reference'))">
-                                                    <span class="icon-cancel-1"></span></button>
-                                                {% trans 'To' %}: {{ price_to }} {{ price_currency }}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                                <div id="provinces-selected" class="row">
-                                    {% for province in provinces %}
-                                        {% if province.selected %}
-                                            <div class="item-container column column-xs-100 column-sm-50">
-                                                <div class="item">
-                                                    <button type="button"
-                                                            class="remove-filter button button-sm button-clear"
-                                                            data-reference="{{ province.name }}">
-                                                        <span class="icon-cancel-1"></span></button>
-                                                    {{ province.display_name }}
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            </div>
+                            {% include 'ad/_filters-selected.html' %}
                             <div class="extra">
                             <span>
                                 {% blocktrans with index_count as index_count %}Near {{ index_count }} ads found{% endblocktrans %}
@@ -131,58 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="filters-container" class="d-none">
-                    <div class="container">
-                        <div id="provinces-filter">
-                            <label for="provinces-select">{% trans "Provinces" %}:</label>
-                            <select id="provinces-select" name="provinces" multiple class="d-none">
-                                {% for province in provinces %}
-                                    <option value="{{ province.name }}"
-                                            {% if province.selected %}selected{% endif %}>{{ province.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="row custom-select">
-                                {% for province in provinces %}
-                                    <div class="column column-xs-100 column-sm-50 column-md-25">
-                                        <button class="button button-sm button-outline"
-                                                type="button"
-                                                data-selected="{% if province.selected %}1{% else %}0{% endif %}"
-                                                data-value="{{ province.name }}">{{ province.display_name }}</button>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div id="prices-filter">
-                            <label>{% trans "Prices" %}:</label>
-                            <div class="row">
-                                <div class="column column-30">
-                                    <input type="number" name="price_from" placeholder="{% trans 'From' %}"
-                                           onkeypress="return isNumberKey(event)"
-                                           {% if price_from is not empty %}value="{{ price_from }}{% endif %}">
-                                </div>
-                                <div class="column column-30">
-                                    <input type="number" name="price_to" placeholder="{% trans 'To' %}"
-                                           onkeypress="return isNumberKey(event)"
-                                           {% if price_to is not empty %}value="{{ price_to }}{% endif %}">
-                                </div>
-                                <div class="column column-30">
-                                    <select name="price_currency">
-                                        <option value="CUC"
-                                                {% if price_currency and price_currency == 'CUC' %}selected{% endif %}>
-                                            CUC
-                                        </option>
-                                        <option value="CUP"
-                                                {% if price_currency and price_currency == 'CUP' %}selected{% endif %}>
-                                            CUP
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="button button-sm float-right"
-                                style="margin-top: 1rem;margin-bottom: 1rem;">{% trans "Search" %}</button>
-                    </div>
-                </div>
+                {% include 'ad/_filters-container.html' %}
             </form>
         </div>
 
@@ -214,8 +130,6 @@
 {% block js %}
     {% compress js %}
         <script type="text/javascript" src="{% static "js/autocomplete.js" %}" async></script>
-        {% if query %}
-            <script type="text/javascript" src="{% static "js/search-filters.js" %}" async></script>
-        {% endif %}
+        <script type="text/javascript" src="{% static "js/search-filters.js" %}" async></script>
     {% endcompress %}
 {% endblock %}

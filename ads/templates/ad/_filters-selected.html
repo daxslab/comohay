@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="filters-selected">
+    <div id="prices-selected" class="row">
+        {% if price_from is not empty %}
+            <div class="item-container column column-xs-100 column-sm-50">
+                <div class="item">
+                    <button type="button"
+                            class="remove-filter button button-sm button-clear"
+                            data-reference="price_from"
+                            onclick="window.search_filter_manager.removePriceSelection(this.getAttribute('data-reference'))">
+                        <span class="icon-cancel-1"></span></button>
+                    {% trans 'From' %}: {{ price_from }} {{ price_currency }}
+                </div>
+            </div>
+        {% endif %}
+        {% if price_to is not empty %}
+            <div class="item-container column column-xs-100 column-sm-50">
+                <div class="item">
+                    <button type="button"
+                            class="remove-filter button button-sm button-clear"
+                            data-reference="price_to"
+                            onclick="window.search_filter_manager.removePriceSelection(this.getAttribute('data-reference'))">
+                        <span class="icon-cancel-1"></span></button>
+                    {% trans 'To' %}: {{ price_to }} {{ price_currency }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div id="provinces-selected" class="row">
+        {% for province in provinces %}
+            {% if province.selected %}
+                <div class="item-container column column-xs-100 column-sm-50">
+                    <div class="item">
+                        <button type="button"
+                                class="remove-filter button button-sm button-clear"
+                                data-reference="{{ province.name }}">
+                            <span class="icon-cancel-1"></span></button>
+                        {{ province.display_name }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

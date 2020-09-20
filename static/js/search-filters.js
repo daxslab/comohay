@@ -45,29 +45,21 @@ SearchFilterManager.prototype.setup = function () {
         self.removeProvinceSelection(this.getAttribute('data-reference'));
     }));
 
-    let from_price_input = document.querySelector(`#${this.prices_filter_id} input[name="price_from"]`);
-    from_price_input.addEventListener('input', function () {
-        if (this.value)
+    let prices_input = document.querySelectorAll(`#${this.prices_filter_id} input[name="price_from"], #${this.prices_filter_id} input[name="price_to"]`);
+    prices_input.forEach(input => input.addEventListener('input', function () {
+        if (self.prices_selected_container && this.value)
             self.setPriceSelection(this.getAttribute('name'));
-        else
+        else if (self.prices_selected_container)
             self.removePriceSelection(this.getAttribute('name'));
-    });
-
-    let to_price_input = document.querySelector(`#${this.prices_filter_id} input[name="price_to"]`);
-    to_price_input.addEventListener('input', function () {
-        if (this.value)
-            self.setPriceSelection(this.getAttribute('name'));
-        else
-            self.removePriceSelection(this.getAttribute('name'));
-    });
+    }));
 
     let price_currency_select = document.querySelector(`#${this.prices_filter_id} select[name="price_currency"]`);
     price_currency_select.addEventListener('change', function () {
         let input_event = new Event('input');
-        if (from_price_input.value)
-            from_price_input.dispatchEvent(input_event);
-        if (to_price_input.value)
-            to_price_input.dispatchEvent(input_event);
+        prices_input.forEach(function (input) {
+            if (input.value)
+                input.dispatchEvent(input_event);
+        });
     });
 };
 
@@ -99,13 +91,17 @@ SearchFilterManager.prototype.setPriceSelection = function (name) {
 SearchFilterManager.prototype.removeProvinceSelection = function (value) {
     let option = document.querySelector(`#${this.provinces_filter_id} select[name="provinces"] option[value="${value}"]`);
     let select_btn = document.querySelector(`#${this.provinces_filter_id} .custom-select button[data-value="${value}"]`);
-    let displayed_selection = document
-        .querySelector(`#${this.provinces_selected_container_id} .item-container .item button[data-reference="${value}"]`)
-        .parentElement
-        .parentElement;
     option.removeAttribute('selected');
     select_btn.setAttribute('data-selected', 0);
-    displayed_selection.remove();
+
+    // check if the container that shows the selected provinces is in the current view
+    if (this.provinces_selected_container) {
+        let displayed_selection = document
+            .querySelector(`#${this.provinces_selected_container_id} .item-container .item button[data-reference="${value}"]`)
+            .parentElement
+            .parentElement;
+        displayed_selection.remove();
+    }
 };
 
 SearchFilterManager.prototype.addProvinceSelection = function (value) {
@@ -113,8 +109,12 @@ SearchFilterManager.prototype.addProvinceSelection = function (value) {
     let select_btn = document.querySelector(`#${this.provinces_filter_id} .custom-select button[data-value="${value}"]`);
     option.setAttribute('selected', '');
     select_btn.setAttribute('data-selected', 1);
-    let displayed_selection = this.getDisplayedSelectionElement(value, select_btn.textContent, 'window.search_filter_manager.removeProvinceSelection');
-    this.provinces_selected_container.appendChild(displayed_selection);
+
+    // check if the container that shows the selected provinces is in the current view
+    if (this.provinces_selected_container) {
+        let displayed_selection = this.getDisplayedSelectionElement(value, select_btn.textContent, 'window.search_filter_manager.removeProvinceSelection');
+        this.provinces_selected_container.appendChild(displayed_selection);
+    }
 };
 
 SearchFilterManager.prototype.getDisplayedSelectionElement = function (source_reference, display_text, on_remove_callback_name) {

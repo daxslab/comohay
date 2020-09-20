@@ -1,0 +1,53 @@
+{% load i18n %}
+<div id="filters-container" class="d-none">
+    <div class="container">
+        <div id="provinces-filter">
+            <label for="provinces-select">{% trans "Provinces" %}:</label>
+            <select id="provinces-select" name="provinces" multiple class="d-none">
+                {% for province in provinces %}
+                    <option value="{{ province.name }}"
+                            {% if province.selected %}selected{% endif %}>{{ province.name }}</option>
+                {% endfor %}
+            </select>
+            <div class="row custom-select">
+                {% for province in provinces %}
+                    <div class="column column-xs-100 column-sm-50 column-md-25">
+                        <button class="button button-sm button-outline"
+                                type="button"
+                                data-selected="{% if province.selected %}1{% else %}0{% endif %}"
+                                data-value="{{ province.name }}">{{ province.display_name }}</button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div id="prices-filter">
+            <label>{% trans "Prices" %}:</label>
+            <div class="row">
+                <div class="column column-30">
+                    <input type="number" name="price_from" placeholder="{% trans 'From' %}"
+                           onkeypress="return isNumberKey(event)"
+                           {% if price_from is not empty %}value="{{ price_from }}{% endif %}">
+                </div>
+                <div class="column column-30">
+                    <input type="number" name="price_to" placeholder="{% trans 'To' %}"
+                           onkeypress="return isNumberKey(event)"
+                           {% if price_to is not empty %}value="{{ price_to }}{% endif %}">
+                </div>
+                <div class="column column-30">
+                    <select name="price_currency">
+                        <option value="CUC"
+                                {% if price_currency and price_currency == 'CUC' %}selected{% endif %}>
+                            CUC
+                        </option>
+                        <option value="CUP"
+                                {% if price_currency and price_currency == 'CUP' %}selected{% endif %}>
+                            CUP
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="button button-sm float-right"
+                style="margin-top: 1rem;margin-bottom: 1rem;">{% trans "Search" %}</button>
+    </div>
+</div>

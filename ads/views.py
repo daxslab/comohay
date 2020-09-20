@@ -68,16 +68,16 @@ class IndexView(SearchView):
         # negative effect, it could be the Spellchecker
         context['index_count'] = result_count if self.query != '' else Ad.objects.count()
 
-        if self.query:
-            provinces = Province.objects.all()
-            if self.form.is_valid():
-                for province in provinces:
-                    if province.name in self.form.cleaned_data['provinces'].values_list('name', flat=True):
-                        province.selected = True
-                    else:
-                        province.selected = False
+        provinces = Province.objects.all()
+        if self.query and self.form.is_valid():
+            for province in provinces:
+                if province.name in self.form.cleaned_data['provinces'].values_list('name', flat=True):
+                    province.selected = True
+                else:
+                    province.selected = False
+        context['provinces'] = provinces
 
-            context['provinces'] = provinces
+        if self.query:
             context['price_from'] = self.form.cleaned_data['price_from']
             context['price_to'] = self.form.cleaned_data['price_to']
             context['price_currency'] = self.form.cleaned_data['price_currency']
