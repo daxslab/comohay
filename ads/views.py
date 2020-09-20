@@ -50,12 +50,10 @@ class IndexView(SearchView):
         self.query = self.get_query()
         self.results = self.get_results()
 
-        response = self.create_response()
-
-        # response = cache.get(path)
-        # if not response:
-        #     response = self.create_response()
-        #     cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
+        response = cache.get(path)
+        if not response:
+            response = self.create_response()
+            cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
             user_search = UserSearch(user=request.user, search=self.query,
                                      autosuggestion=bool(request.GET.get('a', False)))
