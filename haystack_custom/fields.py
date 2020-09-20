@@ -20,3 +20,14 @@ class DateTimeField(fields.DateTimeField):
             self.extra_attr = kwargs.get("extra_attr")
             del kwargs['extra_attr']
         super().__init__(**kwargs)
+
+
+class TFloatField(fields.FloatField):
+    extra_attr = {}
+    field_type = "tfloat"
+
+    def __init__(self, **kwargs, ):
+        if kwargs.get("extra_attr"):
+            self.extra_attr = kwargs.get("extra_attr")
+            del kwargs['extra_attr']
+        super().__init__(**kwargs)

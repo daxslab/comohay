@@ -1,5 +1,5 @@
 let Autocomplete = function (options) {
-    this.search_container_id = options.search_container_id;
+    this.search_form_id = options.search_form_id;
     this.search_input_class_name = options.search_input_class_name;
     this.autocomplete_list_class_name = options.autocomplete_list_class_name;
     this.search_form_class_name = options.search_form_class_name;
@@ -108,7 +108,7 @@ Autocomplete.prototype.setup = function () {
                 let next_or_prev = key === 'ArrowDown' ? highlighted_li.nextElementSibling : highlighted_li.previousElementSibling;
                 to_highlight = next_or_prev ? next_or_prev : to_highlight;
             } else {
-                to_highlight = key === 'ArrowDown' ? self.autocomplete_list.childNodes[0] : self.autocomplete_list.childNodes[self.autocomplete_list.childNodes.length - 1]
+                to_highlight = key === 'ArrowDown' ? self.autocomplete_list.childNodes[0] : self.autocomplete_list.childNodes[self.autocomplete_list.childNodes.length - 1];
                 self.query_in_process = this.value;
             }
 
@@ -125,16 +125,16 @@ Autocomplete.prototype.setup = function () {
         }
     });
 
-    let search_container = document.getElementById(this.search_container_id);
+    let search_form = document.getElementById(this.search_form_id);
 
     // show autocomplete list on focus in
-    search_container.addEventListener('focusin', function (event) {
+    this.query_box.addEventListener('focusin', function (event) {
         self.show();
     });
 
     // hide autocomplete list  on click outside the box
     window.addEventListener('click', function (e) {
-        if (!search_container.contains(e.target)) {
+        if (!self.query_box.contains(e.target)) {
             self.hide();
         } else {
             self.show();
@@ -265,7 +265,8 @@ Autocomplete.prototype.list_item_on_click = function (list_item) {
 
     this.clear_results();
 
-    this.search_from.submit();
+    let submit_event = new Event('submit');
+    this.search_from.dispatchEvent(submit_event);
 
     return false;
 };
@@ -278,7 +279,7 @@ let load_autocomplete = function(){
         search_input_class_name: 'search-input',
         autocomplete_list_class_name: 'autocomplete-list',
         search_form_class_name: 'search-form',
-        search_container_id: 'search-container',
+        search_form_id: 'search-form',
         button_cancel_id: 'button-cancel',
         cache_time: cache_time,
         autosuggestion_indicator_id: 'autosuggestion-hi'

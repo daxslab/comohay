@@ -1,12 +1,26 @@
+import sys
+
 from haystack.backends import SQ
 from haystack.forms import ModelSearchForm
 from haystack.inputs import AutoQuery, Raw, AltParser, Clean
 
-from ads.models import Ad
+from ads.models import Ad, Province
+from django import forms
+
+from comohay import settings
 from utils.remove_duplicates import double_clean
 
 
 class AdSearchForm(ModelSearchForm):
+    provinces = forms.ModelMultipleChoiceField(
+        required=False,
+        queryset=Province.objects.all(),
+        to_field_name='name'
+    )
+
+    price_from = forms.IntegerField(required=False)
+    price_to = forms.IntegerField(required=False)
+    price_currency = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,6 +34,14 @@ class AdSearchForm(ModelSearchForm):
             return self.no_query_found()
 
         q = self.cleaned_data['q']
+
+        provinces = self.cleaned_data['provinces']
+        price_from = self.cleaned_data['price_from']
+        price_to = self.cleaned_data['price_to']
+        price_currency = self.cleaned_data['price_currency']
+        if price_currency and price_currency == 'CUC':
+            price_from = price_from * settings.CUC_TO_CUP_CHANGE if price_from else price_from
+            price_to = price_to * settings.CUC_TO_CUP_CHANGE if price_to else price_to
 
         # boosting of 1.5 for every term that appears in the title
         # TODO: improve this by overriding the solr backend method build_alt_parser_query in order to avoid to do the
@@ -41,6 +63,16 @@ class AdSearchForm(ModelSearchForm):
 
         sqs = self.searchqueryset.filter(
             content=AltParser('edismax', q, bq=bq, boost=boost, pf=pf, pf3=pf3, pf2=pf2, ps=2, ps3=2, ps2=1))
+
+        if provinces.count() > 0:
+            sqs = sqs.filter_and(province__in=provinces.values_list('name', flat=True))
+
+        if price_from and price_to:
+            sqs = sqs.filter_and(price__range=[price_from, price_to])
+        elif price_from:
+            sqs = sqs.filter_and(price__range=[price_from, sys.maxsize])
+        elif price_to:
+            sqs = sqs.filter_and(price__range=[0, price_to])
 
         if self.load_all:
             sqs = sqs.load_all()

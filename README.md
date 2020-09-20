@@ -47,9 +47,9 @@ If, for some reason, you need to recreate the index from scratch, it is necessar
 
      docker-compose down -v
      
-Re-init redis cache at pos 0
+Re-init redis cache at pos 0 and 1
 
-     docker-compose -f docker-compose.prod.yml exec redis redis-cli -n 0 flushdb
+     docker-compose -f docker-compose.prod.yml exec redis redis-cli -n 0 flushdb; docker-compose -f docker-compose.prod.yml exec redis redis-cli -n 1 flushdb
 
 ## Development
 

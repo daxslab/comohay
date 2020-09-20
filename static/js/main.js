@@ -55,14 +55,41 @@ function hasClass(element, className) {
 
 }
 
-function addClass(ele,cls) {
-  if (!hasClass(ele,cls)) ele.className += " "+cls;
+function addClass(ele, cls) {
+    if (!hasClass(ele, cls)) ele.className += " " + cls;
 }
 
-function removeClass(ele,cls) {
-  if (hasClass(ele,cls)) {
-    let reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
-    ele.className=ele.className.replace(reg,' ');
-  }
+function removeClass(ele, cls) {
+    if (hasClass(ele, cls)) {
+        let reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
+        ele.className = ele.className.replace(reg, ' ');
+    }
 }
 
+function isNumberKey(evt) {
+    let charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+    return true;
+}
+
+function submitSearchForm(search_form) {
+    let provinces_select = document.querySelector(`#${search_form.id} select[name="provinces"]`);
+    let price_from_input = document.querySelector(`#${search_form.id} input[name="price_from"]`);
+    let price_to_input = document.querySelector(`#${search_form.id} input[name="price_to"]`);
+    let price_currency_select = document.querySelector(`#${search_form.id} select[name="price_currency"]`);
+
+    if (!provinces_select.value)
+        provinces_select.remove();
+
+    if (!price_from_input.value)
+        price_from_input.remove();
+
+    if (!price_to_input.value)
+        price_to_input.remove();
+
+    if (!price_from_input.value && !price_to_input.value)
+        price_currency_select.remove();
+
+    return true;
+}

@@ -1,10 +1,7 @@
 import logging
 import re
-import sys
-import time
 from encodings.base64_codec import base64_decode
 
-from fast_autocomplete import autocomplete_factory
 from actstream import action
 from categories.models import Category
 from django.contrib.auth.decorators import login_required
@@ -16,7 +13,6 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
-from fast_autocomplete.loader import populate_redis
 from haystack.views import SearchView
 from lazysignup.decorators import allow_lazy_user
 from meta.views import Meta
@@ -29,7 +25,7 @@ from ads.forms.adform import AdForm
 from ads.forms.adimageform import AdImageForm
 from ads.forms.adsearchform import AdSearchForm
 from ads.helpers.telegrambot import TelegramBot
-from ads.models import UserSearch, Search
+from ads.models import UserSearch, Province
 from ads.models.ad import Ad
 from ads.models.adimages import AdImage
 from comohay import settings
@@ -54,10 +50,12 @@ class IndexView(SearchView):
         self.query = self.get_query()
         self.results = self.get_results()
 
-        response = cache.get(path)
-        if not response:
-            response = self.create_response()
-            cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
+        response = self.create_response()
+
+        # response = cache.get(path)
+        # if not response:
+        #     response = self.create_response()
+        #     cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
         if self.query != '' and not self.request.GET.get('page', False):
             user_search = UserSearch(user=request.user, search=self.query,
                                      autosuggestion=bool(request.GET.get('a', False)))
@@ -68,7 +66,28 @@ class IndexView(SearchView):
     def get_context(self):
         context = super().get_context()
         result_count = self.results.count()
-        context['index_count'] = result_count if result_count > 0 else Ad.objects.count()
+        #TODO: solr is throwing a java.lang.NumberFormatException when there is no results, but it seems to not have any
+        # negative effect, it could be the Spellchecker
+        context['index_count'] = result_count if self.query != '' else Ad.objects.count()
+
+        if self.query:
+            provinces = Province.objects.all()
+            if self.form.is_valid():
+                for province in provinces:
+                    if province.name in self.form.cleaned_data['provinces'].values_list('name', flat=True):
+                        province.selected = True
+                    else:
+                        province.selected = False
+
+            context['provinces'] = provinces
+            context['price_from'] = self.form.cleaned_data['price_from']
+            context['price_to'] = self.form.cleaned_data['price_to']
+            context['price_currency'] = self.form.cleaned_data['price_currency']
+
+        base_query_dict = self.request.GET.copy()
+        if 'page' in base_query_dict:
+            del base_query_dict['page']
+        context['base_query'] = base_query_dict.urlencode()
 
         # Before split the query its necessary to remove the '"' characters because those are part of the syntax to
         # phrase query

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-31 23:40+0000\n"
+"POT-Creation-Date: 2020-09-20 03:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,9 +19,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ads/filters/ad_filter.py:11 ads/models/search.py:8 ads/models/search.py:12
-#: ads/models/user_search.py:12 ads/templates/ad/index.html:15
-#: ads/templates/ad/index.html:31 ads/templates/ad/index.html:60
-#: ads/templates/ad/index.html:76
+#: ads/models/user_search.py:12 ads/templates/ad/index.html:16
+#: ads/templates/ad/index.html:27 ads/templates/ad/index.html:59
+#: ads/templates/ad/index.html:70 ads/templates/ad/index.html:183
 msgid "Search"
 msgstr "Buscar"
 
@@ -54,7 +54,7 @@ msgstr "Precio"
 msgid "Currency"
 msgstr "Moneda"
 
-#: ads/models/ad.py:22 ads/models/municipality.py:9 ads/models/province.py:12
+#: ads/models/ad.py:22 ads/models/municipality.py:9 ads/models/province.py:13
 msgid "Province"
 msgstr "Provincia"
 
@@ -122,11 +122,11 @@ msgstr "Fecha de creación"
 msgid "Updated at"
 msgstr "Fecha de actualización"
 
-#: ads/models/municipality.py:10 ads/models/province.py:8
+#: ads/models/municipality.py:10 ads/models/province.py:9
 msgid "Code"
 msgstr "Código"
 
-#: ads/models/municipality.py:11 ads/models/province.py:9
+#: ads/models/municipality.py:11 ads/models/province.py:10
 msgid "Name"
 msgstr "Nombre"
 
@@ -134,7 +134,7 @@ msgstr "Nombre"
 msgid "Municipalities"
 msgstr "Municipios"
 
-#: ads/models/province.py:13
+#: ads/models/province.py:14 ads/templates/ad/index.html:136
 msgid "Provinces"
 msgstr "Provincias"
 
@@ -176,7 +176,7 @@ msgstr "Enviar"
 msgid "Missing"
 msgstr "Falta"
 
-#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:97
+#: ads/templates/ad/ads.html:20 ads/templates/ad/index.html:195
 msgid "No results where found"
 msgstr "No se encontraron resultados"
 
@@ -215,25 +215,42 @@ msgstr "También le puede interesar"
 msgid "Update Ad"
 msgstr "Actualizado por"
 
-#: ads/templates/ad/index.html:24 ads/templates/ad/index.html:69
-msgid "Maybe you want to say"
-msgstr "Quzá quiso decir"
-
-#: ads/templates/ad/index.html:44
+#: ads/templates/ad/index.html:41
 #, python-format
 msgid "%(index_count)s indexed ads"
 msgstr "%(index_count)s anuncios indexados"
 
-#: ads/templates/ad/index.html:84
-#, python-format
-msgid "Near %(index_count)s ads found"
+#: ads/templates/ad/index.html:88 ads/templates/ad/index.html:159
+msgid "From"
+msgstr "Desde"
+
+#: ads/templates/ad/index.html:100 ads/templates/ad/index.html:164
+msgid "To"
+msgstr "Hasta"
+
+#: ads/templates/ad/index.html:122
+#, fuzzy, python-format
+#| msgid "Near %(index_count)s ads found"
+msgid ""
+"Near %(index_count)s ads\n"
+"                                found"
 msgstr "Cerca de %(index_count)s anuncios encontrados"
 
-#: ads/templates/ad/index.html:104
+#: ads/templates/ad/index.html:126
+msgid "Filters"
+msgstr ""
+
+#: ads/templates/ad/index.html:156
+#, fuzzy
+#| msgid "Price"
+msgid "Prices"
+msgstr "Precios"
+
+#: ads/templates/ad/index.html:202
 msgid "Previous"
 msgstr "Anterior"
 
-#: ads/templates/ad/index.html:107
+#: ads/templates/ad/index.html:205
 msgid "Next"
 msgstr "Siguiente"
 
@@ -248,6 +265,9 @@ msgstr ""
 #: ads/templates/ad/user_ads.html:39
 msgid "An unexpected error has occurred"
 msgstr ""
+
+#~ msgid "Maybe you want to say"
+#~ msgstr "Quzá quiso decir"
 
 #~ msgid "Daystamp"
 #~ msgstr "Marca de día"

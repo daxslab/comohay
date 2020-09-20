@@ -386,6 +386,11 @@ content_files = {
 }
 autocomplete = autocomplete_factory(content_files=content_files)
 
+PROVINCES_DISPLAY_NAMES_MAP = {
+    "Isla de la Juventud": "La Isla",
+    "Santiago de Cuba": "Santiago"
+}
+
 try:
     from .settings_local import *
 except:

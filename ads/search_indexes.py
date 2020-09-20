@@ -15,11 +15,10 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
 
     description = fields.CharField(model_attr='description', extra_attr={"omitNorms": "true"})
 
-    # todo: change DecimalField by FloatField in order to allow range queries.
-    price = indexes.DecimalField(model_attr='price')
+    price = fields.TFloatField(model_attr='price')
 
     province = fields.CharField(model_attr='province__name',
-                                extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
+                                extra_attr={"omitNorms": "true"})
 
     municipality = fields.CharField(model_attr='municipality__name',
                                     extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
