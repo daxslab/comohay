@@ -265,10 +265,9 @@ Autocomplete.prototype.list_item_on_click = function (list_item) {
 
     this.clear_results();
 
-    let submit_event = new Event('submit');
-    this.search_from.dispatchEvent(submit_event);
+    submitSearchForm(this.search_from);
+    this.search_from.submit();
 
-    return false;
 };
 
 let input = document.getElementById('id_q');
