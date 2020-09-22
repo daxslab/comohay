@@ -225,13 +225,13 @@ input.search-input {
   margin-top: 2rem;
 }
 
-@media (max-width: 90rem) {
+@media (max-width: 95rem) {
   div.float-title {
     text-align: center;
   }
 }
 
-@media (min-width: 90rem) {
+@media (min-width: 95rem) {
   div.float-title {
     left: 3vw;
     position: absolute;
