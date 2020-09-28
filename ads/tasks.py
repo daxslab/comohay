@@ -14,6 +14,9 @@ def get_proxies():
 def crawl():
     call_command('crawl', '--depth', '10')
 
+@shared_task
+def crawl_revolico():
+    call_command('crawl', 'revolico', '--depth', '4')
 
 @shared_task
 def updater():

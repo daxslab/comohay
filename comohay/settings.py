@@ -254,6 +254,14 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'ads.tasks.crawl',
         'schedule': crontab(minute=3)  # execute every hour at minute 3.
     },
+    'crawl_revolico': {
+        'task': 'ads.tasks.crawl_revolico',
+        'schedule': crontab(minute='*/10'),  # execute every 10 minutes.
+    },
+    'get_proxies_revolico': {
+        'task': 'ads.tasks.get_proxies',
+        'schedule': crontab(minute='*/9')  # execute every 9 minutes.
+    },
     'updater': {
         'task': 'ads.tasks.updater',
         'schedule': crontab(hour=8, minute=3)  # execute every day at 4:03 AM cuban time
