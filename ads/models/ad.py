@@ -1,3 +1,4 @@
+import sys
 from decimal import Decimal
 
 from django import urls
@@ -14,14 +15,14 @@ from ads.models.province import Province
 
 class Ad(BaseModel):
     title = models.CharField(max_length=200, verbose_name=_('Title'))
-    slug = AutoSlugField(populate_from=['title'], verbose_name=_('Slug'))
+    slug = AutoSlugField(populate_from=['title'], verbose_name=_('Slug'), max_unique_query_attempts=sys.maxsize)
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=64, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
     user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP')], default='CUC', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
-    contact_phone = models.CharField(max_length=17, null=True, blank=True, verbose_name=_("Contact phone"))
+    contact_phone = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact phone"))
     contact_email = models.EmailField(null=True, blank=True, verbose_name=_("Contact email"))
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
