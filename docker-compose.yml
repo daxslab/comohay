@@ -4,8 +4,6 @@ services:
   web:
     build: ./
     command: python manage.py runserver 0.0.0.0:8000
-    security_opt:
-      - seccomp:unconfined
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
