@@ -28,7 +28,6 @@ services:
     ports:
       - 5433:5432
   redis:
-    restart: always
     image: redis:5.0
     expose:
       - "6379"
