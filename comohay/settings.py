@@ -244,6 +244,10 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_ROUTES = {
+    'ads.tasks.broadcast_in_telegram': {'queue': 'telegram_messages'},
+    'ads.tasks.send_telegram_message': {'queue': 'telegram_messages'}
+}
 
 CELERY_BEAT_SCHEDULE = {
     'get_proxies': {
@@ -398,6 +402,9 @@ PROVINCES_DISPLAY_NAMES_MAP = {
     "Isla de la Juventud": "La Isla",
     "Santiago de Cuba": "Santiago"
 }
+
+SERVER_SCHEME = 'https'
+SERVER_HOSTNAME = 'comohay.com'
 
 try:
     from .settings_local import *

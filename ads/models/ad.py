@@ -1,8 +1,10 @@
 import sys
 from decimal import Decimal
+from encodings.base64_codec import base64_encode
 
 from django import urls
 from django.db import models
+from django.http import QueryDict
 from django_currentuser.db.models import CurrentUserField
 from django_extensions.db.fields import AutoSlugField
 from django.utils.translation import gettext_lazy as _
@@ -43,6 +45,17 @@ class Ad(BaseModel):
         if self.external_source and self.external_url:
             return self.external_url
         return urls.reverse('ads:detail', args=(self.slug,))
+
+    def get_url_with_redirection(self, absolute=True, request=None):
+        scheme = request.get_scheme() if request else settings.SERVER_SCHEME
+        hostname = request.get_host() if request else settings.SERVER_HOSTNAME
+        query = QueryDict(mutable=True)
+        ref = "{}://{}/".format(scheme, hostname)
+        query['url'] = self.get_absolute_url()
+        query['ref'] = base64_encode(bytes(ref, 'UTF-8'))[0].decode()
+        query['ad'] = base64_encode(bytes(str(self.id), 'UTF-8'))[0].decode()
+        url = urls.reverse('ads:to_external_url') + '?' + query.urlencode()
+        return url if not absolute else "{}://{}{}".format(scheme, hostname, url)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.user_currency == 'CUC':

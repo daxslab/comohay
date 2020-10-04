@@ -74,7 +74,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: celery worker --app=comohay --loglevel=info
+    command: celery worker --app=comohay --loglevel=info -Q celery,telegram_messages
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media

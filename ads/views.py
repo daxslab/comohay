@@ -246,13 +246,9 @@ def to_external_url(request):
     url = request.GET.get('url')
     ref = request.GET.get('ref')
     request_ad = request.GET.get('ad')
-    try:
-        from_url = base64_decode(bytes(ref, 'utf-8'))[0].decode('utf-8')
-        ad_id = base64_decode(bytes(request_ad, 'utf-8'))[0].decode('utf-8')
-        ad = Ad.objects.get(id=ad_id)
-    except:
-        from_url = None
-        ad = None
+    from_url = base64_decode(bytes(ref, 'utf-8'))[0].decode('utf-8')
+    ad_id = base64_decode(bytes(request_ad, 'utf-8'))[0].decode('utf-8')
+    ad = get_object_or_404(Ad, id=ad_id)
     if not url or not from_url or not from_url.startswith(request.build_absolute_uri('/')) or not ad:
         return HttpResponseBadRequest()
     response = HttpResponseRedirect(url)

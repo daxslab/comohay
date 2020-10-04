@@ -1,54 +1,33 @@
 from django.conf import settings
 from telegram.ext import Updater
-from threading import Thread
+from ads.tasks import send_telegram_message
 
 
 class TelegramBot:
 
     @staticmethod
-    def broadcast_ad(ad, request):
-        updater = Updater(settings.TELEGRAM_BOT_TOKEN, use_context=True)
-
-        threads = []
-
+    def broadcast_ad(ad):
         for group in settings.TELEGRAM_BOT_GROUPS['NATIONAL_WIDE']:
-            thread = Thread(
-                target=TelegramBot.send_ad_photo if ad.adimage_set.count() > 0 else TelegramBot.send_ad_message,
-                args=(updater.bot, group, ad, request)
-            )
-            thread.start()
-            threads.append(thread)
+            TelegramBot.send_ad_message(group, ad)
 
         if ad.province:
             for group in settings.TELEGRAM_BOT_GROUPS[ad.province.name]:
-                thread = Thread(
-                    target=TelegramBot.send_ad_photo if ad.adimage_set.count() > 0 else TelegramBot.send_ad_message,
-                    args=(updater.bot, group, ad, request, True)
-                )
-                thread.start()
-                threads.append(thread)
-
-        for thread in threads:
-            thread.join()
+                TelegramBot.send_ad_message(group, ad, False)
 
     @staticmethod
-    def send_ad_message(bot, chat_id, ad, request, provincial=False):
-        raw_message = TelegramBot.get_ad_provincial_message(ad) if provincial else TelegramBot.get_ad_national_message(
-            ad)
-        message = "<a href=\"{}\">{}</a>".format(request.build_absolute_uri(ad.get_absolute_url()), raw_message)
-        TelegramBot.send_message(bot, chat_id, message)
+    def send_ad_message(chat_id, ad, show_province=True):
+        # todo: check the html markup here with images, as far as I remember the html with images didn't work
+        if ad.adimage_set.count() > 0:
+            photo = open('{}{}'.format(settings.BASE_DIR, ad.adimage_set.first().image.url), 'rb')
+            # photo = request.build_absolute_uri(ad.adimage_set.first().image.url)
+            send_telegram_message.apply_async((chat_id, TelegramBot.get_ad_message(ad, show_province), photo),
+                                              retry=True)
+        else:
+            send_telegram_message.apply_async((chat_id, TelegramBot.get_ad_message(ad, show_province)), retry=True)
 
     @staticmethod
-    def send_ad_photo(bot, chat_id, ad, request, provincial=False):
-        raw_message = TelegramBot.get_ad_provincial_message(ad) if provincial else TelegramBot.get_ad_national_message(
-            ad)
-        message = "{}\n{}".format(raw_message, request.build_absolute_uri(ad.get_absolute_url()))
-        photo = open('{}{}'.format(settings.BASE_DIR, ad.adimage_set.first().image.url), 'rb')
-        # photo = request.build_absolute_uri(ad.adimage_set.first().image.url)
-        TelegramBot.send_message(bot, chat_id, message, photo)
-
-    @staticmethod
-    def send_message(bot, chat_id, message, photo=None, parse_mode='HTML'):
+    def send_message(chat_id, message, photo=None, parse_mode='HTML'):
+        bot = Updater(settings.TELEGRAM_BOT_TOKEN, use_context=True).bot
         if not photo:
             bot.sendMessage(
                 chat_id=chat_id,
@@ -64,17 +43,23 @@ class TelegramBot:
             )
 
     @staticmethod
-    def get_ad_national_message(ad):
-        if ad.province and ad.municipality:
-            return "{} ({} {}. {}, {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.municipality, ad.province)
-        elif ad.province:
-            return "{} ({} {}. {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.province)
+    def get_ad_message(ad, show_province=True):
+        message = ''
 
-        return "{} ({} {})".format(ad.title, ad.get_user_price(), ad.user_currency)
+        if show_province:
+            if ad.province and ad.municipality:
+                message += "{}, {}\n".format(ad.province, ad.municipality)
+            elif ad.province:
+                message += "{}\n".format(ad.province)
+        elif ad.municipality:
+            message += "{}\n".format(ad.municipality)
 
-    @staticmethod
-    def get_ad_provincial_message(ad):
-        if ad.municipality:
-            return "{} ({} {}. {})".format(ad.title, ad.get_user_price(), ad.user_currency, ad.municipality)
+        if ad.price > 0:
+            message += "<b>{} {}</b> - <a href=\"{}\">{}</a>".format(ad.get_user_price(), ad.user_currency,
+                                                              ad.get_url_with_redirection(absolute=True), ad.title)
+        else:
+            message += "<a href=\"{}\">{}</a>".format(ad.get_url_with_redirection(absolute=True), ad.title)
 
-        return "{} ({} {})".format(ad.title, ad.get_user_price(), ad.user_currency)
+        message += "\n<code>{}</code>".format(ad.external_source)
+
+        return message

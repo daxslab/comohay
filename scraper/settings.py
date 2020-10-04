@@ -77,7 +77,7 @@ if isfile(ROTATING_PROXY_LIST_PATH):
 #}
 
 ITEM_PIPELINES = {
-    "scraper.pipelines.RemoveDuplicatedAdPipeline": 200,
+    # "scraper.pipelines.RemoveDuplicatedAdPipeline": 200,
     "scraper.pipelines.BaseAdPipeline": 300,
 }
 
