@@ -132,7 +132,7 @@ class PorlalivreParser(BaseParser):
         'feb.': '02',
         'mar.': '03',
         'abr.': '04',
-        'mayo': '05',
+        'may.': '05',
         'jun.': '06',
         'jul.': '07',
         'ago.': '08',
