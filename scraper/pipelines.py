@@ -65,7 +65,14 @@ class BaseAdPipeline(object):
     def process_item(self, item, spider):
         if has_duplicates(item.save(commit=False)):
             raise DropItem()
+
         item = self._preprocess_ad_item(item)
+
+        is_new_ad = True if item.instance.id is None else False
+
         ad = item.save()
-        broadcast_in_telegram.apply_async((ad.id,), retry=True)
+
+        if is_new_ad:
+            broadcast_in_telegram.apply_async((ad.id,), retry=True)
+
         return item
