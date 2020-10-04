@@ -9,8 +9,6 @@ services:
       - default
     restart: always
     command: gunicorn comohay.wsgi:application --bind 0.0.0.0:8000 --workers=7
-    security_opt:
-      - seccomp:unconfined
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
