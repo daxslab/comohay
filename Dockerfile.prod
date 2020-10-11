@@ -1,56 +1,36 @@
-###########
-# BUILDER #
-###########
-
 # pull official base image
-FROM python:3.8.3-alpine as builder
-
-# set work directory
-WORKDIR /usr/src/app
+FROM python:3.8-slim-buster
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install psycopg2 dependencies
-RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev git
-
-# install cryptography dependencies
-RUN apk add --no-cache \
-        libressl-dev musl-dev libffi-dev
-
-# install libsass dependencies
-RUN apk add --no-cache \
-        g++
-
-# install pillow dependencies
-RUN apk add --no-cache \
-        jpeg-dev zlib-dev libjpeg
+RUN apt-get update
+# git
+RUN apt-get install -y git
+# dependencies for building Python packages
+RUN apt-get install -y build-essential
+# psycopg2 dependencies
+RUN apt-get install -y libpq-dev
+# Translations dependencies
+RUN apt-get install -y gettext
+# Netcat for db startup check
+RUN apt-get install -y netcat
+# cleaning up unused files
+RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+  && rm -rf /var/lib/apt/lists/*
 
 # install dependencies
-RUN pip install --upgrade pip
+RUN pip install --no-cache-dir --upgrade pip
 COPY ./requirements ./requirements
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements/prod.txt
-
-# lint
-#RUN pip install flake8
-COPY . .
-#RUN flake8 --ignore=E501,F401 .
-
-#########
-# FINAL #
-#########
-
-# pull official base image
-FROM python:3.8.3-alpine
+RUN pip install --no-cache-dir -r requirements/prod.txt
 
 # create directory for the app user
 RUN mkdir -p /home/app
 
 # create the app user
-RUN addgroup -g 1000 -S app && \
-    adduser -u 1000 -S app -G app
+RUN addgroup --gid 1000 --system app && \
+    adduser --uid 1000 --ingroup app --system app
 
 # create the appropriate directories
 ENV HOME=/home/app
@@ -59,13 +39,6 @@ RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/static_root
 RUN mkdir $APP_HOME/media
 WORKDIR $APP_HOME
-
-#RUN chown -R app:app ../web
-
-# install dependencies
-RUN apk update && apk add --no-cache libpq libjpeg libstdc++ gettext gcc libxml2-dev libxslt-dev libxml2 libxslt musl-dev
-COPY --from=builder /usr/src/app/wheels /wheels
-RUN pip install --no-cache /wheels/*
 
 # copy project
 COPY . $APP_HOME
