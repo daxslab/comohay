@@ -58,6 +58,10 @@ class Ad(BaseModel):
         return url if not absolute else "{}://{}{}".format(scheme, hostname, url)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        #remove null values
+        if self.price == None:
+            self.price = 0
+
         if self.user_currency == 'CUC':
             self.price = Decimal(self.price) * settings.CUC_TO_CUP_CHANGE
 
