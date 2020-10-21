@@ -2,13 +2,14 @@ from datetime import datetime
 
 from categories.models import Category
 from django.utils.timezone import make_aware
-from html2text import HTML2Text
 
 from ads.models import Province, Municipality
 from scraper.items import AdItem
 from scraper.spiders.ads.base import BaseParser
 
+
 class RevolicoParser(BaseParser):
+
     category_mapping = {
         'Computadoras': {
             'Celulares/Líneas/Accesorios': 'Celulares y Accesorios',
@@ -90,56 +91,36 @@ class RevolicoParser(BaseParser):
         },
     }
 
-    def parse_ad(self, response):
-        def extract_with_css(query):
-            return response.css(query).get(default='').strip()
+    def parse_ad(self, ad):
+        title = ad['node']['title']
 
-        title = extract_with_css('h4[data-cy=adTitle]::text')
-
-        rv_category = response.css('main .container-fluid ol[data-cy=breadcrumb] span > li > a > span::text').getall()[1].strip()
+        rv_category = ad['node']['subcategory']['title']
         category_tree = self.get_category_tree(rv_category)
         category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
 
-        rv_location = response.css('main .container-fluid > div:first-of-type > div:first-of-type > div:nth-of-type(2) > div:nth-of-type(2) div::text').get().strip()
-        location_elements = rv_location.split(',')
-
-        rv_municipality = None
-        if len(location_elements) > 1:
-            rv_municipality = location_elements[0].strip()
-            rv_province = location_elements[1].strip()
-        else:
-            rv_province = location_elements[0].strip()
+        rv_municipality = ad['node']['municipality']['name'] if ad['node']['municipality'] else None
+        rv_province = ad['node']['province']['name'] if ad['node']['province'] else None
         province = Province.objects.get(name=rv_province) if rv_province else None
         try:
             municipality = Municipality.objects.get(name=rv_municipality) if rv_municipality else None
         except:
             municipality = None
 
-        html_handler = HTML2Text()
-        description = html_handler.handle(response.css('div[data-cy=adDescription]').get())
+        description = ad['node']['description']
 
-        e = extract_with_css('main .container-fluid > div:first-of-type > div:first-of-type > div:nth-of-type(1) h4:nth-of-type(2)::text')
-        if len(e) > 1:
-            e_parts = e.split(' ')
-            price = e_parts[0]
-            currency = e_parts[1] if e_parts[1] in ['CUC', 'CUP'] else 'CUC'
-        else:
-            price = 0
-            currency = 'CUC'
+        price = ad['node']['price']
+        currency = ad['node']['currency'] if ad['node']['currency'] in ['CUC', 'CUP'] else 'CUC'
 
-        phone = None
-        _phone_url = extract_with_css('a[data-cy="adPhone"]::attr(href)')
-        if _phone_url:
-            phone = self.clean_phone(_phone_url.split(':')[1])
-
+        phone = self.clean_phone(ad['node']['phone']) if ad['node']['phone'] else None
+        # email = ad['node']['email']
         email = None
 
-        external_date_timestamp = extract_with_css('time::attr(datetime)')
-        external_created_at = datetime.fromtimestamp(float(external_date_timestamp) // 1000)
+        external_date = ad['node']['updatedOnByUser']
+        external_created_at = datetime.strptime(external_date.split('+')[0].split('.')[0], "%Y-%m-%dT%H:%M:%S")
         external_created_at = make_aware(external_created_at)
 
-        external_id = extract_with_css('div[data-cy=adId]::text')
-        external_url = response.request.url
+        external_id = ad['node']['id']
+        external_url = 'https://www.revolico.com'+ad['node']['permalink']
 
         item = AdItem()
         item['title'] = title
