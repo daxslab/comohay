@@ -42,6 +42,9 @@ class AdSearchForm(ModelSearchForm):
         if price_currency and price_currency == 'CUC':
             price_from = price_from * settings.CUC_TO_CUP_CHANGE if price_from else price_from
             price_to = price_to * settings.CUC_TO_CUP_CHANGE if price_to else price_to
+        elif price_currency and price_currency == 'USD':
+            price_from = price_from * settings.USD_TO_CUP_CHANGE if price_from else price_from
+            price_to = price_to * settings.USD_TO_CUP_CHANGE if price_to else price_to
 
         # boosting of 1.5 for every term that appears in the title
         # TODO: improve this by overriding the solr backend method build_alt_parser_query in order to avoid to do the

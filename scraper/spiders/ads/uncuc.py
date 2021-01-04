@@ -81,7 +81,7 @@ class UncucParser(BaseParser):
         _price_element = extract_with_css('div.l-right div.v-price b::text')
         if _price_element and 'usd' in _price_element.lower():
             price = ''.join(_price_element.split(' ')[:-1]).replace(" ", "")
-            currency = 'CUC'
+            currency = 'USD'
         elif _price_element and 'cuc' in _price_element.lower():
             price = ''.join(_price_element.split(' ')[:-1]).replace(" ", "")
             currency = 'CUC'

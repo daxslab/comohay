@@ -21,7 +21,7 @@ class Ad(BaseModel):
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=64, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
-    user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP')], default='CUC', verbose_name=_('Currency'))
+    user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP'), ('USD', 'USD')], default='CUP', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
     contact_phone = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact phone"))
@@ -64,11 +64,15 @@ class Ad(BaseModel):
 
         if self.user_currency == 'CUC':
             self.price = Decimal(self.price) * settings.CUC_TO_CUP_CHANGE
+        elif self.user_currency == 'USD':
+            self.price = Decimal(self.price) * settings.USD_TO_CUP_CHANGE
 
         super().save(force_insert, force_update, using, update_fields)
 
     def get_user_price(self):
         if self.user_currency == 'CUC':
             return self.price / settings.CUC_TO_CUP_CHANGE
+        elif self.user_currency == 'USD':
+            return self.price / settings.USD_TO_CUP_CHANGE
         return self.price
 

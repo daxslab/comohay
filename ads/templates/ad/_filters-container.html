@@ -35,13 +35,17 @@
                 </div>
                 <div class="column column-30">
                     <select name="price_currency">
-                        <option value="CUC"
-                                {% if price_currency and price_currency == 'CUC' %}selected{% endif %}>
-                            CUC
-                        </option>
                         <option value="CUP"
                                 {% if price_currency and price_currency == 'CUP' %}selected{% endif %}>
                             CUP
+                        </option>
+                        <option value="USD"
+                                {% if price_currency and price_currency == 'USD' %}selected{% endif %}>
+                            USD
+                        </option>
+                        <option value="CUC"
+                                {% if price_currency and price_currency == 'CUC' %}selected{% endif %}>
+                            CUC
                         </option>
                     </select>
                 </div>

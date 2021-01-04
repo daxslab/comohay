@@ -137,7 +137,7 @@ class MerolicoParser(BaseParser):
         currency_text = extract_with_css('h1 span small:nth-of-type(2)::text')
 
         if currency_text and 'usd' in currency_text.lower():
-            currency = 'CUC'
+            currency = 'USD'
         elif currency_text and 'cuc' in currency_text.lower():
             currency = 'CUC'
         elif currency_text and 'cup' in currency_text.lower():
