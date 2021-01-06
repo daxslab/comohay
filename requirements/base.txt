@@ -20,6 +20,7 @@ django-js-asset==1.2.2
 django-libsass==0.8
 django-mptt==0.10.0
 django-seed==0.2.2
+django-autoslug==1.9.8
 django==3.0.7
 djangorestframework==3.11.0
 future==0.18.2

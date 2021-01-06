@@ -2,11 +2,11 @@ import sys
 from decimal import Decimal
 from encodings.base64_codec import base64_encode
 
+from autoslug import AutoSlugField
 from django import urls
 from django.db import models
 from django.http import QueryDict
 from django_currentuser.db.models import CurrentUserField
-from django_extensions.db.fields import AutoSlugField
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
@@ -17,7 +17,7 @@ from ads.models.province import Province
 
 class Ad(BaseModel):
     title = models.CharField(max_length=200, verbose_name=_('Title'))
-    slug = AutoSlugField(populate_from=['title'], verbose_name=_('Slug'), max_unique_query_attempts=sys.maxsize)
+    slug = AutoSlugField(populate_from='title', always_update=False, unique=False, verbose_name=_('Slug'))
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=64, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))

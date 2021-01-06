@@ -200,8 +200,8 @@ class AdsByCategoriesView(FilterView):
 
 
 @allow_lazy_user
-def detail(request, ad_slug):
-    ad = get_object_or_404(Ad, slug=ad_slug)
+def detail(request, id, ad_slug):
+    ad = get_object_or_404(Ad, id=id, slug=ad_slug)
     action.send(request.user, verb=ACTION_VIEW_AD, target=ad)
     return render(request, 'ad/detail.html', {'ad': ad})
 
