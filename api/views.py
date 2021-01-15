@@ -1,8 +1,7 @@
-import django_filters
-from django_filters.rest_framework import FilterSet
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from haystack.query import EmptySearchQuerySet, SearchQuerySet
 from rest_framework import viewsets, mixins
-from rest_framework.pagination import PageNumberPagination
 
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
@@ -40,6 +39,12 @@ class AdSearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     # permission_classes = (IsAuthenticated,)
     permission_classes = []
     # authentication_classes = (SessionAuthentication, BasicAuthentication)
+
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('q', openapi.IN_QUERY, description="Search query", type=openapi.TYPE_STRING)
+    ])
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
