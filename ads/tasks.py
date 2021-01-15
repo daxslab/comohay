@@ -42,3 +42,8 @@ def broadcast_in_telegram(ad_id: int):
 def send_telegram_message(chat_id, message, photo=None, parse_mode='HTML'):
     from ads.helpers.telegrambot import TelegramBot
     TelegramBot.send_message(chat_id, message, photo, parse_mode)
+
+
+@shared_task
+def clean_lazy_users():
+    call_command('clean_lazy_users')
