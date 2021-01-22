@@ -4,6 +4,7 @@ from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from api import views
 from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet
 
 app_name = 'api'
@@ -34,5 +35,6 @@ urlpatterns = [
     url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     url('^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls'))
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url('rest-auth/lazy-login', views.LazyLoginView.as_view(), name='lazy_login')
 ]

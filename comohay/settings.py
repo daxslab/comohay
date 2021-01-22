@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'compressor',
     'crispy_forms',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
     'categories',
     'categories.editor',
     'django_seed',
@@ -197,6 +199,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
