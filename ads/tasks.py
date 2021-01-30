@@ -47,3 +47,8 @@ def send_telegram_message(chat_id, message, photo=None, parse_mode='HTML'):
 @shared_task
 def clean_lazy_users():
     call_command('clean_lazy_users')
+
+
+@shared_task
+def clear_sessions():
+    call_command('clearsessions')
