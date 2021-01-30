@@ -1,11 +1,11 @@
 from django.conf.urls import url
-from django.urls import include
+from django.urls import include, path
 from rest_framework import routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from api import views
-from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet
+from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView
 
 app_name = 'api'
 
@@ -36,5 +36,7 @@ urlpatterns = [
     url(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     url('^', include(router.urls)),
     url(r'^rest-auth/', include('rest_auth.urls')),
-    url('rest-auth/lazy-login', views.LazyLoginView.as_view(), name='lazy_login')
+    url('rest-auth/lazy-login', views.LazyLoginView.as_view(), name='lazy_login'),
+    path('usd-value/<int:days>/', USDValueView.as_view()),
+    path('usd-value/', USDValueView.as_view()),
 ]

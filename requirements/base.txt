@@ -1,5 +1,5 @@
 -i https://pypi.org/simple
-git+https://github.com/django-haystack/django-haystack.git@v3.0b1#egg=django-haystack
+django-haystack
 asgiref==3.2.9
 certifi==2020.4.5.2
 cffi==1.14.0
@@ -61,3 +61,6 @@ fast-autocomplete==0.6.0
 pysolr==3.9.0
 django-meta==1.7.0
 Unidecode==1.1.1
+pandas
+numpy
+scipy

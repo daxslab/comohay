@@ -5,6 +5,10 @@ from rest_auth.app_settings import create_token
 from rest_auth.utils import jwt_encode
 from rest_auth.views import LoginView
 from rest_framework import viewsets, mixins
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
+from rest_framework.views import APIView
 
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
@@ -16,6 +20,7 @@ from api.models.municipality import MunicipalitySerializer
 from api.models.province import ProvinceSerializer
 from comohay import settings
 from utils.pagination import BasicSizePaginator
+from utils.usd_value_helper import USDValueHelper
 
 
 class LazyLoginView(LoginView):
@@ -75,3 +80,13 @@ class AdSearchViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             queryset = SearchQuerySet().filter(content=query).highlight()
 
         return queryset
+
+
+class USDValueView(APIView):
+    """
+    Retrieve, usd sale value, usd purchase value and general value.
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, days=7):
+        return Response(USDValueHelper.get_avg_values(days), status=HTTP_200_OK)
