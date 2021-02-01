@@ -279,6 +279,10 @@ CELERY_BEAT_SCHEDULE = {
     'clean_lazy_users': {
         'task': 'ads.tasks.clean_lazy_users',
         'schedule': crontab(hour=6, minute=3)  # execute every day at 2:03 AM cuban time
+    },
+    'clear_sessions': {
+        'task': 'ads.tasks.clear_sessions',
+        'schedule': crontab(hour=5, minute=3)  # execute every day at 1:03 AM cuban time
     }
 }
 
