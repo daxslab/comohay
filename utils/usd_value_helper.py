@@ -1,16 +1,15 @@
-from urllib.parse import urlencode
 import io
 import pandas as pd
 import numpy as np
 from pandas import DataFrame
 from scipy import stats
-import pytz
 import requests
 from urllib.parse import urlencode
 import re
 
 
 class USDValueHelper:
+    solr_base_path = 'http://solr:8983/solr/ads/select'
 
     # please never use here the verb "tener" or any of its conjugations, surprisingly the verb is an stop word in
     # the file solr/solr_config/conf/lang/stopwords_es.txt therefore it's removed from every query
@@ -44,16 +43,23 @@ class USDValueHelper:
         """
             Retrieve, usd avg sale value, usd avg purchase value and avg general value.
         """
+
         params = USDValueHelper.solr_base_params
         params['fq'] = 'external_created_at:[NOW-{}DAY TO NOW]'.format(days)
 
+        # getting and pre processing sale data
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.sale_phrase_queries) + '\"'
-        sale_query = 'http://solr:8983/solr/ads/select/?' + urlencode(params)
-        sale_data = USDValueHelper.process_avg_value_query(sale_query)
+        sale_response = USDValueHelper.solr_request(params)
+        sale_data = pd.read_csv(io.StringIO(sale_response.content.decode('utf-8')))
+        sale_data = USDValueHelper.standardizing_prices(sale_data)
+        sale_data = USDValueHelper.removing_outliers(sale_data)
 
+        # getting and pre processing purchase data
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.purchase_phrase_queries) + '\"'
-        purchase_query = 'http://solr:8983/solr/ads/select/?' + urlencode(params)
-        purchase_data = USDValueHelper.process_avg_value_query(purchase_query)
+        purchase_response = USDValueHelper.solr_request(params)
+        purchase_data = pd.read_csv(io.StringIO(purchase_response.content.decode('utf-8')))
+        purchase_data = USDValueHelper.standardizing_prices(purchase_data)
+        purchase_data = USDValueHelper.removing_outliers(purchase_data)
 
         all_data = pd.concat([sale_data, purchase_data])
 
@@ -79,12 +85,63 @@ class USDValueHelper:
         }
 
     @staticmethod
-    def process_avg_value_query(query: str):
-        response = requests.get(query)
-        data = pd.read_csv(io.StringIO(response.content.decode('utf-8')))
-        data = USDValueHelper.standardizing_prices(data)
-        data = USDValueHelper.removing_outliers(data)
-        return data
+    def get_history_values(start, end, batch):
+        params = USDValueHelper.solr_base_params
+        params['fq'] = 'external_created_at:[{}T00:00:00Z TO {}T23:59:59Z]'.format(start, end)
+
+        # computing sale value history
+        params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.sale_phrase_queries) + '\"'
+        sale_response = USDValueHelper.solr_request(params)
+        sale_data = pd.read_csv(io.StringIO(sale_response.content.decode('utf-8')))
+        sale_data = USDValueHelper.standardizing_prices(sale_data)
+        sale_data = USDValueHelper.removing_outliers(sale_data)
+        sale_data['external_created_at'] = pd.to_datetime(sale_data['external_created_at'])
+        # refer to https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for freq
+        # possible values
+        sale_result = sale_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+            avgValue=('price', 'mean'),
+            maxValue=('price', 'max'),
+            minValue=('price', 'min'),
+            adsQty=('id', 'nunique')
+        ).to_dict('index')
+        # mapping Timestamp keys to str
+        sale_result = {str(key): value for key, value in sale_result.items()}
+
+        # computing purchase history value
+        params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.purchase_phrase_queries) + '\"'
+        purchase_response = USDValueHelper.solr_request(params)
+        purchase_data = pd.read_csv(io.StringIO(purchase_response.content.decode('utf-8')))
+        purchase_data = USDValueHelper.standardizing_prices(purchase_data)
+        purchase_data = USDValueHelper.removing_outliers(purchase_data)
+        purchase_data['external_created_at'] = pd.to_datetime(purchase_data['external_created_at'])
+        purchase_result = purchase_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+            avgValue=('price', 'mean'),
+            maxValue=('price', 'max'),
+            minValue=('price', 'min'),
+            adsQty=('id', 'nunique')
+        ).to_dict('index')
+        purchase_result = {str(key): value for key, value in purchase_result.items()}
+
+        # computing general value
+        all_data = pd.concat([sale_data, purchase_data])
+        all_result = all_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+            avgValue=('price', 'mean'),
+            maxValue=('price', 'max'),
+            minValue=('price', 'min'),
+            adsQty=('id', 'nunique')
+        ).to_dict('index')
+        all_result = {str(key): value for key, value in all_result.items()}
+
+        return {
+            'saleHistory': sale_result,
+            'purchaseHistory': purchase_result,
+            'generalHistory': all_result
+        }
+
+    @staticmethod
+    def solr_request(params):
+        query = USDValueHelper.solr_base_path + "/?{}".format(urlencode(params))
+        return requests.get(query)
 
     @staticmethod
     def standardizing_prices(data: DataFrame):

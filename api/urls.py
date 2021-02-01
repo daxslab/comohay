@@ -5,7 +5,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
 from api import views
-from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView
+from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView, \
+    USDValueHistoryView
 
 app_name = 'api'
 
@@ -39,4 +40,5 @@ urlpatterns = [
     url('rest-auth/lazy-login', views.LazyLoginView.as_view(), name='lazy_login'),
     path('usd-value/<int:days>/', USDValueView.as_view()),
     path('usd-value/', USDValueView.as_view()),
+    path('usd-value-history/<str:start>/<str:end>/<str:batch>', USDValueHistoryView.as_view()),
 ]

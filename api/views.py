@@ -90,3 +90,14 @@ class USDValueView(APIView):
 
     def get(self, request, days=7):
         return Response(USDValueHelper.get_avg_values(days), status=HTTP_200_OK)
+
+
+class USDValueHistoryView(APIView):
+    """
+    Retrieve, usd value history
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, start, end, batch):
+        return Response(USDValueHelper.get_history_values(start, end, batch), status=HTTP_200_OK)
