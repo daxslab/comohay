@@ -65,21 +65,21 @@ class USDValueHelper:
 
         return {
             "saleValue": {
-                "avgValue": sale_data['price'].mean(),
-                "maxValue": sale_data['price'].max(),
-                "minValue": sale_data['price'].min(),
+                "avgValue": sale_data['price'].mean() if any(sale_data['price']) else None,
+                "maxValue": sale_data['price'].max() if any(sale_data['price']) else None,
+                "minValue": sale_data['price'].min() if any(sale_data['price']) else None,
                 "adsQty": len(sale_data)
             },
             "purchaseValue": {
-                "avgValue": purchase_data['price'].mean(),
-                "maxValue": purchase_data['price'].max(),
-                "minValue": purchase_data['price'].min(),
+                "avgValue": purchase_data['price'].mean() if any(purchase_data['price']) else None,
+                "maxValue": purchase_data['price'].max() if any(purchase_data['price']) else None,
+                "minValue": purchase_data['price'].min() if any(purchase_data['price']) else None,
                 "adsQty": len(purchase_data)
             },
             "generalValue": {
-                "avgValue": all_data['price'].mean(),
-                "maxValue": all_data['price'].max(),
-                "minValue": all_data['price'].min(),
+                "avgValue": all_data['price'].mean() if any(all_data['price']) else None,
+                "maxValue": all_data['price'].max() if any(all_data['price']) else None,
+                "minValue": all_data['price'].min() if any(all_data['price']) else None,
                 "adsQty": len(all_data)
             }
         }
