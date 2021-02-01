@@ -99,5 +99,5 @@ class USDValueHistoryView(APIView):
 
     permission_classes = [AllowAny]
 
-    def get(self, request, start, end, batch):
-        return Response(USDValueHelper.get_history_values(start, end, batch), status=HTTP_200_OK)
+    def get(self, request, start, end, freq):
+        return Response(USDValueHelper.get_history_values(start, end, freq), status=HTTP_200_OK)

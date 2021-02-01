@@ -85,7 +85,7 @@ class USDValueHelper:
         }
 
     @staticmethod
-    def get_history_values(start, end, batch):
+    def get_history_values(start, end, freq):
         params = USDValueHelper.solr_base_params
         params['fq'] = 'external_created_at:[{}T00:00:00Z TO {}T23:59:59Z]'.format(start, end)
 
@@ -98,7 +98,7 @@ class USDValueHelper:
         sale_data['external_created_at'] = pd.to_datetime(sale_data['external_created_at'])
         # refer to https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for freq
         # possible values
-        sale_result = sale_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+        sale_result = sale_data.groupby(pd.Grouper(key='external_created_at', freq=freq)).agg(
             avgValue=('price', 'mean'),
             maxValue=('price', 'max'),
             minValue=('price', 'min'),
@@ -114,7 +114,7 @@ class USDValueHelper:
         purchase_data = USDValueHelper.standardizing_prices(purchase_data)
         purchase_data = USDValueHelper.removing_outliers(purchase_data)
         purchase_data['external_created_at'] = pd.to_datetime(purchase_data['external_created_at'])
-        purchase_result = purchase_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+        purchase_result = purchase_data.groupby(pd.Grouper(key='external_created_at', freq=freq)).agg(
             avgValue=('price', 'mean'),
             maxValue=('price', 'max'),
             minValue=('price', 'min'),
@@ -124,7 +124,7 @@ class USDValueHelper:
 
         # computing general value
         all_data = pd.concat([sale_data, purchase_data])
-        all_result = all_data.groupby(pd.Grouper(key='external_created_at', freq=batch)).agg(
+        all_result = all_data.groupby(pd.Grouper(key='external_created_at', freq=freq)).agg(
             avgValue=('price', 'mean'),
             maxValue=('price', 'max'),
             minValue=('price', 'min'),

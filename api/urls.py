@@ -40,5 +40,5 @@ urlpatterns = [
     url('rest-auth/lazy-login', views.LazyLoginView.as_view(), name='lazy_login'),
     path('usd-value/<int:days>/', USDValueView.as_view()),
     path('usd-value/', USDValueView.as_view()),
-    path('usd-value-history/<str:start>/<str:end>/<str:batch>', USDValueHistoryView.as_view()),
+    path('usd-value-history/<str:start>/<str:end>/<str:freq>', USDValueHistoryView.as_view()),
 ]
