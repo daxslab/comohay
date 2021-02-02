@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg',
+    'corsheaders',
     'django.contrib.sites',
     'haystack',
     'compressor',
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -420,6 +422,10 @@ PROVINCES_DISPLAY_NAMES_MAP = {
 
 SERVER_SCHEME = 'https'
 SERVER_HOSTNAME = 'comohay.com'
+
+
+# CORS
+CORS_ALLOW_ALL_ORIGINS = True
 
 try:
     from .settings_local import *
