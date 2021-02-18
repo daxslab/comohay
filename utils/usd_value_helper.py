@@ -1,4 +1,6 @@
 import io
+import math
+
 import pandas as pd
 import numpy as np
 from pandas import DataFrame
@@ -65,21 +67,21 @@ class USDValueHelper:
 
         return {
             "saleValue": {
-                "avgValue": sale_data['price'].mean() if any(sale_data['price']) else None,
-                "maxValue": sale_data['price'].max() if any(sale_data['price']) else None,
-                "minValue": sale_data['price'].min() if any(sale_data['price']) else None,
+                "avgValue": sale_data['price'].mean() if any(sale_data['price']) else 0,
+                "maxValue": sale_data['price'].max() if any(sale_data['price']) else 0,
+                "minValue": sale_data['price'].min() if any(sale_data['price']) else 0,
                 "adsQty": len(sale_data)
             },
             "purchaseValue": {
-                "avgValue": purchase_data['price'].mean() if any(purchase_data['price']) else None,
-                "maxValue": purchase_data['price'].max() if any(purchase_data['price']) else None,
-                "minValue": purchase_data['price'].min() if any(purchase_data['price']) else None,
+                "avgValue": purchase_data['price'].mean() if any(purchase_data['price']) else 0,
+                "maxValue": purchase_data['price'].max() if any(purchase_data['price']) else 0,
+                "minValue": purchase_data['price'].min() if any(purchase_data['price']) else 0,
                 "adsQty": len(purchase_data)
             },
             "generalValue": {
-                "avgValue": all_data['price'].mean() if any(all_data['price']) else None,
-                "maxValue": all_data['price'].max() if any(all_data['price']) else None,
-                "minValue": all_data['price'].min() if any(all_data['price']) else None,
+                "avgValue": all_data['price'].mean() if any(all_data['price']) else 0,
+                "maxValue": all_data['price'].max() if any(all_data['price']) else 0,
+                "minValue": all_data['price'].min() if any(all_data['price']) else 0,
                 "adsQty": len(all_data)
             }
         }
@@ -103,7 +105,7 @@ class USDValueHelper:
             maxValue=('price', 'max'),
             minValue=('price', 'min'),
             adsQty=('id', 'nunique')
-        ).to_dict('index')
+        ).fillna(0).to_dict('index')
         # mapping Timestamp keys to str
         sale_result = {str(key): value for key, value in sale_result.items()}
 
@@ -119,7 +121,7 @@ class USDValueHelper:
             maxValue=('price', 'max'),
             minValue=('price', 'min'),
             adsQty=('id', 'nunique')
-        ).to_dict('index')
+        ).fillna(0).to_dict('index')
         purchase_result = {str(key): value for key, value in purchase_result.items()}
 
         # computing general value
@@ -129,7 +131,7 @@ class USDValueHelper:
             maxValue=('price', 'max'),
             minValue=('price', 'min'),
             adsQty=('id', 'nunique')
-        ).to_dict('index')
+        ).fillna(0).to_dict('index')
         all_result = {str(key): value for key, value in all_result.items()}
 
         return {
