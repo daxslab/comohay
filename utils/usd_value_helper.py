@@ -1,5 +1,6 @@
 import io
 import math
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
@@ -70,21 +71,32 @@ class USDValueHelper:
                 "avgValue": sale_data['price'].mean() if any(sale_data['price']) else 0,
                 "maxValue": sale_data['price'].max() if any(sale_data['price']) else 0,
                 "minValue": sale_data['price'].min() if any(sale_data['price']) else 0,
-                "adsQty": len(sale_data)
+                "adsQty": len(sale_data),
+                "date": datetime.now().strftime('%Y-%m-%d')
             },
             "purchaseValue": {
                 "avgValue": purchase_data['price'].mean() if any(purchase_data['price']) else 0,
                 "maxValue": purchase_data['price'].max() if any(purchase_data['price']) else 0,
                 "minValue": purchase_data['price'].min() if any(purchase_data['price']) else 0,
-                "adsQty": len(purchase_data)
+                "adsQty": len(purchase_data),
+                "date": datetime.now().strftime('%Y-%m-%d')
             },
             "generalValue": {
                 "avgValue": all_data['price'].mean() if any(all_data['price']) else 0,
                 "maxValue": all_data['price'].max() if any(all_data['price']) else 0,
                 "minValue": all_data['price'].min() if any(all_data['price']) else 0,
-                "adsQty": len(all_data)
+                "adsQty": len(all_data),
+                "date": datetime.now().strftime('%Y-%m-%d')
             }
         }
+
+    @staticmethod
+    def _map_history_values(all_result):
+        history_values = []
+        for key, value in all_result.items():
+            value['date'] = key.strftime('%Y-%m-%d')
+            history_values.append(value)
+        return history_values
 
     @staticmethod
     def get_history_values(start, end, freq):
@@ -107,7 +119,7 @@ class USDValueHelper:
             adsQty=('id', 'nunique')
         ).fillna(0).to_dict('index')
         # mapping Timestamp keys to str
-        sale_result = {str(key): value for key, value in sale_result.items()}
+        sale_result = USDValueHelper._map_history_values(sale_result)
 
         # computing purchase history value
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.purchase_phrase_queries) + '\"'
@@ -122,7 +134,7 @@ class USDValueHelper:
             minValue=('price', 'min'),
             adsQty=('id', 'nunique')
         ).fillna(0).to_dict('index')
-        purchase_result = {str(key): value for key, value in purchase_result.items()}
+        purchase_result = USDValueHelper._map_history_values(purchase_result)
 
         # computing general value
         all_data = pd.concat([sale_data, purchase_data])
@@ -132,7 +144,7 @@ class USDValueHelper:
             minValue=('price', 'min'),
             adsQty=('id', 'nunique')
         ).fillna(0).to_dict('index')
-        all_result = {str(key): value for key, value in all_result.items()}
+        all_result = USDValueHelper._map_history_values(all_result)
 
         return {
             'saleHistory': sale_result,
