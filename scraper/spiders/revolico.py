@@ -65,8 +65,8 @@ class RevolicoSpider(BaseSpider):
         page_info = results[0]['data']['adsPerPage']['pageInfo']
         ads = results[0]['data']['adsPerPage']['edges']
 
-        for ad in ads:
-            yield self.parser.parse_ad(ad)
+        for ad_node in ads:
+            yield self.parser.parse_ad(ad_node['node'])
 
         if page_info['hasNextPage'] and self.depth > 0:
             query[0]['variables']['page'] = query[0]['variables']['page'] + 1

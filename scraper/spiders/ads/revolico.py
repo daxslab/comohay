@@ -92,35 +92,35 @@ class RevolicoParser(BaseParser):
     }
 
     def parse_ad(self, ad):
-        title = ad['node']['title']
+        title = ad['title']
 
-        rv_category = ad['node']['subcategory']['title']
+        rv_category = ad['subcategory']['title']
         category_tree = self.get_category_tree(rv_category)
         category = Category.objects.filter(name=category_tree[1], parent__name=category_tree[0]).get()
 
-        rv_municipality = ad['node']['municipality']['name'] if ad['node']['municipality'] else None
-        rv_province = ad['node']['province']['name'] if ad['node']['province'] else None
+        rv_municipality = ad['municipality']['name'] if ad['municipality'] else None
+        rv_province = ad['province']['name'] if ad['province'] else None
         province = Province.objects.get(name=rv_province) if rv_province else None
         try:
             municipality = Municipality.objects.get(name=rv_municipality) if rv_municipality else None
         except:
             municipality = None
 
-        description = ad['node']['description']
+        description = ad['description']
 
-        price = ad['node']['price']
-        currency = ad['node']['currency'] if ad['node']['currency'] in ['CUC', 'CUP'] else 'CUC'
+        price = ad['price']
+        currency = ad['currency'] if ad['currency'] in ['CUC', 'CUP'] else 'CUC'
 
-        phone = self.clean_phone(ad['node']['phone']) if ad['node']['phone'] else None
-        # email = ad['node']['email']
+        phone = self.clean_phone(ad['phone']) if ad['phone'] else None
+        # email = ad['email']
         email = None
 
-        external_date = ad['node']['updatedOnByUser']
+        external_date = ad['updatedOnByUser']
         external_created_at = datetime.strptime(external_date.split('+')[0].split('.')[0], "%Y-%m-%dT%H:%M:%S")
         external_created_at = make_aware(external_created_at)
 
-        external_id = ad['node']['id']
-        external_url = 'https://www.revolico.com'+ad['node']['permalink']
+        external_id = ad['id']
+        external_url = 'https://www.revolico.com'+ad['permalink']
 
         item = AdItem()
         item['title'] = title
@@ -140,7 +140,7 @@ class RevolicoParser(BaseParser):
 
         return item
 
-    def is_not_found(self, response):
-        if response.css('h2::text').get(default='').strip() in ['Anuncio eliminado.', 'Anuncio inválido.', 'Anuncio despublicado.']:
+    def is_not_found(self, ad):
+        if not ad:
             return True
         return False
