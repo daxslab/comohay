@@ -42,7 +42,7 @@ class UpdaterSpider(BaseSpider):
         ads_query_set.exclude(
             Q(external_url__isnull=True) | Q(external_url='')
         )
-        for ad in ads_query_set:
+        for ad in ads_query_set.iterator():
             spider_name = get_spider_name_by_source(ad.external_source)
             spider = self.spider_loader.load(spider_name)
             meta = {
