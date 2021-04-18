@@ -2,13 +2,9 @@ from datetime import timedelta, datetime
 
 from actstream.models import Action
 from django.core.management.base import BaseCommand
-from django.core.paginator import Paginator
 from django.utils import timezone
 
-from ads.models import Ad, User
-from utils.cli import confirm_input
-from utils.detect_similarity import detect_similarity
-from utils.remove_duplicates import remove_duplicates
+from ads.models import User
 
 
 class Command(BaseCommand):
@@ -26,27 +22,11 @@ class Command(BaseCommand):
         days = options['days']
         days_delta = timedelta(days)
 
-        queryset = User.objects.select_related('lazyuser').filter(
+        old_users = User.objects.select_related('lazyuser').filter(
             lazyuser__id__gt=0,
             last_login__lt=now - days_delta
-        ).order_by('id').all()
+        ).order_by('id').all().iterator()
 
-        paginator = Paginator(queryset, 1000)
-
-        for page_number in paginator.page_range:
-            page = paginator.page(page_number)
-
-            for old_user in page.object_list:
-                Action.objects.filter(actor_object_id=old_user.id).update(actor_object_id=anonymous_user.id)
-                old_user.delete()
-
-
-
-        # users = User.objects.select_related('lazyuser').filter(
-        #     lazyuser__id__gt=0,
-        #     last_login__lt=now-days_delta
-        # ).all()
-        #
-        # for old_user in users:
-        #     Action.objects.filter(actor_object_id=old_user.id).update(actor_object_id=anonymous_user.id)
-        #     old_user.delete()
+        for old_user in old_users:
+            Action.objects.filter(actor_object_id=old_user.id).update(actor_object_id=anonymous_user.id)
+            old_user.delete()
