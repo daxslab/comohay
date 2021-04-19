@@ -63,7 +63,7 @@ class UpdaterSpider(BaseSpider):
                         'query': "query AdDetails($id: Int!, $token: String) { ad(id: $id, token: $token) { ...Ad subcategory { id title slug parentCategory { id title slug __typename } __typename } viewCount permalink __typename } } fragment Ad on AdType {id title price currency shortDescription description email phone permalink imagesCount updatedOnToOrder updatedOnByUser isAuto province {id name slug __typename} municipality {id name slug __typename } subcategory {id title __typename} __typename }"
                     }
                 ]
-                url = 'https://api.revolico.app/graphql'
+                url = 'https://api.revolico.app/graphql/'
                 meta['query'] = query
                 yield Request(url, method='POST', dont_filter=True, errback=self.on_error,
                               body=json.dumps(query),

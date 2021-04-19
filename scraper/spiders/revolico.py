@@ -35,7 +35,7 @@ class RevolicoSpider(BaseSpider):
 
     queries = []
 
-    url = 'https://api.revolico.app/graphql'
+    url = 'https://api.revolico.app/graphql/'
 
     start_urls = [
         'compra-venta',
