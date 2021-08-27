@@ -59,10 +59,8 @@ services:
       - 8983:8983
     volumes:
       - solr_data:/opt/solr/server/solr/mycores/
-    command:
-      - solr-precreate
-      - ads
-      - /opt/solr/server/solr/configsets/basic_configs
+      - ./solr_conf/ads_core_stopwords_es.txt:/home/ads_stopwords_es.txt
+    command: 'bash -e -c "precreate-core ads /opt/solr/server/solr/configsets/basic_configs; cp /home/ads_stopwords_es.txt /opt/solr/server/solr/mycores/ads/conf/lang/stopwords_es.txt; solr-foreground;"'
 volumes:
   postgres_data:
   solr_data:
