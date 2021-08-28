@@ -325,11 +325,9 @@ LOGGING = {
 
 EXTERNAL_SOURCES = {
     'hogarencuba': 'hogarencuba.com',
-    'bachecubano': 'bachecubano.com',
     'revolico': 'revolico.com',
     'porlalivre': 'porlalivre.com',
     'timbirichi': 'timbirichi.com',
-    # 'clasificadoshlg': 'clasificadoshlg.com',
     'uncuc': '1cuc.com',
     'merolico': 'merolico.app',
 }
