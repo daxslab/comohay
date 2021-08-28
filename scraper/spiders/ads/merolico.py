@@ -4,15 +4,14 @@ from categories.models import Category
 from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
-from ads.models import Province, Municipality
+from ads.models import Province, Municipality, Ad
 from scraper.items import AdItem
 from scraper.spiders.ads.base import BaseParser
 
 
 class MerolicoParser(BaseParser):
-
     category_mapping = {
-        'Computadoras':{
+        'Computadoras': {
             'Pc de Escritorio': 'PC',
             'Monitores': 'Monitores',
             'Motherboard': 'Accesorios y Componentes',
@@ -94,7 +93,6 @@ class MerolicoParser(BaseParser):
         },
     }
 
-
     def parse_ad(self, response):
         def extract_with_css(query):
             return response.css(query).get(default='').strip()
@@ -134,18 +132,17 @@ class MerolicoParser(BaseParser):
             price = price.replace(',', '')
         else:
             price = 0
+
+        currency = Ad.CUBAN_PESO_ISO
         currency_text = extract_with_css('h1 span small:nth-of-type(2)::text')
 
-        if currency_text and 'usd' in currency_text.lower():
-            currency = 'USD'
-        elif currency_text and 'cuc' in currency_text.lower():
-            currency = 'CUC'
-        elif currency_text and 'cup' in currency_text.lower():
-            currency = 'CUP'
-        else:
-            currency = 'CUC'
+        if currency_text:
+            for currency_iso_tuple in Ad.ALLOWED_CURRENCIES:
+                if currency_iso_tuple[0].lower() == currency_text.lower():
+                    currency = currency_iso_tuple[0]
+                    break
 
-        contact_phone= None
+        contact_phone = None
         contact_phone_info = response.css('.card-user-info .ev-action a.btn-info::text').extract()
         if len(contact_phone_info) > 1:
             contact_phone = self.clean_phone(contact_phone_info[1].rstrip().strip())
@@ -162,7 +159,7 @@ class MerolicoParser(BaseParser):
         item['category'] = category
         item['description'] = description
         item['price'] = price
-        item['user_currency'] = currency
+        item['currency_iso'] = currency
         item['province'] = province
         item['municipality'] = municipality
         item['contact_phone'] = contact_phone

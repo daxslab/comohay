@@ -20,8 +20,8 @@
                 {% if ad.municipality %}{{ ad.municipality }}{% endif %}
                 ({{ ad.created_at | date:"SHORT_DATE_FORMAT" }})
             </span>
-            {% if ad.get_user_price %}
-                <h3 class="list-item-price">{{ ad.get_user_price }} {{ ad.user_currency }}</h3>
+            {% if ad.price %}
+                <h3 class="list-item-price">{{ ad.price }} {{ ad.currency_iso }}</h3>
             {% endif %}
         </a>
     </div>

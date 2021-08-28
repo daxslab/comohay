@@ -266,7 +266,6 @@ def user_ads(request):
 @login_required
 def edit(request, id):
     ad = get_object_or_404(Ad, id=id)
-    ad.price = ad.get_user_price()
 
     if request.user.id != ad.created_by_id:
         raise ValidationError(u'Permission denied')

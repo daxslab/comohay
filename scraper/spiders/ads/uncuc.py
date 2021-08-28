@@ -5,7 +5,7 @@ from categories.models import Category
 from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
-from ads.models import Province, Municipality
+from ads.models import Province, Municipality, Ad
 from scraper.items import AdItem
 from scraper.spiders.ads.base import BaseParser
 
@@ -78,19 +78,28 @@ class UncucParser(BaseParser):
         html_handler = HTML2Text()
         description = html_handler.handle(response.css('div.v-descr_text').get())
 
+        price = 0
+        currency = Ad.CUBAN_PESO_ISO
+
         _price_element = extract_with_css('div.l-right div.v-price b::text')
-        if _price_element and 'usd' in _price_element.lower():
-            price = ''.join(_price_element.split(' ')[:-1]).replace(" ", "")
-            currency = 'USD'
-        elif _price_element and 'cuc' in _price_element.lower():
-            price = ''.join(_price_element.split(' ')[:-1]).replace(" ", "")
-            currency = 'CUC'
-        elif _price_element and 'cup' in _price_element.lower():
-            price = ''.join(_price_element.split(' ')[:-1]).replace(" ", "")
-            currency = 'CUP'
-        else:
-            price = 0
-            currency = 'CUC'
+        _price_element = _price_element.replace(" ", "")
+
+        if _price_element:
+
+            match = re.search('(?P<price>\d+(\.\d+)?)(?P<curr>.+)?', _price_element)
+
+            if match:
+                price = match.group('price') if match.group('price') else price
+                currency_str = match.group('curr')
+
+                if currency_str:
+                    if currency_str == '$':
+                        currency = Ad.AMERICAN_DOLLAR_ISO
+                    else:
+                        for currency_iso_tuple in Ad.ALLOWED_CURRENCIES:
+                            if currency_iso_tuple[0].lower() == currency_str.lower():
+                                currency = currency_iso_tuple[0]
+                                break
 
         external_contact_id = extract_with_css('div.v-author__info > span > a::attr(href)')
         if external_contact_id:
@@ -118,7 +127,7 @@ class UncucParser(BaseParser):
         item['category'] = category
         item['description'] = description
         item['price'] = price
-        item['user_currency'] = currency
+        item['currency_iso'] = currency
         item['province'] = province
         # item['municipality'] = municipality
         item['contact_phone'] = None

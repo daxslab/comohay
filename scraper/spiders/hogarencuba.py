@@ -4,7 +4,7 @@ from datetime import datetime
 from categories.models import Category
 from django.utils.timezone import make_aware
 
-from ads.models import Province, Municipality
+from ads.models import Province, Municipality, Ad
 from scraper.items import AdItem
 from scraper.spiders.base import BaseSpider
 
@@ -50,7 +50,7 @@ class HogarencubaSpider(BaseSpider):
           item['category'] = category
           item['description'] = property['description']
           item['price'] = property['price']
-          item['user_currency'] = 'CUC'
+          item['currency_iso'] = Ad.AMERICAN_DOLLAR_ISO
           item['province'] = province
           item['municipality'] = municipality
           item['external_source'] = self.source

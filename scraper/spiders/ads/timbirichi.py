@@ -4,7 +4,7 @@ from categories.models import Category
 from django.utils.timezone import make_aware
 from html2text import HTML2Text
 
-from ads.models import Province, Municipality
+from ads.models import Province, Municipality, Ad
 from scraper.items import AdItem
 from scraper.spiders.ads.base import BaseParser
 
@@ -187,7 +187,7 @@ class TimbirichiParser(BaseParser):
         item['category'] = category
         item['description'] = description
         item['price'] = price
-        item['user_currency'] = 'CUC'
+        item['currency_iso'] = Ad.AMERICAN_DOLLAR_ISO
         item['province'] = province
         # item['municipality'] = municipality
         item['contact_phone'] = phone

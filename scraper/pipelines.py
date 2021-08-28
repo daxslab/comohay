@@ -34,7 +34,7 @@ class RemoveDuplicatedAdPipeline(object):
 class BaseAdPipeline(object):
 
     # used for update the incoming ad, this is necessary no matter the existence of a check based on the external_url
-    # that is made before requesting the ad source (see line 24 of scraper/spiders/bachecubano.py) for reference.
+    # that is made before requesting the ad source (see line 33 of scraper/spiders/uncuc.py) for reference.
     # This additional updating step is useful because the ad could have changed its external url in its source but not
     # its external_id, therefore the parser will request the new ad url and when the ad is passing through this method
     # it will find that the ad was in db due to the external_id and instead af adding it as a new ad it will just update

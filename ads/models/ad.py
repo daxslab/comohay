@@ -16,12 +16,29 @@ from ads.models.province import Province
 
 
 class Ad(BaseModel):
+    CUBAN_PESO_ISO = 'CUP'
+    CONVERTIBLE_CUBAN_PESO_ISO = 'CUC'
+    MLC_ISO = 'MLC'
+    AMERICAN_DOLLAR_ISO = 'USD'
+    EURO_ISO = 'EUR'
+    CANADIAN_DOLLAR_ISO = 'CAD'
+    MEXICAN_PESO_ISO = 'MXN'
+    ALLOWED_CURRENCIES = (
+        (CUBAN_PESO_ISO, CUBAN_PESO_ISO),
+        (MLC_ISO, MLC_ISO),
+        (AMERICAN_DOLLAR_ISO, AMERICAN_DOLLAR_ISO),
+        (EURO_ISO, EURO_ISO),
+        (CANADIAN_DOLLAR_ISO, CANADIAN_DOLLAR_ISO),
+        (MEXICAN_PESO_ISO, MEXICAN_PESO_ISO),
+        (CONVERTIBLE_CUBAN_PESO_ISO, CONVERTIBLE_CUBAN_PESO_ISO),
+    )
+
     title = models.CharField(max_length=200, verbose_name=_('Title'))
     slug = AutoSlugField(populate_from='title', always_update=False, unique=False, verbose_name=_('Slug'))
     category = models.ForeignKey('categories.Category', null=True, on_delete=models.SET_NULL, verbose_name=_('Category'))
     description = models.TextField(verbose_name=_('Description'))
     price = models.DecimalField(max_digits=64, decimal_places=2, blank=True, null=True, default=0.00, verbose_name=_('Price'))
-    user_currency = models.CharField(null=True, max_length=3, choices=[('CUC', 'CUC'), ('CUP', 'CUP'), ('USD', 'USD')], default='CUP', verbose_name=_('Currency'))
+    currency_iso = models.CharField(null=True, max_length=3, choices=ALLOWED_CURRENCIES, default='CUP', verbose_name=_('Currency'))
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Province'))
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
     contact_phone = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact phone"))
@@ -58,21 +75,7 @@ class Ad(BaseModel):
         return url if not absolute else "{}://{}{}".format(scheme, hostname, url)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        #remove null values
-        if self.price == None:
+        if self.price is None:
             self.price = 0
 
-        if self.user_currency == 'CUC':
-            self.price = Decimal(self.price) * settings.CUC_TO_CUP_CHANGE
-        elif self.user_currency == 'USD':
-            self.price = Decimal(self.price) * settings.USD_TO_CUP_CHANGE
-
         super().save(force_insert, force_update, using, update_fields)
-
-    def get_user_price(self):
-        if self.user_currency == 'CUC':
-            return self.price / settings.CUC_TO_CUP_CHANGE
-        elif self.user_currency == 'USD':
-            return self.price / settings.USD_TO_CUP_CHANGE
-        return self.price
-

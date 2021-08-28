@@ -3,7 +3,7 @@ from datetime import datetime
 from categories.models import Category
 from django.utils.timezone import make_aware
 
-from ads.models import Province, Municipality
+from ads.models import Province, Municipality, Ad
 from scraper.items import AdItem
 from scraper.spiders.ads.base import BaseParser
 
@@ -109,7 +109,13 @@ class RevolicoParser(BaseParser):
         description = ad['description']
 
         price = ad['price']
-        currency = ad['currency'] if ad['currency'] in ['CUC', 'CUP'] else 'CUC'
+        currency = Ad.CUBAN_PESO_ISO
+
+        if ad['currency']:
+            for currency_iso_tuple in Ad.ALLOWED_CURRENCIES:
+                if currency_iso_tuple[0].lower() == ad['currency'].lower():
+                    currency = currency_iso_tuple[0]
+                    break
 
         phone = self.clean_phone(ad['phone']) if ad['phone'] else None
         # email = ad['email']
@@ -127,7 +133,7 @@ class RevolicoParser(BaseParser):
         item['category'] = category
         item['description'] = description
         item['price'] = price
-        item['user_currency'] = currency
+        item['currency_iso'] = currency
         item['province'] = province
         item['municipality'] = municipality
         item['contact_phone'] = phone

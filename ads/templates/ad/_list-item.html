@@ -25,8 +25,8 @@
                 {% if ad.municipality %}{{ ad.municipality }}{% endif %}
             </span>
     </div>
-    {% if ad.get_user_price %}
-        <div class="list-item-price"><h3>{{ ad.get_user_price }} {{ ad.user_currency }}</h3></div>
+    {% if ad.price %}
+        <div class="list-item-price"><h3>{{ ad.price }} {{ ad.currency_iso }}</h3></div>
     {% endif %}
     <div class="list-item-description">
         <p>

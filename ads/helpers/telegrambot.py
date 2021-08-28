@@ -55,7 +55,7 @@ class TelegramBot:
             message += "{}\n".format(ad.municipality)
 
         if ad.price > 0:
-            message += "<b>{} {}</b> - <a href=\"{}\">{}</a>".format(ad.get_user_price(), ad.user_currency,
+            message += "<b>{} {}</b> - <a href=\"{}\">{}</a>".format(ad.price, ad.currency_iso,
                                                               ad.get_url_with_redirection(absolute=True), ad.title)
         else:
             message += "<a href=\"{}\">{}</a>".format(ad.get_url_with_redirection(absolute=True), ad.title)
