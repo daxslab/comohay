@@ -4,17 +4,17 @@
         <div id="provinces-filter">
             <label for="provinces-select">{% trans "Provinces" %}:</label>
             <select id="provinces-select" name="provinces" multiple class="d-none">
-                {% for province in provinces %}
+                {% for province in all_provinces %}
                     <option value="{{ province.name }}"
-                            {% if province.selected %}selected{% endif %}>{{ province.name }}</option>
+                            {% if province in selected_provinces %}selected{% endif %}>{{ province.name }}</option>
                 {% endfor %}
             </select>
             <div class="row custom-select">
-                {% for province in provinces %}
+                {% for province in all_provinces %}
                     <div class="column column-xs-100 column-sm-50 column-md-25">
                         <button class="button button-sm button-outline"
                                 type="button"
-                                data-selected="{% if province.selected %}1{% else %}0{% endif %}"
+                                data-selected="{% if province in selected_provinces %}1{% else %}0{% endif %}"
                                 data-value="{{ province.name }}">{{ province.display_name }}</button>
                     </div>
                 {% endfor %}
@@ -35,18 +35,10 @@
                 </div>
                 <div class="column column-30">
                     <select name="price_currency">
-                        <option value="CUP"
-                                {% if price_currency and price_currency == 'CUP' %}selected{% endif %}>
-                            CUP
-                        </option>
-                        <option value="USD"
-                                {% if price_currency and price_currency == 'USD' %}selected{% endif %}>
-                            USD
-                        </option>
-                        <option value="CUC"
-                                {% if price_currency and price_currency == 'CUC' %}selected{% endif %}>
-                            CUC
-                        </option>
+                        {% for currency in all_currencies %}
+                            <option value="{{ currency.0 }}"
+                                    {% if currency.0 == price_currency %}selected{% endif %}>{{ currency.1 }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>

@@ -27,18 +27,16 @@
         {% endif %}
     </div>
     <div id="provinces-selected" class="row">
-        {% for province in provinces %}
-            {% if province.selected %}
-                <div class="item-container column column-xs-100 column-sm-50">
-                    <div class="item">
-                        <button type="button"
-                                class="remove-filter button button-sm button-clear"
-                                data-reference="{{ province.name }}">
-                            <span class="icon-cancel-1"></span></button>
-                        {{ province.display_name }}
-                    </div>
+        {% for province in selected_provinces %}
+            <div class="item-container column column-xs-100 column-sm-50">
+                <div class="item">
+                    <button type="button"
+                            class="remove-filter button button-sm button-clear"
+                            data-reference="{{ province.name }}">
+                        <span class="icon-cancel-1"></span></button>
+                    {{ province.display_name }}
                 </div>
-            {% endif %}
+            </div>
         {% endfor %}
     </div>
 </div>

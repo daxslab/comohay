@@ -17,6 +17,9 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
 
     price = fields.TFloatField(model_attr='price')
 
+    currency_iso = fields.CharField(model_attr='currency_iso',
+                                    extra_attr={"omitNorms": "true", "omitTermFreqAndPositions": "true"})
+
     province = fields.CharField(model_attr='province__name',
                                 extra_attr={"omitNorms": "true"})
 

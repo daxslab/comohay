@@ -39,12 +39,6 @@ class AdSearchForm(ModelSearchForm):
         price_from = self.cleaned_data['price_from']
         price_to = self.cleaned_data['price_to']
         price_currency = self.cleaned_data['price_currency']
-        if price_currency and price_currency == 'CUC':
-            price_from = price_from * settings.CUC_TO_CUP_CHANGE if price_from else price_from
-            price_to = price_to * settings.CUC_TO_CUP_CHANGE if price_to else price_to
-        elif price_currency and price_currency == 'USD':
-            price_from = price_from * settings.USD_TO_CUP_CHANGE if price_from else price_from
-            price_to = price_to * settings.USD_TO_CUP_CHANGE if price_to else price_to
 
         # boosting of 1.5 for every term that appears in the title
         # TODO: improve this by overriding the solr backend method build_alt_parser_query in order to avoid to do the
@@ -76,6 +70,9 @@ class AdSearchForm(ModelSearchForm):
             sqs = sqs.filter_and(price__range=[price_from, sys.maxsize])
         elif price_to:
             sqs = sqs.filter_and(price__range=[0, price_to])
+
+        if price_from or price_to:
+            sqs = sqs.filter_and(currency_iso=price_currency)
 
         if self.load_all:
             sqs = sqs.load_all()

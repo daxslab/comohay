@@ -4,6 +4,8 @@
 
 {{ object.price }}
 
+{{ object.currency_iso }}
+
 {{ object.province }}
 
 {{ object.municipality }}
