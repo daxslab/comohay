@@ -36,7 +36,6 @@ class UpdaterSpider(BaseSpider):
             if external_sources:
                 query = query & Q(external_source__in=external_sources)
 
-
         ads_query_set = Ad.objects.filter(query)
 
         ads_query_set.exclude(
@@ -78,19 +77,19 @@ class UpdaterSpider(BaseSpider):
                               meta=meta
                               )
 
-
     def parse(self, response):
         spider = response.meta['spider']
         ad_id = response.meta['ad_id']
+
         # FIXME: revolico graphql api corner case, fix spider architecture
         if spider.name == "revolico":
             response_object = json.loads(response.body)[0]
             response = response_object['data']['ad']
+
         if spider.parser.is_not_found(response):
-            Ad.objects.filter(id=ad_id).delete()
+            Ad.objects.get(id=ad_id).delete()
         else:
             yield spider.parser.parse_ad(response)
-
 
     def on_error(self, failure):
         if failure.value.response.status == 404:

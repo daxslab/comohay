@@ -35,6 +35,9 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return Ad
 
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(is_deleted=False)
+
     def prepare(self, object):
         """
         Its super important to avoid to reach a negative number in the boost, with a negative number the

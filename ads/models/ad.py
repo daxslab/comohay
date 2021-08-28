@@ -50,6 +50,7 @@ class Ad(BaseModel):
     external_created_at = models.DateTimeField(blank=True, null=True, verbose_name=_('External created at'))
     created_by = CurrentUserField(verbose_name=_('Created by'))
     updated_by = CurrentUserField(on_update=True, related_name='%(class)s_updated_by', verbose_name=_('Updated by'))
+    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _('Ad')
@@ -79,3 +80,12 @@ class Ad(BaseModel):
             self.price = 0
 
         super().save(force_insert, force_update, using, update_fields)
+
+    def delete(self, using=None, keep_parents=False, soft=True):
+        if soft:
+            self.is_deleted = True
+            self.save()
+            return 0, {}
+
+        return super().delete(using, keep_parents)
+
