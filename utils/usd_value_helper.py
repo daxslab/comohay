@@ -1,10 +1,12 @@
 import io
+import re
 from datetime import datetime
-
+from scipy import stats
+import numpy as np
 import pandas as pd
 import requests
 from urllib.parse import urlencode
-import stats.exchange_rates_computation_service
+from pandas import DataFrame
 
 
 class USDValueHelper:
@@ -50,15 +52,16 @@ class USDValueHelper:
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.sale_phrase_queries) + '\"'
         sale_response = USDValueHelper.solr_request(params)
         sale_data = pd.read_csv(io.StringIO(sale_response.content.decode('utf-8')))
-        sale_data = stats.exchange_rates_computation_service.standardize_prices(sale_data)
-        sale_data = stats.exchange_rates_computation_service.remove_price_outliers(sale_data)
+
+        sale_data = USDValueHelper.standardize_prices(sale_data)
+        sale_data = USDValueHelper.remove_price_outliers(sale_data)
 
         # getting and pre processing purchase data
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.purchase_phrase_queries) + '\"'
         purchase_response = USDValueHelper.solr_request(params)
         purchase_data = pd.read_csv(io.StringIO(purchase_response.content.decode('utf-8')))
-        purchase_data = stats.exchange_rates_computation_service.standardize_prices(purchase_data)
-        purchase_data = stats.exchange_rates_computation_service.remove_price_outliers(purchase_data)
+        purchase_data = USDValueHelper.standardize_prices(purchase_data)
+        purchase_data = USDValueHelper.remove_price_outliers(purchase_data)
 
         all_data = pd.concat([sale_data, purchase_data])
 
@@ -103,8 +106,8 @@ class USDValueHelper:
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.sale_phrase_queries) + '\"'
         sale_response = USDValueHelper.solr_request(params)
         sale_data = pd.read_csv(io.StringIO(sale_response.content.decode('utf-8')))
-        sale_data = stats.exchange_rates_computation_service.standardize_prices(sale_data)
-        sale_data = stats.exchange_rates_computation_service.remove_price_outliers(sale_data)
+        sale_data = USDValueHelper.standardize_prices(sale_data)
+        sale_data = USDValueHelper.remove_price_outliers(sale_data)
         sale_data['external_created_at'] = pd.to_datetime(sale_data['external_created_at'])
         # refer to https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases for freq
         # possible values
@@ -121,8 +124,8 @@ class USDValueHelper:
         params['q'] = '\"' + '\" OR \"'.join(USDValueHelper.purchase_phrase_queries) + '\"'
         purchase_response = USDValueHelper.solr_request(params)
         purchase_data = pd.read_csv(io.StringIO(purchase_response.content.decode('utf-8')))
-        purchase_data = stats.exchange_rates_computation_service.standardize_prices(purchase_data)
-        purchase_data = stats.exchange_rates_computation_service.remove_price_outliers(purchase_data)
+        purchase_data = USDValueHelper.standardize_prices(purchase_data)
+        purchase_data = USDValueHelper.remove_price_outliers(purchase_data)
         purchase_data['external_created_at'] = pd.to_datetime(purchase_data['external_created_at'])
         purchase_result = purchase_data.groupby(pd.Grouper(key='external_created_at', freq=freq)).agg(
             avgValue=('price', 'mean'),
@@ -153,3 +156,33 @@ class USDValueHelper:
         query = USDValueHelper.solr_base_path + "/?{}".format(urlencode(params))
         return requests.get(query)
 
+    @staticmethod
+    def standardize_prices(data: DataFrame):
+        for index in data.index:
+
+            price_match = re.search('(a|en) (?P<price>\d+([.,]\d+)?)', data.at[index, 'title'])
+            if price_match:
+                data.at[index, 'price'] = float(price_match.group('price').replace(',', '.'))
+
+            if not data.at[index, 'price']:
+                data.drop(index=index)
+
+            if 1 <= data.at[index, 'price'] <= 10:
+                if data.at[index, 'external_created_at'] < '2021-04-01':
+                    data.at[index, 'price'] = data.at[index, 'price'] * 25
+                else:
+                    data.drop(index=index)
+
+        return data
+
+    @staticmethod
+    def remove_price_outliers(data: DataFrame):
+        # cleaning anomalous values
+        data = data[(data.price > 0) & (data.price <= 250)]
+        # data = data[((data.price >= 1) & (data.price <= 10)) | ((data.price >= 24) & (data.price <= 250))]
+
+        # removing price outliers,
+        # refer to https://stackoverflow.com/questions/23199796/detect-and-exclude-outliers-in-pandas-data-frame
+        # see also https://math.stackexchange.com/questions/275836/what-is-difference-between-standard-deviation-and-z-score
+
+        return data[(np.abs(stats.zscore(data['price'])) <= 2)]

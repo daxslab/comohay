@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -12,12 +11,13 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 from rest_framework.views import APIView
-
+from ads.models import CurrencyAd
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
 from api.models.ad import AdSerializer
 from api.models.adsearch import AdSearchSerializer
+from api.models.currencyad import CurrencyAdSerializer
 from api.models.exchange_rate import ExchangeRateSerializer
 from api.models.lazylogin import LazyLoginSerializer
 from api.models.municipality import MunicipalitySerializer
@@ -27,8 +27,7 @@ from stats.models.exchange_rate import ExchangeRate
 from utils.pagination import BasicSizePaginator
 from utils.usd_value_helper import USDValueHelper
 import datetime
-
-from django.db.models import Subquery, Max
+from django.db.models import Subquery, Max, F, Q, Func, Value
 
 
 class LazyLoginView(LoginView):
@@ -185,4 +184,52 @@ class ExchangeRateHistoryView(APIView):
         #     return self.get_paginated_response(serializer.data)
 
         serializer = ExchangeRateSerializer(exchange_rates, many=True)
+        return Response(serializer.data)
+
+
+class ExchangeRateCurrencyAdView(APIView):
+    """
+    View to retrieve the currency ads used to compute the last exchange rate relative to the datetime passed as argument
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, source_currency_iso, target_currency_iso, currencyad_type, target_datetime_str=None):
+
+        if target_datetime_str is None:
+            target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        else:
+            target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
+                tzinfo=datetime.timezone.utc)
+
+        exchange_rate_type = ExchangeRate.TYPE_BUY
+        currencyad_type_filter = [currencyad_type]
+
+        if currencyad_type == CurrencyAd.TYPE_PURCHASE:
+            exchange_rate_type = ExchangeRate.TYPE_SELL
+        elif currencyad_type == 'all':
+            exchange_rate_type = ExchangeRate.TYPE_MID
+            currencyad_type_filter = [CurrencyAd.TYPE_SALE, CurrencyAd.TYPE_PURCHASE]
+
+        last_exchange_rate = ExchangeRate.objects.filter(
+            source_currency_iso=source_currency_iso,
+            target_currency_iso=target_currency_iso,
+            type=exchange_rate_type,
+            datetime__lte=target_datetime
+        ).order_by("-datetime").first()
+
+        if last_exchange_rate is None:
+            return Response(HTTP_404_NOT_FOUND)
+
+        mzscore_func = Func(.6745 * (F('price') - last_exchange_rate.median) / last_exchange_rate.mad, function='ABS')
+        currencyad_qs = CurrencyAd.objects.annotate(mzscore=mzscore_func).filter(
+            source_currency_iso=source_currency_iso,
+            target_currency_iso=target_currency_iso,
+            type__in=currencyad_type_filter,
+            ad__external_created_at__lte=last_exchange_rate.datetime,
+            ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
+            mzscore__lte=last_exchange_rate.max_mzscore
+        )
+
+        serializer = CurrencyAdSerializer(currencyad_qs, many=True)
         return Response(serializer.data)

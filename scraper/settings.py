@@ -79,6 +79,7 @@ if isfile(ROTATING_PROXY_LIST_PATH):
 ITEM_PIPELINES = {
     # "scraper.pipelines.RemoveDuplicatedAdPipeline": 200,
     "scraper.pipelines.BaseAdPipeline": 300,
+    "scraper.pipelines.CurrencyAdPipeline": 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

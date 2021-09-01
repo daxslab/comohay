@@ -1,0 +1,8 @@
+from rest_framework import serializers
+from ads.models.currencyad import CurrencyAd
+
+
+class CurrencyAdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CurrencyAd
+        exclude = ['id']

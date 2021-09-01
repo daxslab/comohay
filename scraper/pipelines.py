@@ -18,6 +18,7 @@ from ads.models import Ad
 from comohay import settings
 from utils.remove_duplicates import remove_duplicates, has_duplicates
 from ads.tasks import broadcast_in_telegram
+from ads import currencyad_service
 
 
 # This pipeline is not in use right now, the duplicate detection is being made in the BaseAdPipeline pipeline
@@ -75,4 +76,15 @@ class BaseAdPipeline(object):
         if is_new_ad:
             broadcast_in_telegram.apply_async((ad.id,), retry=True)
 
+        return item
+
+
+class CurrencyAdPipeline(object):
+
+    def process_item(self, item, spider):
+        currencyad = currencyad_service.get_currencyad_from_ad(item.instance)
+        if currencyad:
+            currencyad.save()
+
+        # this pipeline doesn't drop items, it just decide if the ad is a currency ad or not
         return item

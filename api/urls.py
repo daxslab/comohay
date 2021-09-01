@@ -6,7 +6,7 @@ from drf_yasg import openapi
 
 from api import views
 from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView, \
-    USDValueHistoryView, ExchangeRateView, ExchangeRateHistoryView
+    USDValueHistoryView, ExchangeRateView, ExchangeRateHistoryView, ExchangeRateCurrencyAdView
 
 app_name = 'api'
 
@@ -43,6 +43,13 @@ urlpatterns = [
     path('usd-value-history/<str:start>/<str:end>/<str:freq>', USDValueHistoryView.as_view()),
     path('stats/exchange-rate/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:target_datetime>',
          ExchangeRateView.as_view()),
-    path('stats/exchange-rate-history/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:from_datetime>/<str:to_datetime>',
-         ExchangeRateHistoryView.as_view()),
+    path(
+        'stats/exchange-rate-history/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:from_datetime>/<str:to_datetime>',
+        ExchangeRateHistoryView.as_view()),
+    path(
+        'currencyads/<str:source_currency_iso>/<str:target_currency_iso>/<str:currencyad_type>/<str:target_datetime_str>',
+        ExchangeRateCurrencyAdView.as_view()),
+    path(
+        'currencyads/<str:source_currency_iso>/<str:target_currency_iso>/<str:currencyad_type>',
+        ExchangeRateCurrencyAdView.as_view()),
 ]

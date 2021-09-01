@@ -43,6 +43,7 @@ class Ad(BaseModel):
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
     contact_phone = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact phone"))
     contact_email = models.EmailField(null=True, blank=True, verbose_name=_("Contact email"))
+    contact_tg = models.CharField(max_length=200, null=True, verbose_name=_("Contact telegram"))
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
     external_url = models.URLField(blank=True, null=True, verbose_name=_('External URL'))
