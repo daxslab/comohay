@@ -1,10 +1,8 @@
 import itertools
 import re
-import datetime
-
-from ads.models import Ad, CurrencyAd
-from stats import exchange_rates_computation_service
+from ads.models import Ad
 import comohay.settings
+from currencies.models import CurrencyAd
 
 action_regexes = {
     CurrencyAd.TYPE_SALE: ["vendo", "tengo", "en venta", "venta de", "se vende[n]?"],

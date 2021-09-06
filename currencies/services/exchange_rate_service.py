@@ -2,9 +2,9 @@ from scipy import stats
 import pandas as pd
 import numpy as np
 import datetime
-
-from ads.models import Ad, CurrencyAd
-from stats.models.exchange_rate import ExchangeRate
+from ads.models import Ad
+from currencies.models import CurrencyAd
+from currencies.models.exchange_rate import ExchangeRate
 
 # an ad can't be older than this value
 days_span = 7

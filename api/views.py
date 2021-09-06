@@ -11,7 +11,6 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 from rest_framework.views import APIView
-from ads.models import CurrencyAd
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
@@ -23,11 +22,12 @@ from api.models.lazylogin import LazyLoginSerializer
 from api.models.municipality import MunicipalitySerializer
 from api.models.province import ProvinceSerializer
 from comohay import settings
-from stats.models.exchange_rate import ExchangeRate
+from currencies.models import CurrencyAd
+from currencies.models.exchange_rate import ExchangeRate
 from utils.pagination import BasicSizePaginator
 from utils.usd_value_helper import USDValueHelper
 import datetime
-from django.db.models import Subquery, Max, F, Q, Func, Value
+from django.db.models import Subquery, Max, F, Func
 
 
 class LazyLoginView(LoginView):

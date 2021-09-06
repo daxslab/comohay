@@ -36,7 +36,7 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1 [::1
 
 INSTALLED_APPS = [
     'ads.apps.AdsConfig',
-    'stats.apps.StatsConfig',
+    'currencies.apps.CurrenciesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

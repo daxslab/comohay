@@ -5,20 +5,14 @@
 
 
 # useful for handling different item types with a single interface
-import logging
 
-from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Q
 from django.utils import timezone
-from haystack.inputs import Raw
-from haystack.query import SearchQuerySet
 from scrapy.exceptions import DropItem
 
 from ads.models import Ad
-from comohay import settings
 from utils.remove_duplicates import remove_duplicates, has_duplicates
 from ads.tasks import broadcast_in_telegram
-from ads import currencyad_service
+from currencies.services import currencyad_service
 
 
 # This pipeline is not in use right now, the duplicate detection is being made in the BaseAdPipeline pipeline
