@@ -52,3 +52,13 @@ def clean_lazy_users():
 @shared_task
 def clear_sessions():
     call_command('clearsessions')
+
+
+@shared_task()
+def get_telegram_ads_in_the_last_20_min():
+    call_command('get_ads_from_telegram_groups', '--minutes-offset', '20')
+
+
+@shared_task()
+def update_exchange_rates():
+    call_command('update_exchange_rates')

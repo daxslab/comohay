@@ -1,14 +1,10 @@
 import sys
 
-from haystack.backends import SQ
 from haystack.forms import ModelSearchForm
-from haystack.inputs import AutoQuery, Raw, AltParser, Clean
+from haystack.inputs import AltParser
 
 from ads.models import Ad, Province
 from django import forms
-
-from comohay import settings
-from utils.remove_duplicates import double_clean
 
 
 class AdSearchForm(ModelSearchForm):

@@ -2,8 +2,7 @@ from django.core.management.base import BaseCommand
 
 from ads.models import Ad
 from utils.cli import confirm_input
-from utils.detect_similarity import detect_similarity
-from utils.remove_duplicates import remove_duplicates
+from ads.services.ad_service import remove_duplicates
 
 
 class Command(BaseCommand):

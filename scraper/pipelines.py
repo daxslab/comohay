@@ -10,7 +10,7 @@ from django.utils import timezone
 from scrapy.exceptions import DropItem
 
 from ads.models import Ad
-from utils.remove_duplicates import remove_duplicates, has_duplicates
+from ads.services.ad_service import remove_duplicates, has_duplicates
 from ads.tasks import broadcast_in_telegram
 from currencies.services import currencyad_service
 

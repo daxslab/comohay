@@ -32,19 +32,20 @@ class Command(BaseCommand):
             CurrencyAd.objects.all().delete()
 
             final_regex = currencyad_service.main_regex.format(
-                ps_rg="|".join([action for sublist in currencyad_service.action_regexes.values() for action in sublist]),
-                curr_rg="|".join(list(itertools.chain.from_iterable(currencyad_service.currencies_regexes.values()))),
+                ps_rg="|".join(
+                    [action for sublist in currencyad_service.action_regexes.values() for action in sublist]),
+                source_curr_rg="|".join(
+                    list(itertools.chain.from_iterable(currencyad_service.source_currencies_regexes.values()))),
                 target_curr_rg="|".join(list(itertools.chain.from_iterable(
-                    currencyad_service.currencies_regexes.values()))),
+                    currencyad_service.target_currencies_regexes.values()))),
                 final_word_boundary="\\M"
             )
 
-            ads = Ad.objects.raw("SELECT *, regexp_matches(title, '{regex}', 'i') as regexp_matches FROM ads_ad ORDER BY external_created_at ASC".format(regex=final_regex))
+            ads = Ad.objects.raw(
+                "SELECT *, regexp_matches(title, '{regex}', 'i') as regexp_matches FROM ads_ad ORDER BY external_created_at ASC".format(
+                    regex=final_regex))
 
             for ad in ads:
                 currencyad = currencyad_service.get_currencyad_from_ad(ad)
                 if currencyad:
                     currencyad.save()
-
-
-

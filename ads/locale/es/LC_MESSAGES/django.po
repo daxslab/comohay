@@ -60,7 +60,7 @@ msgstr "Provincia"
 
 #: ads/models/ad.py:23 ads/models/municipality.py:14
 msgid "Municipality"
-msgstr "Minicipio"
+msgstr "Municipio"
 
 #: ads/models/ad.py:24
 msgid "Contact phone"

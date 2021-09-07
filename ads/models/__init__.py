@@ -5,3 +5,4 @@ from .province import Province
 from .user import User
 from .user_search import UserSearch
 from .search import Search
+from .telegram_group import TelegramGroup
