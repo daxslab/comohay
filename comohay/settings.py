@@ -312,6 +312,11 @@ LOGLEVEL = os.getenv('DJANGO_LOGLEVEL', 'INFO').upper()
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'formatters': {
         'console': {
             'format': '%(asctime)s %(levelname)s [%(name)s:%(lineno)s] %(module)s %(process)d %(thread)d %(message)s',
@@ -322,11 +327,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console',
         },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
     },
     'loggers': {
         '': {
             'level': LOGLEVEL,
-            'handlers': ['console', ],
+            'handlers': ['console', 'mail_admins'],
         },
     },
 }
