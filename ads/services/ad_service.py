@@ -1,3 +1,4 @@
+from django.core.exceptions import EmptyResultSet
 from haystack.inputs import Raw
 
 from haystack.query import SearchQuerySet
@@ -61,49 +62,48 @@ def has_duplicates(ad, verbose=False):
 
     ids = list(map(lambda x: x[0].split('.')[-1], ids_values))
 
-    if (ad.contact_phone is not None and ad.contact_phone != '') or (
-            ad.contact_email is not None and ad.contact_email != '') or (
-            ad.external_contact_id is not None and ad.external_contact_id != ''):
+    # TODO: think about adding a date comparison. It can be possible that the ad content is similar but corresponds
+    #  to other intent of selling another stock of the same product
+
+    a = Q(id__in=ids)
+    b = Q()
+
+    has_contact_info = False
+
+    if ad.contact_phone is not None and ad.contact_phone != '':
+        b |= Q(contact_phone=ad.contact_phone)
+        has_contact_info = True
+
+    if ad.contact_email is not None and ad.contact_email != '':
+        b |= Q(contact_email=ad.contact_email)
+        has_contact_info = True
+
+    if ad.external_contact_id is not None and ad.external_contact_id != '':
+        b |= (Q(external_contact_id=ad.external_contact_id) & Q(external_source=ad.external_source))
+        has_contact_info = True
+
+    if ad.contact_tg is not None and ad.contact_tg != '':
+        b |= Q(contact_tg=ad.contact_tg)
+        has_contact_info = True
+
+    if has_contact_info:
         # Looking for duplicated ads from the same contact
-        a = Q(id__in=ids)
-        b = Q(contact_email=ad.contact_email)
-        c = Q(contact_phone=ad.contact_phone)
-        d = Q(external_contact_id=ad.external_contact_id) & Q(external_source=ad.external_source)
-
-        duplicates = Ad.objects.filter(a & (b | c | d)).exclude(
-            external_source=ad.external_source,
-            external_id=ad.external_id
-        )
-
-        if duplicates.count() > 0:
-            if verbose:
-                print('Found {} duplicates ({}) of ad:"{}"'.format(duplicates.count(), ','.join(ids), ad.title))
-                for ad in duplicates.all():
-                    print('Title: {}'.format(ad.title))
-                print('------------------------------------------------------------------')
-            return True
-
-        return False
-
+        duplicates = Ad.objects.filter(a & (b))
     else:
-        # Looking for duplicate ads from the same source
-        a = Q(id__in=ids)
-        b = Q(external_source=ad.external_source)
+        # Looking for duplicate ads from the same source that don't have contact information
+        duplicates = Ad.objects.filter(
+            Q(id__in=ids) & Q(external_source=ad.external_source) & Q(contact_phone=None) & Q(contact_email=None) & Q(
+                external_contact_id=None) & Q(contact_tg=None))
 
-        duplicates = Ad.objects.filter(a & b).exclude(
-            external_source=ad.external_source,
-            external_id=ad.external_id
-        )
+    if duplicates.count() > 0:
+        if verbose:
+            print('Found {} duplicates ({}) of ad:"{}"'.format(duplicates.count(), ','.join(ids), ad.title))
+            for ad in duplicates.all():
+                print('Title: {}'.format(ad.title))
+            print('------------------------------------------------------------------')
+        return True
 
-        if duplicates.count() > 0:
-            if verbose:
-                print('Removing {} duplicates ({}) of ad:"{}"'.format(duplicates.count(), ','.join(ids), ad.title))
-                for ad in duplicates.all():
-                    print('Title: {}'.format(ad.title))
-                print('------------------------------------------------------------------')
-            return True
-
-        return False
+    return False
 
 
 def remove_duplicates(ad, verbose=False):
