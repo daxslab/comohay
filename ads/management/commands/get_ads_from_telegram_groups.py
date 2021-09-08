@@ -6,8 +6,8 @@ from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
 from telethon import TelegramClient
 from ads.models import TelegramGroup, Ad
-
 import logging
+import comohay.settings
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +34,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Telegram desktop sample keys, see https://docs.telethon.dev/en/latest/basic/signing-in.html
-        api_id = 7589070
-        api_hash = '49b83716f931e62c113b9b88f95ae1b9'
-        client = TelegramClient('anon', api_id, api_hash)
+        client = TelegramClient('anon', comohay.settings.TELEGRAM_API_ID, comohay.settings.TELEGRAM_API_HASH)
 
         if options['minutes_offset']:
             self.minutes_offset = options['minutes_offset']

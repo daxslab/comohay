@@ -453,6 +453,10 @@ SERVER_HOSTNAME = 'comohay.com'
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Telethon api keys
+TELEGRAM_API_ID = None
+TELEGRAM_API_HASH = None
+
 try:
     from .settings_local import *
 except:
