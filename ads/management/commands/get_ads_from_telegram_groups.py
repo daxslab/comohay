@@ -7,6 +7,9 @@ from django.core.management.base import BaseCommand
 from telethon import TelegramClient
 from ads.models import TelegramGroup, Ad
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     base_datetime = datetime.datetime(2020, 8, 1, tzinfo=datetime.timezone.utc)
@@ -54,53 +57,60 @@ class Command(BaseCommand):
 
             # tg_groups = await sync_to_async(list)(TelegramGroup.objects.all())
             for telegram_group in tg_groups:
-                async for message in client.iter_messages(
-                        entity="@{}".format(telegram_group.username),
-                        offset_date=offset_datetime,
-                        reverse=True,
-                        wait_time=5
-                ):
+                try:
+                    async for message in client.iter_messages(
+                            entity="@{}".format(telegram_group.username),
+                            offset_date=offset_datetime,
+                            reverse=True,
+                            wait_time=5
+                    ):
 
-                    await message.get_sender()
+                        await message.get_sender()
 
-                    if message.text is None or message.sender is None or message.sender.deleted or message.sender.bot or message.sender.scam or message.sender.fake:
-                        continue
+                        if message.text is None or message.sender is None or message.sender.deleted or message.sender.bot or message.sender.scam or message.sender.fake:
+                            continue
 
-                    # TODO: Here must go a more general classifier. Right now
-                    # we only accept ads that match the regex for a currency
-                    # exchange ad
-                    matches = re.match(currencies.services.currencyad_service.regex, message.text, re.IGNORECASE)
-                    if not matches:
-                        continue
+                        # TODO: Here must go a more general classifier. Right now
+                        # we only accept ads that match the regex for a currency
+                        # exchange ad
+                        matches = re.match(currencies.services.currencyad_service.regex, message.text, re.IGNORECASE)
+                        if not matches:
+                            continue
 
-                    ad = Ad(
-                        title=matches.group(0),
-                        category_id=87,  # id of category "Cambio de Moneda"
-                        description=message.text,
-                        province_id=telegram_group.province_id,
-                        contact_tg=message.sender.username,
-                        external_source="t.me/{group_username}".format(group_username=telegram_group.username),
-                        external_id=message.id,
-                        external_url=telegram_group.link + "/{id}".format(id=message.id),
-                        external_created_at=message.date,
-                        is_deleted=False
-                    )
+                        ad = Ad(
+                            title=matches.group(0),
+                            category_id=87,  # id of category "Cambio de Moneda"
+                            description=message.text,
+                            province_id=telegram_group.province_id,
+                            contact_tg=message.sender.username,
+                            external_source="t.me/{group_username}".format(group_username=telegram_group.username),
+                            external_id=message.id,
+                            external_url=telegram_group.link + "/{id}".format(id=message.id),
+                            external_created_at=message.date,
+                            is_deleted=False
+                        )
 
-                    if await sync_to_async(ads.services.ad_service.has_duplicates)(ad, verbose=True):
-                        continue
+                        if await sync_to_async(ads.services.ad_service.has_duplicates)(ad, verbose=True):
+                            continue
 
-                    await sync_to_async(ad.save)()
-
-                    print("New Ad from Telegram message: ", message.date, telegram_group.username, message.text)
-
-                    currencyad = currencies.services.currencyad_service.get_currencyad_from_ad(ad)
-                    if currencyad:
-                        ad.currency_iso = currencyad.target_currency_iso
-                        ad.price = currencyad.price
                         await sync_to_async(ad.save)()
-                        await sync_to_async(currencyad.save)()
-                        print("New CurrencyAd from Telegram message: ", currencyad.source_currency_iso,
-                              currencyad.target_currency_iso, currencyad.price)
+
+                        print("New Ad from Telegram message: ", message.date, telegram_group.username, message.text)
+
+                        currencyad = currencies.services.currencyad_service.get_currencyad_from_ad(ad)
+                        if currencyad:
+                            ad.currency_iso = currencyad.target_currency_iso
+                            ad.price = currencyad.price
+                            await sync_to_async(ad.save)()
+                            await sync_to_async(currencyad.save)()
+                            print("New CurrencyAd from Telegram message: ", currencyad.source_currency_iso,
+                                  currencyad.target_currency_iso, currencyad.price)
+
+                except Exception as e:
+                    logger.error(e)
 
         with client:
-            client.loop.run_until_complete(main())
+            try:
+                client.loop.run_until_complete(main())
+            except Exception as e:
+                logger.error(e)
