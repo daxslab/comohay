@@ -35,16 +35,28 @@ def double_clean(query_fragment, backend):
     return " ".join(cleaned_words)
 
 
-def has_duplicates(ad, verbose=False):
+def has_duplicates(ad, verbose=False, title_mm=None, description_mm=None):
     """
-       Ad :param ad:
+    Returns true if the passed ad has a duplicate in the database using the solr index, otherwise returns false
+
+    Arguments
+        ad (`Ad`):
+            The ad from whom to detect if it has a duplicate
+        verbose (`string`):
+            Whether to print or no information about the process
+        title_mm (`string`):
+            minimum should match for the ad title,see https://solr.apache.org/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Themm_MinimumShouldMatch_Parameter
+        description_mm (`string`):
+            minimum should match for the ad description, see https://solr.apache.org/guide/6_6/the-dismax-query-parser.html#TheDisMaxQueryParser-Themm_MinimumShouldMatch_Parameter
     """
 
     sqs = SearchQuerySet()
-    similarity = int(settings.DESCRIPTION_SIMILARITY * 100)
 
-    # If the query has less than 4 clauses then it has to match at 100%, otherwise the number computed in similarity
-    similarity = '3<{}'.format(similarity)
+    if title_mm is None:
+        title_mm = '{}<{}%'.format(settings.TITLE_MIN_WORDS, settings.TITLE_SIMILARITY)
+
+    if description_mm is None:
+        description_mm = '{}<{}%'.format(settings.DESCRIPTION_MIN_WORDS, settings.DESCRIPTION_SIMILARITY)
 
     clean_desc = double_clean(ad.description, sqs.query.backend)
     clean_desc = clean_desc.replace("'", "\\'")
@@ -56,8 +68,8 @@ def has_duplicates(ad, verbose=False):
 
     ids_values = sqs.filter(
         content=Raw(
-            "description_length:[0 TO {}] AND {{!dismax qf=description mm={}% v='{}'}} AND title_length:[0 TO {}] AND {{!dismax qf=title mm={}% v='{}'}}".format(
-                max_desc_len, similarity, clean_desc, max_title_len, similarity, clean_title))
+            "description_length:[0 TO {}] AND {{!dismax qf=description mm={} v='{}'}} AND title_length:[0 TO {}] AND {{!dismax qf=title mm={} v='{}'}}".format(
+                max_desc_len, title_mm, clean_desc, max_title_len, description_mm, clean_title))
     ).values_list('id')
 
     ids = list(map(lambda x: x[0].split('.')[-1], ids_values))

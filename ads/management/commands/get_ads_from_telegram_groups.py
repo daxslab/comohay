@@ -8,6 +8,7 @@ from telethon import TelegramClient
 from ads.models import TelegramGroup, Ad
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -67,7 +68,13 @@ class Command(BaseCommand):
 
                         await message.get_sender()
 
-                        if message.text is None or message.sender is None or message.sender.deleted or message.sender.bot or message.sender.scam or message.sender.fake:
+                        if message.text is None or \
+                                message.sender is None or \
+                                message.sender.deleted or \
+                                message.sender.bot or \
+                                message.sender.scam or \
+                                message.sender.fake or \
+                                not message.sender.username:
                             continue
 
                         # TODO: Here must go a more general classifier. Right now
@@ -90,12 +97,15 @@ class Command(BaseCommand):
                             is_deleted=False
                         )
 
-                        if await sync_to_async(ads.services.ad_service.has_duplicates)(ad, verbose=True):
+                        if await sync_to_async(ads.services.ad_service.has_duplicates)(ad, verbose=True,
+                                                                                       title_mm='100%',
+                                                                                       description_mm='90%'):
                             continue
 
                         await sync_to_async(ad.save)()
 
-                        print("New Ad from Telegram message: ", message.date, telegram_group.username, message.text)
+                        print("New Ad from Telegram message: ", message.date, telegram_group.username, message.text,
+                              message.sender.username)
 
                         currencyad = currencies.services.currencyad_service.get_currencyad_from_ad(ad)
                         if currencyad:
