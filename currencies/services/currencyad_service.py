@@ -174,7 +174,7 @@ def get_newest_similar_currencyads(currencyad: CurrencyAd):
 
 
 def soft_delete_older_similar_currencyads(currencyad: CurrencyAd):
-    for similar_currencyad in get_older_similar_currencyads(currencyad):
+    for similar_currencyad in get_older_similar_currencyads(currencyad).exclude(ad__is_deleted=True):
         similar_currencyad.ad.delete(soft=True)
         logger.info("Similar older CurrencyAd detected: {}/{} {}".format(
             similar_currencyad.source_currency_iso,
