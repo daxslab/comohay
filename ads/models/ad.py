@@ -1,7 +1,4 @@
-import sys
-from decimal import Decimal
 from encodings.base64_codec import base64_encode
-
 from autoslug import AutoSlugField
 from django import urls
 from django.db import models
@@ -9,10 +6,10 @@ from django.http import QueryDict
 from django_currentuser.db.models import CurrentUserField
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-
 from ads.models.basemodel import BaseModel
 from ads.models.municipality import Municipality
 from ads.models.province import Province
+import datetime
 
 
 class Ad(BaseModel):
@@ -43,7 +40,7 @@ class Ad(BaseModel):
     municipality = models.ForeignKey(Municipality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name=_('Municipality'))
     contact_phone = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact phone"))
     contact_email = models.EmailField(null=True, blank=True, verbose_name=_("Contact email"))
-    contact_tg = models.CharField(max_length=200, null=True, verbose_name=_("Contact telegram"))
+    contact_tg = models.CharField(max_length=200, null=True, blank=True, verbose_name=_("Contact telegram"))
     external_source = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External source'))
     external_id = models.CharField(max_length=200, blank=True, null=True, verbose_name=_('External ID'))
     external_url = models.URLField(blank=True, null=True, verbose_name=_('External URL'))
@@ -52,6 +49,7 @@ class Ad(BaseModel):
     created_by = CurrentUserField(verbose_name=_('Created by'))
     updated_by = CurrentUserField(on_update=True, related_name='%(class)s_updated_by', verbose_name=_('Updated by'))
     is_deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(verbose_name=_('Deleted at'), null=True, blank=True)
 
     class Meta:
         verbose_name = _('Ad')
@@ -85,6 +83,7 @@ class Ad(BaseModel):
     def delete(self, using=None, keep_parents=False, soft=True):
         if soft:
             self.is_deleted = True
+            self.deleted_at = datetime.datetime.now(tz=datetime.timezone.utc)
             self.save()
             return 0, {}
 

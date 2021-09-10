@@ -8,6 +8,7 @@ from telethon import TelegramClient
 from ads.models import TelegramGroup, Ad
 import logging
 import comohay.settings
+from currencies.services import currencyad_service
 
 logger = logging.getLogger(__name__)
 
@@ -75,9 +76,9 @@ class Command(BaseCommand):
                                 not message.sender.username:
                             continue
 
-                        # TODO: Here must go a more general classifier. Right now
-                        # we only accept ads that match the regex for a currency
-                        # exchange ad
+                        # TODO:
+                        #  Here must go a more general classifier.
+                        #  Right now we only accept ads that match the regex for a currencyad
                         matches = re.match(currencies.services.currencyad_service.regex, message.text, re.IGNORECASE)
                         if not matches:
                             continue
@@ -95,24 +96,54 @@ class Command(BaseCommand):
                             is_deleted=False
                         )
 
-                        if await sync_to_async(ads.services.ad_service.has_duplicates)(ad, verbose=True,
-                                                                                       title_mm='100%',
-                                                                                       description_mm='90%'):
-                            continue
-
-                        await sync_to_async(ad.save)()
-
-                        print("New Ad from Telegram message: ", message.date, telegram_group.username, message.text,
-                              message.sender.username)
-
                         currencyad = currencies.services.currencyad_service.get_currencyad_from_ad(ad)
                         if currencyad:
+
+                            # TODO: Check get_newest_similar_currencyads method
+                            if await sync_to_async(Ad.objects.filter(external_url=ad.external_url).count)() > 0 or\
+                                    await sync_to_async(currencyad_service.get_newest_similar_currencyads(currencyad).count)() > 0:
+                                continue
+
+                            await sync_to_async(currencyad_service.soft_delete_older_similar_currencyads)(currencyad)
+
                             ad.currency_iso = currencyad.target_currency_iso
                             ad.price = currencyad.price
                             await sync_to_async(ad.save)()
                             await sync_to_async(currencyad.save)()
-                            print("New CurrencyAd from Telegram message: ", currencyad.source_currency_iso,
-                                  currencyad.target_currency_iso, currencyad.price)
+
+                            logger.info(
+                                "New Ad from Telegram message: {}, {}, {}, {}".format(
+                                    message.date,
+                                    telegram_group.username,
+                                    message.sender.username,
+                                    message.text,
+                                )
+                            )
+
+                            logger.info(
+                                "New CurrencyAd from Telegram message: {}/{} {}".format(
+                                    currencyad.source_currency_iso,
+                                    currencyad.target_currency_iso,
+                                    currencyad.price
+                                )
+                            )
+
+                        else:
+                            # right now this is not reachable because the classifier only detect currencyads
+                            if await sync_to_async(ads.services.ad_service.has_duplicates)(ad):
+                                # TODO: do something similar as in BaseAdPipeline
+                                continue
+
+                            await sync_to_async(ad.save)()
+
+                            logger.info(
+                                "New Ad from Telegram message: {}, {}, {}, {}".format(
+                                    message.date,
+                                    telegram_group.username,
+                                    message.sender.username,
+                                    message.text,
+                                )
+                            )
 
                 except Exception as e:
                     logger.error(e)

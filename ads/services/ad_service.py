@@ -82,19 +82,19 @@ def has_duplicates(ad, verbose=False, title_mm=None, description_mm=None):
 
     has_contact_info = False
 
-    if ad.contact_phone is not None and ad.contact_phone != '':
+    if ad.contact_phone:
         b |= Q(contact_phone=ad.contact_phone)
         has_contact_info = True
 
-    if ad.contact_email is not None and ad.contact_email != '':
+    if ad.contact_email:
         b |= Q(contact_email=ad.contact_email)
         has_contact_info = True
 
-    if ad.external_contact_id is not None and ad.external_contact_id != '':
+    if ad.external_contact_id and ad.external_source:
         b |= (Q(external_contact_id=ad.external_contact_id) & Q(external_source=ad.external_source))
         has_contact_info = True
 
-    if ad.contact_tg is not None and ad.contact_tg != '':
+    if ad.contact_tg:
         b |= Q(contact_tg=ad.contact_tg)
         has_contact_info = True
 

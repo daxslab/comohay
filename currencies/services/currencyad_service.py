@@ -1,10 +1,13 @@
 import itertools
 import re
 import datetime
-
+from django.db.models import Q
 from ads.models import Ad
 import comohay.settings
 from currencies.models import CurrencyAd
+import logging
+
+logger = logging.getLogger(__name__)
 
 action_regexes = {
     CurrencyAd.TYPE_SALE: ["vendo", "tengo", "en venta", "venta de", "se vende[n]?"],
@@ -137,3 +140,43 @@ def get_currencyad_from_ad(ad: Ad):
         target_currency_iso=target_currency_iso,
         price=price
     )
+
+
+def get_similar_currencyads(currencyad: CurrencyAd):
+    ad = currencyad.ad
+
+    currencyads_qs = CurrencyAd.objects.filter(
+        source_currency_iso=currencyad.source_currency_iso,
+        target_currency_iso=currencyad.target_currency_iso,
+        type=currencyad.type
+    )
+
+    currencyads_qs = currencyads_qs.filter(
+        (Q(ad__contact_phone__isnull=False) & ~Q(ad__contact_phone='') & Q(ad__contact_phone=ad.contact_phone)) |
+        (Q(ad__contact_email__isnull=False) & ~Q(ad__contact_email='') & Q(ad__contact_email=ad.contact_email)) |
+        (Q(ad__contact_tg__isnull=False) & ~Q(ad__contact_tg='') & Q(ad__contact_tg=ad.contact_tg)) |
+        (
+                Q(ad__external_contact_id__isnull=False) & ~Q(ad__external_contact_id='') &
+                Q(ad__external_source__isnull=False) & ~Q(ad__external_source='') &
+                Q(ad__external_contact_id=ad.external_contact_id) & Q(ad__external_source=ad.external_source)
+        )
+    )
+
+    return currencyads_qs
+
+
+def get_older_similar_currencyads(currencyad: CurrencyAd):
+    return get_similar_currencyads(currencyad).filter(ad__external_created_at__lt=currencyad.ad.external_created_at)
+
+
+def get_newest_similar_currencyads(currencyad: CurrencyAd):
+    return get_similar_currencyads(currencyad).filter(ad__external_created_at__gt=currencyad.ad.external_created_at)
+
+
+def soft_delete_older_similar_currencyads(currencyad: CurrencyAd):
+    for similar_currencyad in get_older_similar_currencyads(currencyad):
+        similar_currencyad.ad.delete(soft=True)
+        logger.info("Similar older CurrencyAd detected: {}/{} {}".format(
+            similar_currencyad.source_currency_iso,
+            similar_currencyad.target_currency_iso,
+            similar_currencyad.price))

@@ -228,6 +228,7 @@ class ExchangeRateCurrencyAdView(APIView):
             type__in=currencyad_type_filter,
             ad__external_created_at__lte=last_exchange_rate.datetime,
             ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
+            # TODO: add condition to filter by is_deleted and by deleted_at
             mzscore__lte=last_exchange_rate.max_mzscore
         )
 

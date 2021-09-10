@@ -52,6 +52,7 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
                     type__in=exchange_rate_type_to_currency_ad_type_map[exchange_rate_type],
                     ad__external_created_at__lte=target_datetime,
                     ad__external_created_at__gte=(target_datetime - datetime.timedelta(days=days_span))
+                    # TODO: add condition to filter by is_deleted and by deleted_at(> target_datetime)
                 )
 
                 if currencyad_queryset.count() == 0:
