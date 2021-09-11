@@ -22,6 +22,8 @@ class Command(BaseCommand):
            "last 10 minutes per each group. If you add \"--all-messages\" option all messages will be fetched. If you" \
            "add --groups <group-username> only the ads of the group will be fetched"
 
+    lock = False
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Telegram desktop sample keys, see https://docs.telethon.dev/en/latest/basic/signing-in.html
@@ -69,8 +71,6 @@ class Command(BaseCommand):
     async def process_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
         try:
 
-            print(telegram_group.username)
-
             async for message in self.client.iter_messages(
                     entity="@{}".format(telegram_group.username),
                     offset_date=offset_datetime,
@@ -109,12 +109,18 @@ class Command(BaseCommand):
                     is_deleted=False
                 )
 
+                # locking while detecting duplicates and saving the ad, this way we avoid the appearance of duplicates
+                # when two similar ads are processing concurrently
+                while self.lock:
+                    await asyncio.sleep(0.1)
+                self.lock = True
+
                 currencyad = currencies.services.currencyad_service.get_currencyad_from_ad(ad)
                 if currencyad:
 
                     if await sync_to_async(Ad.objects.filter(external_url=ad.external_url).count)() > 0 or \
-                            await sync_to_async(
-                                currencyad_service.get_newest_similar_currencyads(currencyad).count)() > 0:
+                            await sync_to_async(currencyad_service.get_newest_similar_currencyads(currencyad).count)() > 0:
+                        self.lock = False
                         continue
 
                     await sync_to_async(currencyad_service.soft_delete_older_similar_currencyads)(currencyad)
@@ -145,6 +151,7 @@ class Command(BaseCommand):
                     # right now this is not reachable because the classifier only detect currencyads
                     if await sync_to_async(ads.services.ad_service.has_duplicates)(ad):
                         # TODO: do something similar as in BaseAdPipeline
+                        self.lock = False
                         continue
 
                     await sync_to_async(ad.save)()
@@ -157,6 +164,9 @@ class Command(BaseCommand):
                             message.text,
                         )
                     )
+
+                # unlocking db
+                self.lock = False
 
         except Exception as e:
             logger.error(e)
