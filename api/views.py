@@ -195,6 +195,10 @@ class ExchangeRateCurrencyAdView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, source_currency_iso, target_currency_iso, currencyad_type, target_datetime_str=None):
+        # TODO: Think about decoupling the returned currencyads from the last exchange rate in order to
+        #  return results less older. Right now the currencyads returned are at least 1 hour older
+        #  (in corresponding the deleay for computing the exchange rate), but that might be too late for
+        #  this market.
 
         if target_datetime_str is None:
             target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
