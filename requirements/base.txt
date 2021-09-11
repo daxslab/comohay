@@ -65,4 +65,4 @@ Unidecode==1.1.1
 pandas
 numpy
 scipy
-telethon=1.23.0
+telethon==1.23.0
