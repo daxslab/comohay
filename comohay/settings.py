@@ -272,11 +272,11 @@ CELERY_BEAT_SCHEDULE = {
     },
     'crawl': {
         'task': 'ads.tasks.crawl',
-        'schedule': crontab(minute=3)  # execute every hour at minute 3.
+        'schedule': crontab(minute='*/90')  # execute every 90 minutes.
     },
     'crawl_revolico': {
         'task': 'ads.tasks.crawl_revolico',
-        'schedule': crontab(minute='*/10'),  # execute every 10 minutes.
+        'schedule': crontab(minute='*/30'),  # execute every 30 minutes.
     },
     # 'get_proxies_revolico': {
     #     'task': 'ads.tasks.get_proxies',
