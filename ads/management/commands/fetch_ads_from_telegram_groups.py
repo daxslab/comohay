@@ -41,6 +41,12 @@ class Command(BaseCommand):
             help='Process all messages from the selected groups since 2020-08-01',
         )
 
+        parser.add_argument(
+            '--async',
+            action='store_true',
+            help='Process every group asynchronously',
+        )
+
     def handle(self, *args, **options):
 
         if options['minutes_offset']:
@@ -59,16 +65,25 @@ class Command(BaseCommand):
 
         print("Fetching telegram messages ...")
 
-        async def main():
-            await asyncio.gather(*[self.process_group(telegram_group, offset_datetime) for telegram_group in tg_groups])
-
         with self.client:
             try:
-                self.client.loop.run_until_complete(main())
+                self.client.loop.run_until_complete(self.fetch_messages_from_groups(
+                    tg_groups,
+                    offset_datetime,
+                    options['async']
+                ))
             except Exception as e:
                 logger.error(e)
 
-    async def process_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
+    async def fetch_messages_from_groups(self, tg_groups, offset_datetime, process_groups_async=False):
+        if process_groups_async:
+            await asyncio.gather(
+                *[self.fetch_messages_from_group(telegram_group, offset_datetime) for telegram_group in tg_groups])
+        else:
+            for telegram_group in tg_groups:
+                await self.fetch_messages_from_group(telegram_group, offset_datetime)
+
+    async def fetch_messages_from_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
         try:
 
             async for message in self.client.iter_messages(
@@ -119,7 +134,8 @@ class Command(BaseCommand):
                 if currencyad:
 
                     if await sync_to_async(Ad.objects.filter(external_url=ad.external_url).count)() > 0 or \
-                            await sync_to_async(currencyad_service.get_newest_similar_currencyads(currencyad).count)() > 0:
+                            await sync_to_async(
+                                currencyad_service.get_newest_similar_currencyads(currencyad).count)() > 0:
                         self.lock = False
                         continue
 

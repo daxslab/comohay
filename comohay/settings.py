@@ -294,8 +294,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'ads.tasks.clear_sessions',
         'schedule': crontab(hour=5, minute=3)  # execute every day at 1:03 AM cuban time
     },
-    'get_telegram_ads_in_the_last_20_min': {
-        'task': 'ads.tasks.get_telegram_ads_in_the_last_20_min',
+    'fetch_telegram_ads_in_the_last_20_min': {
+        'task': 'ads.tasks.fetch_telegram_ads_in_the_last_20_min',
         'schedule': crontab(minute='*/20')  # execute every 20 minutes
     },
     'update_exchange_rates': {
