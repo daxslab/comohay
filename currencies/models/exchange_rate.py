@@ -2,6 +2,14 @@ from django.db import models
 
 
 class ExchangeRate(models.Model):
+
+    # IMPORTANT NOTE:
+    #   The values of mad and median refers to the Mean Absolute Deviation
+    #   and the mean used to detect the outliers before computing the exchange
+    #   rate. Therefore their values refers to the whole dataset of currencyads,
+    #   in contrast with wavg, max and min that are computed after removing the
+    #   outliers.
+
     TYPE_BUY = 'buy'
     TYPE_SELL = 'sell'
     TYPE_MID = 'mid'
@@ -15,6 +23,6 @@ class ExchangeRate(models.Model):
     mad = models.FloatField()
     median = models.FloatField()
     days_span = models.IntegerField()
-    max_mzscore = models.FloatField()
+    deviation_threshold = models.FloatField()
     ads_qty = models.IntegerField()
     datetime = models.DateTimeField()

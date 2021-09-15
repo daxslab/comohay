@@ -8,8 +8,8 @@ from currencies.models.exchange_rate import ExchangeRate
 
 # an ad can't be older than this value
 days_span = 7
-min_number_of_ads_for_an_exchange_rate = days_span
-max_mzscore = 2
+min_number_of_ads_for_an_exchange_rate = 7
+deviation_threshold = 2
 
 exchange_rate_type_to_currency_ad_type_map = {
     ExchangeRate.TYPE_BUY: [CurrencyAd.TYPE_SALE],
@@ -72,38 +72,19 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
                     'ad__external_created_at'
                 )))
 
-                # recovering the last exchange rate in order to use its wavg as the mean to compute the standard
-                # deviation
-                # last_exchange_rate = ExchangeRate.objects.filter(
-                #     source_currency_iso=source_currency_iso,
-                #     target_currency_iso=target_currency_iso,
-                #     type=exchange_rate_type,
-                #     datetime__lte=target_datetime,
-                #     datetime__gte=(target_datetime - datetime.timedelta(days=7))
-                # ).order_by("-datetime").first()
+                # removing outliers using the median absolute deviation
+                # see https://core.ac.uk/download/pdf/206095228.pdf
+                #
+                # And optionaly see:
+                #   https://stats.stackexchange.com/questions/78609/outlier-detection-in-very-small-sets and
+                #   https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
 
-                # removing price outliers,
-                # refer to https://stackoverflow.com/questions/23199796/detect-and-exclude-outliers-in-pandas-data-frame
-                # see also https://math.stackexchange.com/questions/275836/what-is-difference-between-standard-deviation-and-z-score
-                # if last_exchange_rate is None:
-                #     # Computing z-sore in the usual way, using standard deviation from the sample mean
-                #     currencyads_df = currencyads_df[(np.abs(stats.zscore(currencyads_df['price'])) <= 1)]
-                #     std = currencyads_df['price'].std()
-                # else:
-                #     # Computing the z-score using the standard deviation(std) computed from the mean passed as argument,
-                #     # which should be
-                #     # the latest exchange rate
-                #     mean = last_exchange_rate.wavg
-                #     std = math.sqrt(np.sum(((currencyads_df["price"] - mean) ** 2)) / currencyads_df.shape[0])
-                #     currencyads_df = currencyads_df[(np.abs((currencyads_df["price"] - mean) / std) <= max_zscore)]
-
-                # removing outliers using a modified Z-scores M, a lot more robust for small datasets
-                # see https://stats.stackexchange.com/questions/78609/outlier-detection-in-very-small-sets and
-                # https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
-                mad = stats.median_abs_deviation(currencyads_df['price'])
+                mad = stats.median_abs_deviation(x=currencyads_df['price'], scale='normal')
                 median = currencyads_df['price'].median()
-                mzscores = np.abs(.6745 * (currencyads_df['price'] - median) / mad)
-                currencyads_df = currencyads_df[mzscores <= max_mzscore]
+                max_deviation = deviation_threshold * mad
+                currencyads_df = currencyads_df[(currencyads_df['price'] >= median - max_deviation) &
+                                                (currencyads_df['price'] <= median + max_deviation)]
+
 
                 # if there is no ads left after the pre-processing then ignore the current exchange type
                 if currencyads_df.shape[0] < min_number_of_ads_for_an_exchange_rate:
@@ -132,7 +113,7 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
                     mad=mad,
                     median=median,
                     days_span=days_span,
-                    max_mzscore=max_mzscore,
+                    deviation_threshold=deviation_threshold,
                     ads_qty=len(currencyads_df),
                     datetime=target_datetime
                 )

@@ -225,14 +225,15 @@ class ExchangeRateCurrencyAdView(APIView):
         if last_exchange_rate is None:
             return Response(HTTP_404_NOT_FOUND)
 
-        mzscore_func = Func(.6745 * (F('price') - last_exchange_rate.median) / last_exchange_rate.mad, function='ABS')
-        currencyad_qs = CurrencyAd.objects.annotate(mzscore=mzscore_func).filter(
+        max_deviation = last_exchange_rate.deviation_threshold * last_exchange_rate.mad
+        currencyad_qs = CurrencyAd.objects.filter(
             source_currency_iso=source_currency_iso,
             target_currency_iso=target_currency_iso,
             type__in=currencyad_type_filter,
             ad__external_created_at__lte=last_exchange_rate.datetime,
             ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
-            mzscore__lte=last_exchange_rate.max_mzscore
+            price__gte=last_exchange_rate.median - max_deviation,
+            price__lte=last_exchange_rate.median + max_deviation
         )
 
         # excluding currencyads who were deleted in the target period of time
