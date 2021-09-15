@@ -26,8 +26,13 @@ class Command(BaseCommand):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         # Telegram desktop sample keys, see https://docs.telethon.dev/en/latest/basic/signing-in.html
-        self.client = TelegramClient('anon', comohay.settings.TELEGRAM_API_ID, comohay.settings.TELEGRAM_API_HASH)
+        self.client = TelegramClient(
+            'telethon_sessions/anon',
+            comohay.settings.TELEGRAM_API_ID,
+            comohay.settings.TELEGRAM_API_HASH
+        )
 
     def add_arguments(self, parser):
 
@@ -90,7 +95,7 @@ class Command(BaseCommand):
                     entity="@{}".format(telegram_group.username),
                     offset_date=offset_datetime,
                     reverse=True,
-                    wait_time=5
+                    wait_time=10
             ):
 
                 await message.get_sender()
