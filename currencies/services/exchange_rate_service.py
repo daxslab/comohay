@@ -75,7 +75,7 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
                 # removing outliers using the median absolute deviation
                 # see https://core.ac.uk/download/pdf/206095228.pdf
                 #
-                # And optionaly see:
+                # And optionally see:
                 #   https://stats.stackexchange.com/questions/78609/outlier-detection-in-very-small-sets and
                 #   https://www.itl.nist.gov/div898/handbook/eda/section3/eda35h.htm
 
