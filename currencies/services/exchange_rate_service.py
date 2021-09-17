@@ -7,8 +7,8 @@ from currencies.models import CurrencyAd
 from currencies.models.exchange_rate import ExchangeRate
 
 # an ad can't be older than this value
-days_span = 7
-min_number_of_ads_for_an_exchange_rate = 7
+days_span = 3
+min_number_of_ads_for_an_exchange_rate = 10
 deviation_threshold = 2
 
 exchange_rate_type_to_currency_ad_type_map = {

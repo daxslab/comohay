@@ -98,8 +98,6 @@ class Command(BaseCommand):
                     wait_time=10
             ):
 
-                await message.get_sender()
-
                 if message.text is None or \
                         message.sender is None or \
                         message.sender.deleted or \
