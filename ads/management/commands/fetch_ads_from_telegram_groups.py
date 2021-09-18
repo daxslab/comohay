@@ -87,6 +87,7 @@ class Command(BaseCommand):
         else:
             for telegram_group in tg_groups:
                 await self.fetch_messages_from_group(telegram_group, offset_datetime)
+                await asyncio.sleep(5)
 
     async def fetch_messages_from_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
         try:
