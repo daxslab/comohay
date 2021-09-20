@@ -4,7 +4,7 @@ import ads.services.ad_service
 import currencies.services.currencyad_service
 from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
-from telethon import TelegramClient
+from telethon import TelegramClient, connection
 from ads.models import TelegramGroup, Ad
 import logging
 import comohay.settings
@@ -31,7 +31,9 @@ class Command(BaseCommand):
         self.client = TelegramClient(
             'telethon_sessions/anon',
             comohay.settings.TELEGRAM_API_ID,
-            comohay.settings.TELEGRAM_API_HASH
+            comohay.settings.TELEGRAM_API_HASH,
+            connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,
+            proxy=('proxy.mtproto.co', 443, '11112222333344445555666677778888')
         )
 
     def add_arguments(self, parser):
