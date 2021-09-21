@@ -55,8 +55,8 @@ def clear_sessions():
 
 
 @shared_task()
-def fetch_telegram_ads_in_the_last_20_min():
-    call_command('fetch_ads_from_telegram_groups', '--minutes-offset', '20')
+def fetch_telegram_ads_in_the_last_hour():
+    call_command('fetch_ads_from_telegram_groups', '--minutes-offset', '60')
 
 
 @shared_task()
