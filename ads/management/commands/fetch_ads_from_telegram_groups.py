@@ -89,7 +89,7 @@ class Command(BaseCommand):
         else:
             for telegram_group in tg_groups:
                 await self.fetch_messages_from_group(telegram_group, offset_datetime)
-                await asyncio.sleep(31)
+                await asyncio.sleep(17)
 
     async def fetch_messages_from_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
         try:
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                     entity="@{}".format(telegram_group.username),
                     offset_date=offset_datetime,
                     reverse=True,
-                    wait_time=31
+                    wait_time=17
             ):
 
                 if message.text is None or \
