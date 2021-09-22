@@ -32,8 +32,8 @@ class Command(BaseCommand):
             'telethon_sessions/anon',
             comohay.settings.TELEGRAM_API_ID,
             comohay.settings.TELEGRAM_API_HASH,
-            connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,
-            proxy=('proxy.mtproto.co', 443, '11112222333344445555666677778888')
+            # connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,
+            # proxy=('proxy.mtproto.co', 443, '11112222333344445555666677778888')
         )
 
     def add_arguments(self, parser):
