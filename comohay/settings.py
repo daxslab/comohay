@@ -296,7 +296,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'fetch_telegram_ads_in_the_last_hour': {
         'task': 'ads.tasks.fetch_telegram_ads_in_the_last_hour',
-        'schedule': crontab(minute=31)  # execute every hour at minute 31.
+        'schedule': crontab(minute=11)  # execute every hour at minute 11.
     },
     'update_exchange_rates': {
         'task': 'ads.tasks.update_exchange_rates',
