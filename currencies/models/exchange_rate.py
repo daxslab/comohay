@@ -1,5 +1,5 @@
 from django.db import models
-
+import datetime
 
 class ExchangeRate(models.Model):
 
@@ -26,3 +26,23 @@ class ExchangeRate(models.Model):
     deviation_threshold = models.FloatField()
     ads_qty = models.IntegerField()
     datetime = models.DateTimeField()
+
+
+class ActiveExchangeRate:
+    def __init__(
+            self,
+            source_currency_iso: str,
+            target_currency_iso: str,
+            buy_exchange_rate: ExchangeRate,
+            sell_exchange_rate: ExchangeRate,
+            mid_exchange_rate: ExchangeRate,
+            target_datetime: datetime.datetime
+    ) -> None:
+        super().__init__()
+        self.source_currency_iso = source_currency_iso
+        self.target_currency_iso = target_currency_iso
+        self.buy_exchange_rate = buy_exchange_rate
+        self.sell_exchange_rate = sell_exchange_rate
+        self.mid_exchange_rate = mid_exchange_rate
+        self.target_datetime = target_datetime
+

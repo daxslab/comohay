@@ -11,13 +11,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 from rest_framework.views import APIView
+
+import currencies.services.exchange_rate_service
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
 from api.models.ad import AdSerializer
 from api.models.adsearch import AdSearchSerializer
 from api.models.currencyad import CurrencyAdSerializer
-from api.models.exchange_rate import ExchangeRateSerializer
+from api.models.exchange_rate import ExchangeRateSerializer, ActiveExchangeRateSerializer
 from api.models.lazylogin import LazyLoginSerializer
 from api.models.municipality import MunicipalitySerializer
 from api.models.province import ProvinceSerializer
@@ -187,7 +189,7 @@ class ExchangeRateHistoryView(APIView):
         return Response(serializer.data)
 
 
-class ExchangeRateCurrencyAdView(APIView):
+class CurrencyAdView(APIView):
     """
     View to retrieve the currency ads used to compute the last exchange rate relative to the datetime passed as argument
     """
@@ -243,4 +245,22 @@ class ExchangeRateCurrencyAdView(APIView):
         )
 
         serializer = CurrencyAdSerializer(currencyad_qs, many=True)
+        return Response(serializer.data)
+
+
+class ActiveExchangeRatesView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, target_datetime_str=None):
+
+        if target_datetime_str is None:
+            target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+        else:
+            target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
+                tzinfo=datetime.timezone.utc)
+
+        active_exchange_rates = currencies.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
+
+        serializer = ActiveExchangeRateSerializer(active_exchange_rates, many=True)
+
         return Response(serializer.data)

@@ -4,7 +4,7 @@ import numpy as np
 import datetime
 from ads.models import Ad
 from currencies.models import CurrencyAd
-from currencies.models.exchange_rate import ExchangeRate
+from currencies.models.exchange_rate import ExchangeRate, ActiveExchangeRate
 
 # an ad can't be older than this value
 days_span = 3
@@ -121,3 +121,68 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
                 exchange_rates.append(exchange_rate)
 
     return exchange_rates
+
+
+def get_active_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)):
+
+    # setting a custom order
+    source_currencies_isos = [Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO]
+
+    # Excluding CUP, CUC and the previous inserted currencies from source currencies
+    for currency in Ad.ALLOWED_CURRENCIES:
+        if currency[0] not in (Ad.CONVERTIBLE_CUBAN_PESO_ISO, Ad.CUBAN_PESO_ISO, Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO):
+            source_currencies_isos.append(currency[0])
+
+    # setting a custom order
+    target_currencies_isos = [Ad.CUBAN_PESO_ISO, Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO]
+
+    # Excluding CUC and the previous inserted currencies from target currencies
+    for currency in Ad.ALLOWED_CURRENCIES:
+        if currency[0] not in (Ad.CONVERTIBLE_CUBAN_PESO_ISO, Ad.CUBAN_PESO_ISO, Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO):
+            target_currencies_isos.append(currency[0])
+
+    active_exchange_rates = []
+
+    for target_currencies_iso in target_currencies_isos:
+        for source_currencies_iso in source_currencies_isos:
+
+            buy_exchange_rate = ExchangeRate.objects.filter(
+                source_currency_iso=source_currencies_iso,
+                target_currency_iso=target_currencies_iso,
+                type=ExchangeRate.TYPE_BUY,
+            ).order_by('-datetime').first()
+
+            if buy_exchange_rate is None:
+                continue
+
+            # find the mid exchange rate with the same datetime than the
+            # buy exchange rate (there must be always one)
+            mid_exchange_rate = ExchangeRate.objects.filter(
+                source_currency_iso=source_currencies_iso,
+                target_currency_iso=target_currencies_iso,
+                type=ExchangeRate.TYPE_MID,
+                datetime=buy_exchange_rate.datetime
+            ).order_by('-datetime').first()
+
+            # find the sell rate in the same date and older or equal
+            # datetime than the buy rate, it can be none
+            sell_exchange_rate = ExchangeRate.objects.filter(
+                source_currency_iso=source_currencies_iso,
+                target_currency_iso=target_currencies_iso,
+                type=ExchangeRate.TYPE_SELL,
+                datetime__date=buy_exchange_rate.datetime.date(),
+                datetime__lte=buy_exchange_rate.datetime
+            ).order_by('-datetime').first()
+
+            active_exchange_rate = ActiveExchangeRate(
+                source_currency_iso=source_currencies_iso,
+                target_currency_iso=target_currencies_iso,
+                buy_exchange_rate=buy_exchange_rate,
+                sell_exchange_rate=sell_exchange_rate,
+                mid_exchange_rate=mid_exchange_rate,
+                target_datetime=buy_exchange_rate.datetime
+            )
+
+            active_exchange_rates.append(active_exchange_rate)
+
+    return active_exchange_rates
