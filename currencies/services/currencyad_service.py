@@ -33,7 +33,7 @@ source_currencies_regexes = {currency_iso: regexes for (currency_iso, regexes) i
 
 target_currencies_regexes = currencies_regexes
 
-main_regex = "({ps_rg})\s*\d*\s*({source_curr_rg}){final_word_boundary}(?:en\s*efectivo)?\s*(?:a|en)\s*(\d+[\.,]?\d+)\s*(?:({target_curr_rg}){final_word_boundary})?"
+main_regex = "({ps_rg})\s*\d*\s*({source_curr_rg}){final_word_boundary}(?:en\s*efectivo)?\s*(?:a|en)\s*(\d+[\.,]?\d+) {{0,4}}(?:({target_curr_rg}){final_word_boundary})?"
 
 regex = main_regex.format(
     ps_rg="|".join([action for sublist in action_regexes.values() for action in sublist]),
@@ -44,7 +44,7 @@ regex = main_regex.format(
 
 
 def get_currencyad_from_ad(ad: Ad):
-    matches = re.match(regex, ad.title, re.IGNORECASE)
+    matches = re.search(regex, ad.title, re.IGNORECASE)
 
     if not matches:
         return None

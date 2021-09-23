@@ -113,7 +113,7 @@ class Command(BaseCommand):
                 # TODO:
                 #  Here must go a more general classifier.
                 #  Right now we only accept ads that match the regex for a currencyad
-                matches = re.match(currencies.services.currencyad_service.regex, message.text, re.IGNORECASE)
+                matches = re.search(currencies.services.currencyad_service.regex, message.text, re.IGNORECASE)
                 if not matches:
                     continue
 
