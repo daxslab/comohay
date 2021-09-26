@@ -6,7 +6,8 @@ from drf_yasg import openapi
 
 from api import views
 from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView, \
-    USDValueHistoryView, ExchangeRateView, ExchangeRateHistoryView, CurrencyAdView, ActiveExchangeRatesView
+    USDValueHistoryView, ExchangeRateView, ExchangeRateHistoryView, CurrencyAdView, ActiveExchangeRatesView, \
+    ActiveExchangeRateView
 
 app_name = 'api'
 
@@ -58,4 +59,12 @@ urlpatterns = [
     ),
     path('currencies/active-exchange-rates/<str:target_datetime_str>', ActiveExchangeRatesView.as_view()),
     path('currencies/active-exchange-rates', ActiveExchangeRatesView.as_view()),
+    path(
+        'currencies/active-exchange-rates/<str:source_currency_iso>/<str:target_currency_iso>/<str:target_datetime_str>',
+        ActiveExchangeRateView.as_view()
+    ),
+    path(
+        'currencies/active-exchange-rates/<str:source_currency_iso>/<str:target_currency_iso>/',
+        ActiveExchangeRateView.as_view()
+    ),
 ]
