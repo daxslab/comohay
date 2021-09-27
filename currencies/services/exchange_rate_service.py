@@ -27,7 +27,11 @@ def update_exchange_rates():
     return exchange_rates
 
 
-def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)):
+def get_exchange_rates(target_datetime: datetime.datetime = None):
+
+    if target_datetime is None:
+        target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+
     exchange_rates = []
 
     # Excluding CUP and CUC (we don't have this currency in curerncyads table) from source currencies
@@ -123,7 +127,10 @@ def get_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.no
     return exchange_rates
 
 
-def get_active_exchange_rate(source_currency_iso, target_currency_iso, target_datetime: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)):
+def get_active_exchange_rate(source_currency_iso, target_currency_iso, target_datetime: datetime.datetime = None):
+
+    if target_datetime is None:
+        target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
     buy_exchange_rate = ExchangeRate.objects.filter(
         source_currency_iso=source_currency_iso,
@@ -166,7 +173,10 @@ def get_active_exchange_rate(source_currency_iso, target_currency_iso, target_da
     return active_exchange_rate
 
 
-def get_active_exchange_rates(target_datetime: datetime.datetime = datetime.datetime.now(tz=datetime.timezone.utc)):
+def get_active_exchange_rates(target_datetime: datetime.datetime = None):
+
+    if target_datetime is None:
+        target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
     # setting a custom order
     source_currencies_isos = [Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO]
