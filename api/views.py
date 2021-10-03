@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from haystack.query import EmptySearchQuerySet, SearchQuerySet
@@ -11,7 +13,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 from rest_framework.views import APIView
-
+from rest_framework import generics
 import currencies.services.exchange_rate_service
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
@@ -189,63 +191,68 @@ class ExchangeRateHistoryView(APIView):
         return Response(serializer.data)
 
 
-class CurrencyAdView(APIView):
-    """
-    View to retrieve the currency ads used to compute the last exchange rate relative to the datetime passed as argument
-    """
+class CurrencyAdView(generics.ListAPIView):
+    queryset = CurrencyAd.objects.filter(ad__is_deleted=False)
+    serializer_class = CurrencyAdSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_fields = ['type', 'source_currency_iso', 'target_currency_iso', 'ad__province__id', 'ad__municipality__id']
+    ordering_fields = ['ad__external_created_at', 'price']
+    ordering = ['-ad__external_created_at']
 
-    permission_classes = [AllowAny]
-
-    def get(self, request, source_currency_iso, target_currency_iso, currencyad_type, target_datetime_str=None):
-        # TODO: Think about decoupling the returned currencyads from the last exchange rate in order to
-        #  return results less older. Right now the currencyads returned are at least 1 hour older
-        #  (in corresponding the deleay for computing the exchange rate), but that might be too late for
-        #  this market.
-
-        if target_datetime_str is None:
-            target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
-        else:
-            target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
-                tzinfo=datetime.timezone.utc)
-
-        exchange_rate_type = ExchangeRate.TYPE_BUY
-        currencyad_type_filter = [currencyad_type]
-
-        if currencyad_type == CurrencyAd.TYPE_PURCHASE:
-            exchange_rate_type = ExchangeRate.TYPE_SELL
-        elif currencyad_type == 'all':
-            exchange_rate_type = ExchangeRate.TYPE_MID
-            currencyad_type_filter = [CurrencyAd.TYPE_SALE, CurrencyAd.TYPE_PURCHASE]
-
-        last_exchange_rate = ExchangeRate.objects.filter(
-            source_currency_iso=source_currency_iso,
-            target_currency_iso=target_currency_iso,
-            type=exchange_rate_type,
-            datetime__lte=target_datetime
-        ).order_by("-datetime").first()
-
-        if last_exchange_rate is None:
-            return Response(HTTP_404_NOT_FOUND)
-
-        max_deviation = last_exchange_rate.deviation_threshold * last_exchange_rate.mad
-        currencyad_qs = CurrencyAd.objects.filter(
-            source_currency_iso=source_currency_iso,
-            target_currency_iso=target_currency_iso,
-            type__in=currencyad_type_filter,
-            ad__external_created_at__lte=last_exchange_rate.datetime,
-            ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
-            price__gte=last_exchange_rate.median - max_deviation,
-            price__lte=last_exchange_rate.median + max_deviation
-        )
-
-        # excluding currencyads who were deleted in the target period of time
-        currencyad_qs = currencyad_qs.exclude(
-            ad__is_deleted=True,
-            ad__deleted_at__lt=target_datetime
-        )
-
-        serializer = CurrencyAdSerializer(currencyad_qs, many=True)
-        return Response(serializer.data)
+# Old custom CurrencyAdView
+# class CurrencyAdView(APIView):
+#     """
+#     View to retrieve the currency ads used to compute the last exchange rate relative to the datetime passed as argument
+#     """
+#
+#     permission_classes = [AllowAny]
+#
+#     def get(self, request, source_currency_iso, target_currency_iso, currencyad_type, target_datetime_str=None):
+#
+#         if target_datetime_str is None:
+#             target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+#         else:
+#             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
+#                 tzinfo=datetime.timezone.utc)
+#
+#         exchange_rate_type = ExchangeRate.TYPE_BUY
+#         currencyad_type_filter = [currencyad_type]
+#
+#         if currencyad_type == CurrencyAd.TYPE_PURCHASE:
+#             exchange_rate_type = ExchangeRate.TYPE_SELL
+#         elif currencyad_type == 'all':
+#             exchange_rate_type = ExchangeRate.TYPE_MID
+#             currencyad_type_filter = [CurrencyAd.TYPE_SALE, CurrencyAd.TYPE_PURCHASE]
+#
+#         last_exchange_rate = ExchangeRate.objects.filter(
+#             source_currency_iso=source_currency_iso,
+#             target_currency_iso=target_currency_iso,
+#             type=exchange_rate_type,
+#             datetime__lte=target_datetime
+#         ).order_by("-datetime").first()
+#
+#         if last_exchange_rate is None:
+#             return Response(HTTP_404_NOT_FOUND)
+#
+#         max_deviation = last_exchange_rate.deviation_threshold * last_exchange_rate.mad
+#         currencyad_qs = CurrencyAd.objects.filter(
+#             source_currency_iso=source_currency_iso,
+#             target_currency_iso=target_currency_iso,
+#             type__in=currencyad_type_filter,
+#             ad__external_created_at__lte=last_exchange_rate.datetime,
+#             ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
+#             price__gte=last_exchange_rate.median - max_deviation,
+#             price__lte=last_exchange_rate.median + max_deviation
+#         )
+#
+#         # excluding currencyads who were deleted in the target period of time
+#         currencyad_qs = currencyad_qs.exclude(
+#             ad__is_deleted=True,
+#             ad__deleted_at__lt=target_datetime
+#         )
+#
+#         serializer = CurrencyAdSerializer(currencyad_qs, many=True)
+#         return Response(serializer.data)
 
 
 class ActiveExchangeRatesView(APIView):

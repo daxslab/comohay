@@ -42,20 +42,13 @@ urlpatterns = [
     path('usd-value-history/<str:start>/<str:end>/<str:freq>', USDValueHistoryView.as_view()),
     path('usd-value-history/<str:start>/<str:end>/<str:freq>', USDValueHistoryView.as_view()),
     path('usd-value-history/<str:start>/<str:end>/<str:freq>', USDValueHistoryView.as_view()),
-    path('currencies/exchange-rate/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:target_datetime>',
-         ExchangeRateView.as_view()
-         ),
+    path(
+        'currencies/exchange-rate/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:target_datetime>',
+        ExchangeRateView.as_view()
+        ),
     path(
         'currencies/exchange-rate-history/<str:source_currency_iso>/<str:target_currency_iso>/<str:etype>/<str:from_datetime>/<str:to_datetime>',
         ExchangeRateHistoryView.as_view()
-    ),
-    path(
-        'currencies/currencyads/<str:source_currency_iso>/<str:target_currency_iso>/<str:currencyad_type>/<str:target_datetime_str>',
-        CurrencyAdView.as_view()
-    ),
-    path(
-        'currencies/currencyads/<str:source_currency_iso>/<str:target_currency_iso>/<str:currencyad_type>',
-        CurrencyAdView.as_view()
     ),
     path('currencies/active-exchange-rates/<str:target_datetime_str>', ActiveExchangeRatesView.as_view()),
     path('currencies/active-exchange-rates', ActiveExchangeRatesView.as_view()),
@@ -67,4 +60,5 @@ urlpatterns = [
         'currencies/active-exchange-rates/<str:source_currency_iso>/<str:target_currency_iso>/',
         ActiveExchangeRateView.as_view()
     ),
+    path('currencies/currencyads/', CurrencyAdView.as_view())
 ]
