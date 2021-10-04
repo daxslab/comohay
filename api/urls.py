@@ -7,7 +7,7 @@ from drf_yasg import openapi
 from api import views
 from api.views import AdViewSet, ProvinceViewSet, MunicipalityViewSet, AdSearchViewSet, USDValueView, \
     USDValueHistoryView, ExchangeRateView, ExchangeRateHistoryView, CurrencyAdView, ActiveExchangeRatesView, \
-    ActiveExchangeRateView, ClassifiersPlatformsView, TelegramGroupsView
+    ActiveExchangeRateView, ClassifiedsPlatformsView, TelegramGroupsView
 
 app_name = 'api'
 
@@ -61,6 +61,6 @@ urlpatterns = [
         ActiveExchangeRateView.as_view()
     ),
     path('currencies/currencyads/', CurrencyAdView.as_view()),
-    path('classifier-platforms', ClassifiersPlatformsView.as_view()),
+    path('classifieds-platforms', ClassifiedsPlatformsView.as_view()),
     path('telegram-groups', TelegramGroupsView.as_view())
 ]

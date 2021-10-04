@@ -21,7 +21,7 @@ from ads.models.municipality import Municipality
 from ads.models.province import Province
 from api.models.ad import AdSerializer
 from api.models.adsearch import AdSearchSerializer
-from api.models.classifier_platform import ClassifierPlatformSerializer
+from api.models.classifieds_platform import ClassifiedsPlatformSerializer
 from api.models.currencyad import CurrencyAdSerializer
 from api.models.exchange_rate import ExchangeRateSerializer, ActiveExchangeRateSerializer
 from api.models.lazylogin import LazyLoginSerializer
@@ -209,14 +209,14 @@ class TelegramGroupsView(generics.ListAPIView):
     pagination_class = None
 
 
-class ClassifiersPlatformsView(APIView):
+class ClassifiedsPlatformsView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
         classifier_platforms = []
         for external_source_name, external_source_url in settings.EXTERNAL_SOURCES.items():
             classifier_platforms.append({"name": external_source_name,"url": external_source_url})
-        return Response(ClassifierPlatformSerializer(classifier_platforms, many=True).data)
+        return Response(ClassifiedsPlatformSerializer(classifier_platforms, many=True).data)
 
 
 # Old custom CurrencyAdView

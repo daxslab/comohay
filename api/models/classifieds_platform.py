@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class ClassifierPlatformSerializer(serializers.Serializer):
+class ClassifiedsPlatformSerializer(serializers.Serializer):
 
     name = serializers.CharField()
     url = serializers.URLField()
