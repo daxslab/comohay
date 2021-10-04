@@ -15,16 +15,19 @@ from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPR
 from rest_framework.views import APIView
 from rest_framework import generics
 import currencies.services.exchange_rate_service
+from ads.models import TelegramGroup
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
 from api.models.ad import AdSerializer
 from api.models.adsearch import AdSearchSerializer
+from api.models.classifier_platform import ClassifierPlatformSerializer
 from api.models.currencyad import CurrencyAdSerializer
 from api.models.exchange_rate import ExchangeRateSerializer, ActiveExchangeRateSerializer
 from api.models.lazylogin import LazyLoginSerializer
 from api.models.municipality import MunicipalitySerializer
 from api.models.province import ProvinceSerializer
+from api.models.telegram_group import TelegramGroupSerializer
 from comohay import settings
 from currencies.models import CurrencyAd
 from currencies.models.exchange_rate import ExchangeRate
@@ -198,6 +201,23 @@ class CurrencyAdView(generics.ListAPIView):
     filterset_fields = ['type', 'source_currency_iso', 'target_currency_iso', 'ad__province__id', 'ad__municipality__id']
     ordering_fields = ['ad__external_created_at', 'price']
     ordering = ['-ad__external_created_at']
+
+
+class TelegramGroupsView(generics.ListAPIView):
+    queryset = TelegramGroup.objects.order_by('province_id')
+    serializer_class = TelegramGroupSerializer
+    pagination_class = None
+
+
+class ClassifiersPlatformsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        classifier_platforms = []
+        for external_source_name, external_source_url in settings.EXTERNAL_SOURCES.items():
+            classifier_platforms.append({"name": external_source_name,"url": external_source_url})
+        return Response(ClassifierPlatformSerializer(classifier_platforms, many=True).data)
+
 
 # Old custom CurrencyAdView
 # class CurrencyAdView(APIView):
