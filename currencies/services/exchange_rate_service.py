@@ -179,7 +179,7 @@ def get_active_exchange_rates(target_datetime: datetime.datetime = None):
         target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
 
     # setting a custom order
-    source_currencies_isos = [Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO]
+    source_currencies_isos = [Ad.AMERICAN_DOLLAR_ISO, Ad.MLC_ISO, Ad.EURO_ISO]
 
     # Excluding CUP, CUC and the previous inserted currencies from source currencies
     for currency in Ad.ALLOWED_CURRENCIES:
@@ -187,7 +187,7 @@ def get_active_exchange_rates(target_datetime: datetime.datetime = None):
             source_currencies_isos.append(currency[0])
 
     # setting a custom order
-    target_currencies_isos = [Ad.CUBAN_PESO_ISO, Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO]
+    target_currencies_isos = [Ad.CUBAN_PESO_ISO, Ad.AMERICAN_DOLLAR_ISO, Ad.MLC_ISO, Ad.EURO_ISO]
 
     # Excluding CUC and the previous inserted currencies from target currencies
     for currency in Ad.ALLOWED_CURRENCIES:
@@ -198,8 +198,9 @@ def get_active_exchange_rates(target_datetime: datetime.datetime = None):
 
     for target_currency_iso in target_currencies_isos:
         for source_currency_iso in source_currencies_isos:
-            active_exchange_rate = get_active_exchange_rate(source_currency_iso, target_currency_iso, target_datetime)
-            if active_exchange_rate:
-                active_exchange_rates.append(active_exchange_rate)
+            if target_currency_iso != source_currency_iso:
+                active_exchange_rate = get_active_exchange_rate(source_currency_iso, target_currency_iso, target_datetime)
+                if active_exchange_rate:
+                    active_exchange_rates.append(active_exchange_rate)
 
     return active_exchange_rates
