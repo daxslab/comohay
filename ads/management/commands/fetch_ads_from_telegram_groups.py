@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 class Command(BaseCommand):
     base_datetime = datetime.datetime(2020, 8, 1, tzinfo=datetime.timezone.utc)
     minutes_offset = 20
+    wait_time = 7
 
     help = "Get messages from all telegram groups saved in db. By default will only be fetch the messages in the " \
            "last 10 minutes per each group. If you add \"--all-messages\" option all messages will be fetched. If you" \
@@ -89,7 +90,7 @@ class Command(BaseCommand):
         else:
             for telegram_group in tg_groups:
                 await self.fetch_messages_from_group(telegram_group, offset_datetime)
-                await asyncio.sleep(17)
+                await asyncio.sleep(self.wait_time)
 
     async def fetch_messages_from_group(self, telegram_group: TelegramGroup, offset_datetime: datetime):
         try:
@@ -98,7 +99,7 @@ class Command(BaseCommand):
                     entity="@{}".format(telegram_group.username),
                     offset_date=offset_datetime,
                     reverse=True,
-                    wait_time=17
+                    wait_time=self.wait_time
             ):
 
                 if message.text is None or \
