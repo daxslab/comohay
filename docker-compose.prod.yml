@@ -61,6 +61,24 @@ services:
       - "traefik.http.services.comohay.loadbalancer.server.scheme=http"
       - "traefik.http.services.comohay.loadbalancer.passhostheader=true"
 
+
+      - "traefik.http.routers.divisascu.rule=Host(`api.divisascu.app`)"
+      - "traefik.http.routers.divisascu.entrypoints=http"
+      - "traefik.http.routers.divisascu.service=comohay"
+      - "traefik.http.middlewares.divisascu-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.divisascu-redirectscheme.redirectscheme.permanent=false"
+      - "traefik.http.routers.divisascu.middlewares=divisascu-redirectscheme"
+      
+      - "traefik.http.routers.divisascu-secure.rule=Host(`api.divisascu.app`)"
+      - "traefik.http.routers.divisascu-secure.entrypoints=https"
+      - "traefik.http.routers.divisascu-secure.service=comohay"
+      - "traefik.http.routers.divisascu-secure.tls=true"
+      - "traefik.http.routers.divisascu-secure.tls.certresolver=letsencrypt"
+      - "traefik.http.middlewares.divisascu-redirect.redirectregex.regex=^https:\\/\\/([^\\/]+)\\/?$$"
+      - "traefik.http.middlewares.divisascu-redirect.redirectregex.replacement=https://$$1/api"
+      - "traefik.http.routers.divisascu-secure.middlewares=divisascu-redirect"
+
+
   db:
     image: postgres:12.0-alpine
     networks:
