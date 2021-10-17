@@ -104,8 +104,13 @@ def has_duplicates(ad, verbose=False, title_mm=None, description_mm=None):
     else:
         # Looking for duplicate ads from the same source that don't have contact information
         duplicates = Ad.objects.filter(
-            Q(id__in=ids) & Q(external_source=ad.external_source) & Q(contact_phone=None) & Q(contact_email=None) & Q(
-                external_contact_id=None) & Q(contact_tg=None))
+            Q(id__in=ids) &
+            Q(external_source=ad.external_source) &
+            (Q(contact_phone=None) | Q(contact_phone='')) &
+            (Q(contact_email=None) | Q(contact_email='')) &
+            (Q(external_contact_id=None) | Q(external_contact_id='')) &
+            (Q(contact_tg=None) | Q(contact_tg=''))
+        )
 
     if duplicates.count() > 0:
         if verbose:

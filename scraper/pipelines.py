@@ -20,6 +20,9 @@ import currencies.services.currencyad_service
 
 
 # This pipeline is not in use right now, the duplicate detection is being made in the BaseAdPipeline pipeline
+from scraper.items import AdItem
+
+
 class RemoveDuplicatedAdPipeline(object):
 
     def process_item(self, item, spider):
@@ -32,7 +35,7 @@ class RemoveDuplicatedAdPipeline(object):
 
 class BaseAdPipeline(object):
 
-    def process_item(self, item, spider):
+    def process_item(self, item: AdItem, spider):
 
         ad = item.save(commit=False)
 
@@ -53,7 +56,7 @@ class BaseAdPipeline(object):
 
         else:
             # if the ad is not a currencyad then treat it as a normal ad
-            if has_duplicates(ad):
+            if Ad.objects.filter(external_url=ad.external_url).count() > 0 or has_duplicates(ad):
                 # in theory it can be only one duplicate. If the duplicate is the same ad,
                 # we're going to update it, otherwise we drop the incoming ad.
 
