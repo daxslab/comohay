@@ -256,3 +256,11 @@ class PorlalivreParser(BaseParser):
         item['external_created_at'] = external_created_at
 
         return item
+
+    def is_not_found(self, response):
+        classified_header_elem = response.css('#classified-header').get(default=None)
+
+        if classified_header_elem:
+            return False
+
+        return True
