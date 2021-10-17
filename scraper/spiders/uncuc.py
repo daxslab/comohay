@@ -33,7 +33,7 @@ class UncucSpider(BaseSpider):
             if not Ad.objects.filter(external_url=ad_page_link).first():
                 yield response.follow(ad_page_link, self.parse_ad)
 
-        next_page = response.css('ul.pager a.j-pgn-page::attr(href)').get()
+        next_page = response.css('ul.pager li:nth-child(2) a.j-pgn-page::attr(href)').get()
         if next_page is not None and self.depth > 0:
             self.depth -= 1
             yield response.follow(next_page, callback=self.parse)
