@@ -351,6 +351,9 @@ EXTERNAL_SOURCES = {
     'merolico': 'merolico.app',
 }
 
+# Telegram scraper name
+TELEGRAM_SOURCE_NAME = 'telegram'
+
 # number of days that updater spider look for updates in an ad
 AD_UPDATE_PERIOD = 5
 

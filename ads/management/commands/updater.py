@@ -11,19 +11,19 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
 
         parser.add_argument(
-            '-s', '--source',
+            '-s', '--sources',
             nargs='+',
             help='Set updater sources to check',
             required=False
         )
 
         parser.add_argument(
-            '-p', '--update-period', type=int, default=settings.AD_UPDATE_PERIOD,
-            help='Number of days that updater spider look for updates in an ad')
+            '-t', '--update-type', type=str, default='all',
+            help='Type of the ads to update: all, currencyads, non-currencyads')
 
     def handle(self, *args, **options):
 
         process = CrawlerProcess(get_project_settings())
 
-        process.crawl('updater', source=options['source'], update_period=options['update_period'])
+        process.crawl('updater', sources=options['sources'], update_type=options['update_type'])
         process.start()

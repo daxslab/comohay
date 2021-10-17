@@ -25,7 +25,7 @@ def crawl_revolico():
 
 @shared_task
 def updater():
-    call_command('crawl', 'updater')
+    call_command('updater')
 
 
 @shared_task
