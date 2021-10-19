@@ -132,4 +132,8 @@ def parse_updater_response(response) -> Union[AdItem, None]:
         Ad.objects.get(id=ad_id).delete()
         return None
 
+    # TODO: create custom request using the hogarencuba api and create a parse to update the incoming ads.
+    if source_name == "hogarencuba":
+        return None
+
     return spider.parser.parse_ad(response)
