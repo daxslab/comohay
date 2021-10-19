@@ -199,3 +199,13 @@ class TimbirichiParser(BaseParser):
         item['external_created_at'] = external_created_at
 
         return item
+
+    def is_not_found(self, response):
+        ad_elem = response.css('.panel-anuncio').get(default=None)
+
+        if ad_elem:
+            return False
+
+        return True
+
+
