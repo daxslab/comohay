@@ -106,9 +106,14 @@ def get_ads_to_update_queryset(update_type: str, sources: list) -> QuerySet:
     return ads_queryset
 
 
+# OJO: tremenda locura aquí, pensar bien antes de hacer cambios
 def parse_updater_response(response) -> Union[AdItem, None]:
     source_name = response.meta['source_name']
     ad_id = response.meta['ad_id']
+
+    # TODO: create custom request using the hogarencuba api and create a parse to update the incoming ads.
+    if source_name == "hogarencuba":
+        return None
 
     # TODO: add a telegram parser
     # Here we only remove the ad when no longer exists, we don't update it
@@ -130,10 +135,6 @@ def parse_updater_response(response) -> Union[AdItem, None]:
 
     if spider.parser.is_not_found(response):
         Ad.objects.get(id=ad_id).delete()
-        return None
-
-    # TODO: create custom request using the hogarencuba api and create a parse to update the incoming ads.
-    if source_name == "hogarencuba":
         return None
 
     return spider.parser.parse_ad(response)
