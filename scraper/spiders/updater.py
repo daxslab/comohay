@@ -32,4 +32,4 @@ class UpdaterSpider(BaseSpider):
 
     def on_error(self, failure):
         if failure.value.response.status == 404:
-            Ad.objects.filter(external_url=failure.request.url).delete()
+            Ad.objects.filter(external_url=failure.request.url).first().delete(soft=True)

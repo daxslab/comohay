@@ -121,7 +121,7 @@ def parse_updater_response(response) -> Union[AdItem, None]:
         widget = response.css('#widget').get(default=None)
         # if there is no widget then assume the telegram message was removed
         if widget is None:
-            Ad.objects.get(id=ad_id).delete()
+            Ad.objects.get(id=ad_id).delete(soft=True)
 
         return None
 
@@ -134,7 +134,7 @@ def parse_updater_response(response) -> Union[AdItem, None]:
     spider = spider_loader.load(source_name)
 
     if spider.parser.is_not_found(response):
-        Ad.objects.get(id=ad_id).delete()
+        Ad.objects.get(id=ad_id).delete(soft=True)
         return None
 
     return spider.parser.parse_ad(response)
