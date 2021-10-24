@@ -103,11 +103,32 @@ services:
         max-size: "50m"
         max-file: "20"
 
-  celery_worker:
+  celery_worker_1:
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: celery worker --app=comohay --loglevel=info -Q celery,telegram_messages
+    command: celery worker --app=comohay --loglevel=info -Q celery,telegram,classifieds_platform
+    volumes:
+      - ../static_volume:/home/app/web/static_root
+      - ../media_volume:/home/app/web/media
+      - solr_data:/home/app/web/solr_data
+      - telethon_sessions:/home/app/web/telethon_sessions
+    env_file:
+      - ./.env.prod
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "20"
+    depends_on:
+      - web
+      - db
+      - redis
+
+  celery_worker_2:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    command: celery worker --app=comohay --loglevel=info -Q updater
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media

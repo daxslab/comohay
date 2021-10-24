@@ -262,8 +262,12 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_ROUTES = {
-    'ads.tasks.broadcast_in_telegram': {'queue': 'telegram_messages'},
-    'ads.tasks.send_telegram_message': {'queue': 'telegram_messages'}
+    'ads.tasks.broadcast_in_telegram': {'queue': 'telegram'},
+    'ads.tasks.send_telegram_message': {'queue': 'telegram'},
+    'ads.tasks.fetch_telegram_ads_in_the_last_hour': {'queue': 'telegram'},
+    'ads.tasks.crawl': {'queue': 'classifieds_platform'},
+    'ads.tasks.crawl_revolico': {'queue': 'classifieds_platform'},
+    'ads.tasks.updater': {'queue': 'updater'}
 }
 
 CELERY_BEAT_SCHEDULE = {
@@ -277,7 +281,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     'crawl_revolico': {
         'task': 'ads.tasks.crawl_revolico',
-        'schedule': crontab(minute='*/30'),  # execute every 30 minutes.
+        'schedule': crontab(minute='15,45'),  # execute every hour at minute 15 and 45.
     },
     # 'get_proxies_revolico': {
     #     'task': 'ads.tasks.get_proxies',
@@ -285,7 +289,7 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'updater': {
         'task': 'ads.tasks.updater',
-        'schedule': crontab(hour=8, minute=3)  # execute every day at 4:03 AM cuban time
+        'schedule': crontab(day_of_week=1, hour=5, minute=3)  # execute every monday at 1:03 AM cuban time
     },
     'clean_lazy_users': {
         'task': 'ads.tasks.clean_lazy_users',

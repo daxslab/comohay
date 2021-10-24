@@ -29,9 +29,21 @@ services:
     image: redis:5.0
     expose:
       - "6379"
-  celery_worker:
+  celery_worker_1:
     build: ./
-    command: celery worker --app=comohay --loglevel=info -Q celery,telegram_messages
+    command: celery worker --app=comohay --loglevel=info -Q celery,telegram,classifieds_platform
+    volumes:
+      - ./:/usr/src/app/
+      - solr_data:/usr/src/app/solr_data
+    env_file:
+      - ./.env.dev
+    depends_on:
+      - web
+      - db
+      - redis
+  celery_worker_2:
+    build: ./
+    command: celery worker --app=comohay --loglevel=info -Q updater
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
