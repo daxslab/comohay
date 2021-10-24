@@ -264,9 +264,9 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_ROUTES = {
     'ads.tasks.broadcast_in_telegram': {'queue': 'telegram'},
     'ads.tasks.send_telegram_message': {'queue': 'telegram'},
-    'ads.tasks.fetch_telegram_ads_in_the_last_hour': {'queue': 'telegram'},
-    'ads.tasks.crawl': {'queue': 'classifieds_platform'},
-    'ads.tasks.crawl_revolico': {'queue': 'classifieds_platform'},
+    'ads.tasks.fetch_telegram_ads_in_the_last_hour': {'queue': 'ads_crawl'},
+    'ads.tasks.crawl': {'queue': 'ads_crawl'},
+    'ads.tasks.crawl_revolico': {'queue': 'ads_crawl'},
     'ads.tasks.updater': {'queue': 'updater'}
 }
 
