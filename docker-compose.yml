@@ -31,7 +31,7 @@ services:
       - "6379"
   celery_worker_1:
     build: ./
-    command: celery worker --app=comohay --loglevel=info -Q celery,telegram
+    command: celery worker --app=comohay --loglevel=info -Q celery,ads_crawl,updater
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
@@ -43,7 +43,7 @@ services:
       - redis
   celery_worker_2:
     build: ./
-    command: celery worker --app=comohay --loglevel=info -Q ads_crawl,updater
+    command: celery worker --app=comohay --loglevel=info -Q telegram
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
