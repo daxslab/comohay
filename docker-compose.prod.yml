@@ -95,7 +95,7 @@ services:
 
   redis:
     restart: always
-    image: redis:5.0
+    image: redis:6.2.6
     expose:
       - "6379"
     logging:
@@ -104,10 +104,11 @@ services:
         max-file: "20"
 
   celery_worker_1:
+    restart: always
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: celery worker --app=comohay --loglevel=info -Q celery,ads_crawl,updater
+    command: celery --app comohay worker --loglevel=info -Q celery,ads_crawl,updater -n worker1@%h
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
@@ -125,10 +126,11 @@ services:
       - redis
 
   celery_worker_2:
+    restart: always
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: celery worker --app=comohay --loglevel=info -Q telegram
+    command: celery --app comohay worker --loglevel=info -Q telegram -n worker2@%h
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
@@ -146,10 +148,11 @@ services:
       - redis
 
   celery_beat:
+    restart: always
     build:
       context: ./
       dockerfile: Dockerfile.prod
-    command: celery beat --app=comohay --loglevel=info
+    command: celery --app comohay beat --loglevel=info
     volumes:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
@@ -167,6 +170,7 @@ services:
       - redis
 
   solr:
+    restart: always
     image: solr:6.6
     expose:
       - "8983"

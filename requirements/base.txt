@@ -56,8 +56,8 @@ Scrapy==2.2.0
 scrapy-djangoitem==1.1.1
 html2text==2020.1.16
 scrapy-rotating-proxies==0.6.2
-django-redis==4.12.1
-celery[redis]==4.4.6
+django-redis==5.0.0
+celery[redis]==5.1.2
 fast-autocomplete==0.6.0
 pysolr==3.9.0
 django-meta==1.7.0

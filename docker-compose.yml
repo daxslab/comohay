@@ -26,12 +26,12 @@ services:
     ports:
       - 5433:5432
   redis:
-    image: redis:5.0
+    image: redis:6.2.6
     expose:
       - "6379"
   celery_worker_1:
     build: ./
-    command: celery worker --app=comohay --loglevel=info -Q celery,ads_crawl,updater
+    command: celery --app comohay worker --loglevel=info -Q celery,ads_crawl,updater -n worker1@%h
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
@@ -43,7 +43,7 @@ services:
       - redis
   celery_worker_2:
     build: ./
-    command: celery worker --app=comohay --loglevel=info -Q telegram
+    command: celery --app comohay worker --loglevel=info -Q telegram -n worker2@%h
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
@@ -55,7 +55,7 @@ services:
       - redis
   celery_beat:
     build: ./
-    command: celery beat --app=comohay --loglevel=info --pidfile=
+    command: celery --app comohay beat --loglevel=info --pidfile=
     volumes:
       - ./:/usr/src/app/
       - solr_data:/usr/src/app/solr_data
