@@ -35,11 +35,10 @@ class AdIndex(indexes.SearchIndex, indexes.Indexable):
 
     title_length = indexes.IntegerField(use_template=False, indexed=False, stored=True)
 
+    is_deleted = indexes.BooleanField(model_attr='is_deleted', use_template=False, indexed=True, stored=True)
+
     def get_model(self):
         return Ad
-
-    def index_queryset(self, using=None):
-        return self.get_model().objects.filter(is_deleted=False)
 
     def prepare(self, object):
         """

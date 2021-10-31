@@ -70,6 +70,10 @@ class AdSearchForm(ModelSearchForm):
         if price_from or price_to:
             sqs = sqs.filter_and(currency_iso=price_currency)
 
+        # TODO: add flag to allow to search trough removed ads
+        if True:
+            sqs = sqs.filter_and(is_deleted=False)
+
         if self.load_all:
             sqs = sqs.load_all()
 
