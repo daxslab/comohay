@@ -1,3 +1,6 @@
+import datetime
+import api.services.exchange_rate_service
+
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
@@ -14,7 +17,6 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND, HTTP_422_UNPROCESSABLE_ENTITY
 from rest_framework.views import APIView
 from rest_framework import generics
-import currencies.services.exchange_rate_service
 from ads.models import TelegramGroup
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
@@ -33,8 +35,7 @@ from currencies.models import CurrencyAd
 from currencies.models.exchange_rate import ExchangeRate
 from utils.pagination import BasicSizePaginator
 from utils.usd_value_helper import USDValueHelper
-import datetime
-from django.db.models import Subquery, Max, F, Func
+from django.db.models import Subquery, Max
 
 
 class LazyLoginView(LoginView):
@@ -135,7 +136,7 @@ class ExchangeRateView(APIView):
             target_datetime = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
         try:
-            # just getting the older exchange rate that is less than or equal to the target datetime
+            # just getting the newer exchange rate that is less than or equal to the target datetime
             exchange_rate = ExchangeRate.objects.filter(
                 source_currency_iso=source_currency_iso,
                 target_currency_iso=target_currency_iso,
@@ -286,7 +287,7 @@ class ActiveExchangeRatesView(APIView):
             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc)
 
-        active_exchange_rates = currencies.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
+        active_exchange_rates = api.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
 
         serializer = ActiveExchangeRateSerializer(active_exchange_rates, many=True)
 
@@ -304,7 +305,7 @@ class ActiveExchangeRateView(APIView):
             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc)
 
-        active_exchange_rate = currencies.services.exchange_rate_service.get_active_exchange_rate(
+        active_exchange_rate = api.services.exchange_rate_service.get_active_exchange_rate(
             source_currency_iso,
             target_currency_iso,
             target_datetime

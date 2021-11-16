@@ -36,7 +36,7 @@ class Command(BaseCommand):
             start_datetime = datetime.datetime.strptime(self.start_date_str, '%Y-%m-%d %H:%M:%S %z')
 
             while start_datetime <= current_datetime:
-                exchange_rates = currencies.services.exchange_rate_service.get_exchange_rates(start_datetime)
+                exchange_rates = currencies.services.exchange_rate_service.compute_exchange_rates(start_datetime)
 
                 for exchange_rate in exchange_rates:
                     exchange_rate.save()
