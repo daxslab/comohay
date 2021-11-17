@@ -1,5 +1,5 @@
 import datetime
-import api.services.exchange_rate_service
+import currencies.services.exchange_rate_service
 
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponse
@@ -287,7 +287,7 @@ class ActiveExchangeRatesView(APIView):
             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc)
 
-        active_exchange_rates = api.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
+        active_exchange_rates = currencies.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
 
         serializer = ActiveExchangeRateSerializer(active_exchange_rates, many=True)
 
@@ -305,7 +305,7 @@ class ActiveExchangeRateView(APIView):
             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc)
 
-        active_exchange_rate = api.services.exchange_rate_service.get_active_exchange_rate(
+        active_exchange_rate = currencies.services.exchange_rate_service.get_active_exchange_rate(
             source_currency_iso,
             target_currency_iso,
             target_datetime
