@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from ads.models import TelegramGroup
-from api.models.municipality import MunicipalitySerializer
-from api.models.province import ProvinceSerializer
+from api.v1.serializers.municipality import MunicipalitySerializer
+from api.v1.serializers.province import ProvinceSerializer
 
 
 class TelegramGroupSerializer(serializers.ModelSerializer):

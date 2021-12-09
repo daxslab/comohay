@@ -1,3 +1,7 @@
+from typing import Union
+
+from django.db.models import QuerySet, Q, Window, Max, F
+from django.db.models.functions import RowNumber
 from scipy import stats
 import pandas as pd
 import numpy as np
@@ -125,55 +129,64 @@ def compute_exchange_rates(target_datetime: datetime.datetime = None):
     return exchange_rates
 
 
-def get_active_exchange_rate(source_currency_iso, target_currency_iso, target_datetime: datetime.datetime = None):
-    if target_datetime is None:
-        target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
+def get_active_exchange_rate(
+        source_currency_iso,
+        target_currency_iso,
+        ref_type: str = ExchangeRate.TYPE_MID,
+        target_datetime: datetime.datetime = None,
+        limit_datetime: datetime.datetime = None,
+):
+    query = Q(source_currency_iso=source_currency_iso) & Q(target_currency_iso=target_currency_iso) & Q(type=ref_type)
 
-    buy_exchange_rate = ExchangeRate.objects.filter(
-        source_currency_iso=source_currency_iso,
-        target_currency_iso=target_currency_iso,
-        type=ExchangeRate.TYPE_BUY,
-        datetime__lte=target_datetime
-    ).order_by('-datetime').first()
+    if target_datetime:
+        query &= Q(datetime__lte=target_datetime)
 
-    if buy_exchange_rate is None:
+    if limit_datetime:
+        query &= Q(datetime__gte=limit_datetime)
+
+    ref_exchange_rate = ExchangeRate.objects.filter(query).order_by('-datetime').first()
+
+    if ref_exchange_rate is None:
         return None
 
-    # find the mid exchange rate with the same datetime than the
-    # buy exchange rate (there must be always one)
-    mid_exchange_rate = ExchangeRate.objects.filter(
-        source_currency_iso=source_currency_iso,
-        target_currency_iso=target_currency_iso,
-        type=ExchangeRate.TYPE_MID,
-        datetime=buy_exchange_rate.datetime
-    ).order_by('-datetime').first()
-
-    # find the sell rate in the same date and older or equal
-    # datetime than the buy rate, it can be none
-    sell_exchange_rate = ExchangeRate.objects.filter(
-        source_currency_iso=source_currency_iso,
-        target_currency_iso=target_currency_iso,
-        type=ExchangeRate.TYPE_SELL,
-        datetime__date=buy_exchange_rate.datetime.date(),
-        datetime__lte=buy_exchange_rate.datetime
-    ).order_by('-datetime').first()
+    types_map = {
+        ExchangeRate.TYPE_MID: 'mid_exchange_rate',
+        ExchangeRate.TYPE_BUY: 'buy_exchange_rate',
+        ExchangeRate.TYPE_SELL: 'sell_exchange_rate'
+    }
 
     active_exchange_rate = ActiveExchangeRate(
         source_currency_iso=source_currency_iso,
         target_currency_iso=target_currency_iso,
-        buy_exchange_rate=buy_exchange_rate,
-        sell_exchange_rate=sell_exchange_rate,
-        mid_exchange_rate=mid_exchange_rate,
-        target_datetime=buy_exchange_rate.datetime
+        target_datetime=ref_exchange_rate.datetime
     )
+
+    setattr(active_exchange_rate, types_map[ref_type], ref_exchange_rate)
+
+    remaining_types = {ExchangeRate.TYPE_MID, ExchangeRate.TYPE_BUY, ExchangeRate.TYPE_SELL}.difference(ref_type)
+
+    for rtype in remaining_types:
+        # find the exchange rate in the same date and with an older or equal
+        # datetime than the ref exchange rate, it can be none
+        exchange_rate = ExchangeRate.objects.filter(
+            source_currency_iso=source_currency_iso,
+            target_currency_iso=target_currency_iso,
+            type=rtype,
+            datetime__date=ref_exchange_rate.datetime.date(),
+            datetime__lte=ref_exchange_rate.datetime
+        ).order_by('-datetime').first()
+
+        if exchange_rate:
+            setattr(active_exchange_rate, types_map[rtype], exchange_rate)
 
     return active_exchange_rate
 
 
-def get_active_exchange_rates(target_datetime: datetime.datetime = None):
-    if target_datetime is None:
-        target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
-
+def get_active_exchange_rate_list(
+        ref_type: str = ExchangeRate.TYPE_MID,
+        target_datetime: datetime.datetime = None,
+        limit_datetime: datetime.datetime = None
+):
     # setting a custom order
     source_currencies_isos = [Ad.AMERICAN_DOLLAR_ISO, Ad.MLC_ISO, Ad.EURO_ISO]
 
@@ -192,14 +205,101 @@ def get_active_exchange_rates(target_datetime: datetime.datetime = None):
                 Ad.CONVERTIBLE_CUBAN_PESO_ISO, Ad.CUBAN_PESO_ISO, Ad.EURO_ISO, Ad.MLC_ISO, Ad.AMERICAN_DOLLAR_ISO):
             target_currencies_isos.append(currency[0])
 
-    active_exchange_rates = []
+    active_exchange_rate_list = []
 
     for target_currency_iso in target_currencies_isos:
         for source_currency_iso in source_currencies_isos:
             if target_currency_iso != source_currency_iso:
-                active_exchange_rate = get_active_exchange_rate(source_currency_iso, target_currency_iso,
-                                                                target_datetime)
+                active_exchange_rate = get_active_exchange_rate(
+                    source_currency_iso,
+                    target_currency_iso,
+                    ref_type,
+                    target_datetime,
+                    limit_datetime
+                )
                 if active_exchange_rate:
-                    active_exchange_rates.append(active_exchange_rate)
+                    active_exchange_rate_list.append(active_exchange_rate)
 
-    return active_exchange_rates
+    return active_exchange_rate_list
+
+
+# This method is not in use right now, but I leave it here for future reference using windows functions
+def get_newest_exchange_rates_queryset(
+        source_currency_iso=None,
+        target_currency_iso=None,
+        etype=None,
+        from_datetime: datetime.datetime = None,
+        to_datetime: datetime.datetime = None
+) -> QuerySet:
+    """
+    Returns the newest exchange rates in the groups defined by the fields source_currency_iso,
+    target_currency_iso and etype which are older than the to_datetime param and newer than from_datetime.
+    The returned QuerySet is also filtered by the params source_currency_iso, target_currency_iso and etype
+    :param source_currency_iso:
+    :param target_currency_iso:
+    :param etype:
+    :param target_datetime:
+    :param limit_datetime:
+    :return: QuerySet of ExchangeRate(s)
+    """
+
+    query = Q()
+
+    if source_currency_iso:
+        query &= Q(source_currency_iso=source_currency_iso)
+
+    if target_currency_iso:
+        query &= Q(target_currency_iso=target_currency_iso)
+
+    if etype:
+        query &= Q(etype=etype)
+
+    if from_datetime:
+        query &= Q(datetime_gte=from_datetime)
+
+    if to_datetime:
+        query &= Q(datetime_lte=to_datetime)
+
+    exchange_rates_queryset = ExchangeRate.objects.filter(query).annotate(
+        rank=Window(
+            expression=RowNumber(),
+            partition_by=[F('source_currency_iso'), F('target_currency_iso'), F('etype')],
+            order_by=F('datetime').desc()
+        )
+    ).filter(rank=1)
+
+    return exchange_rates_queryset
+
+
+def get_open_exchange_rate_of(exchange_rate: ExchangeRate) -> Union[ExchangeRate, None]:
+    week_day = exchange_rate.datetime.weekday()
+    open_date = exchange_rate.datetime.date() - datetime.timedelta(days=week_day)
+
+    open_exchange_rate = ExchangeRate.objects.filter(
+        source_currency_iso=exchange_rate.source_currency_iso,
+        target_currency_iso=exchange_rate.target_currency_iso,
+        type=exchange_rate.type,
+        datetime__gte=open_date
+    ).order_by('datetime').first()
+
+    return open_exchange_rate
+
+
+def get_52_week_high_exchange_rate_of(exchange_rate: ExchangeRate) -> Union[ExchangeRate, None]:
+    return ExchangeRate.objects.filter(
+        source_currency_iso=exchange_rate.source_currency_iso,
+        target_currency_iso=exchange_rate.target_currency_iso,
+        type=exchange_rate.type,
+        datetime__year=exchange_rate.datetime.year,
+        datetime__lte=exchange_rate.datetime
+    ).order_by('-wavg').first()
+
+
+def get_52_week_low_exchange_rate_of(exchange_rate: ExchangeRate) -> Union[ExchangeRate, None]:
+    return ExchangeRate.objects.filter(
+        source_currency_iso=exchange_rate.source_currency_iso,
+        target_currency_iso=exchange_rate.target_currency_iso,
+        type=exchange_rate.type,
+        datetime__year=exchange_rate.datetime.year,
+        datetime__lte=exchange_rate.datetime
+    ).order_by('wavg').first()

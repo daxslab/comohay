@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models.ad import AdSerializer
+from api.v1.serializers.ad import AdSerializer
 
 
 class AdSearchSerializer(serializers.Serializer):

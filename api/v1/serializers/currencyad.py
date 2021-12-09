@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models.ad import AdSerializer
+from api.v1.serializers.ad import AdSerializer
 from currencies.models.currencyad import CurrencyAd
 
 

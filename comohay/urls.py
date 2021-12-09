@@ -22,7 +22,7 @@ from comohay import settings
 
 urlpatterns = [
     url(r'^convert/', include('lazysignup.urls')),
-    path('api/v1/', include('api.urls')),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     path('', include('ads.urls')),
     path('accounts/', include('allauth.urls')),

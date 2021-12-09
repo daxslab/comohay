@@ -21,15 +21,15 @@ from ads.models import TelegramGroup
 from ads.models.ad import Ad
 from ads.models.municipality import Municipality
 from ads.models.province import Province
-from api.models.ad import AdSerializer
-from api.models.adsearch import AdSearchSerializer
-from api.models.classifieds_platform import ClassifiedsPlatformSerializer
-from api.models.currencyad import CurrencyAdSerializer
-from api.models.exchange_rate import ExchangeRateSerializer, ActiveExchangeRateSerializer
-from api.models.lazylogin import LazyLoginSerializer
-from api.models.municipality import MunicipalitySerializer
-from api.models.province import ProvinceSerializer
-from api.models.telegram_group import TelegramGroupSerializer
+from api.v1.serializers.ad import AdSerializer
+from api.v1.serializers.adsearch import AdSearchSerializer
+from api.v1.serializers.classifieds_platform import ClassifiedsPlatformSerializer
+from api.v1.serializers.currencyad import CurrencyAdSerializer
+from api.v1.serializers.exchange_rate import ExchangeRateSerializer, ActiveExchangeRateSerializer
+from api.v1.serializers.lazylogin import LazyLoginSerializer
+from api.v1.serializers.municipality import MunicipalitySerializer
+from api.v1.serializers.province import ProvinceSerializer
+from api.v1.serializers.telegram_group import TelegramGroupSerializer
 from comohay import settings
 from currencies.models import CurrencyAd
 from currencies.models.exchange_rate import ExchangeRate
@@ -199,7 +199,8 @@ class CurrencyAdView(generics.ListAPIView):
     queryset = CurrencyAd.objects.filter(ad__is_deleted=False)
     serializer_class = CurrencyAdSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ['type', 'source_currency_iso', 'target_currency_iso', 'ad__province__id', 'ad__municipality__id']
+    filterset_fields = ['type', 'source_currency_iso', 'target_currency_iso', 'ad__province__id',
+                        'ad__municipality__id']
     ordering_fields = ['ad__external_created_at', 'price']
     ordering = ['-ad__external_created_at']
 
@@ -216,64 +217,8 @@ class ClassifiedsPlatformsView(APIView):
     def get(self, request):
         classifier_platforms = []
         for external_source_name, external_source_url in settings.EXTERNAL_SOURCES.items():
-            classifier_platforms.append({"name": external_source_name,"url": external_source_url})
+            classifier_platforms.append({"name": external_source_name, "url": external_source_url})
         return Response(ClassifiedsPlatformSerializer(classifier_platforms, many=True).data)
-
-
-# Old custom CurrencyAdView
-# class CurrencyAdView(APIView):
-#     """
-#     View to retrieve the currency ads used to compute the last exchange rate relative to the datetime passed as argument
-#     """
-#
-#     permission_classes = [AllowAny]
-#
-#     def get(self, request, source_currency_iso, target_currency_iso, currencyad_type, target_datetime_str=None):
-#
-#         if target_datetime_str is None:
-#             target_datetime = datetime.datetime.now(tz=datetime.timezone.utc)
-#         else:
-#             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
-#                 tzinfo=datetime.timezone.utc)
-#
-#         exchange_rate_type = ExchangeRate.TYPE_BUY
-#         currencyad_type_filter = [currencyad_type]
-#
-#         if currencyad_type == CurrencyAd.TYPE_PURCHASE:
-#             exchange_rate_type = ExchangeRate.TYPE_SELL
-#         elif currencyad_type == 'all':
-#             exchange_rate_type = ExchangeRate.TYPE_MID
-#             currencyad_type_filter = [CurrencyAd.TYPE_SALE, CurrencyAd.TYPE_PURCHASE]
-#
-#         last_exchange_rate = ExchangeRate.objects.filter(
-#             source_currency_iso=source_currency_iso,
-#             target_currency_iso=target_currency_iso,
-#             type=exchange_rate_type,
-#             datetime__lte=target_datetime
-#         ).order_by("-datetime").first()
-#
-#         if last_exchange_rate is None:
-#             return Response(HTTP_404_NOT_FOUND)
-#
-#         max_deviation = last_exchange_rate.deviation_threshold * last_exchange_rate.mad
-#         currencyad_qs = CurrencyAd.objects.filter(
-#             source_currency_iso=source_currency_iso,
-#             target_currency_iso=target_currency_iso,
-#             type__in=currencyad_type_filter,
-#             ad__external_created_at__lte=last_exchange_rate.datetime,
-#             ad__external_created_at__gte=last_exchange_rate.datetime - datetime.timedelta(last_exchange_rate.days_span),
-#             price__gte=last_exchange_rate.median - max_deviation,
-#             price__lte=last_exchange_rate.median + max_deviation
-#         )
-#
-#         # excluding currencyads who were deleted in the target period of time
-#         currencyad_qs = currencyad_qs.exclude(
-#             ad__is_deleted=True,
-#             ad__deleted_at__lt=target_datetime
-#         )
-#
-#         serializer = CurrencyAdSerializer(currencyad_qs, many=True)
-#         return Response(serializer.data)
 
 
 class ActiveExchangeRatesView(APIView):
@@ -287,7 +232,10 @@ class ActiveExchangeRatesView(APIView):
             target_datetime = datetime.datetime.strptime(target_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc)
 
-        active_exchange_rates = currencies.services.exchange_rate_service.get_active_exchange_rates(target_datetime)
+        active_exchange_rates = currencies.services.exchange_rate_service.get_active_exchange_rate_list(
+            ref_type=ExchangeRate.TYPE_BUY,
+            target_datetime=target_datetime
+        )
 
         serializer = ActiveExchangeRateSerializer(active_exchange_rates, many=True)
 
@@ -306,9 +254,10 @@ class ActiveExchangeRateView(APIView):
                 tzinfo=datetime.timezone.utc)
 
         active_exchange_rate = currencies.services.exchange_rate_service.get_active_exchange_rate(
-            source_currency_iso,
-            target_currency_iso,
-            target_datetime
+            source_currency_iso=source_currency_iso,
+            target_currency_iso=target_currency_iso,
+            ref_type=ExchangeRate.TYPE_BUY,
+            target_datetime=target_datetime
         )
 
         if not active_exchange_rate:

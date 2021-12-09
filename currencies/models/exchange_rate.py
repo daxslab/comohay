@@ -1,8 +1,8 @@
 from django.db import models
 import datetime
 
-class ExchangeRate(models.Model):
 
+class ExchangeRate(models.Model):
     # IMPORTANT NOTE:
     #   The values of mad and median refers to the Mean Absolute Deviation
     #   and the mean used to detect the outliers before computing the exchange
@@ -33,10 +33,10 @@ class ActiveExchangeRate:
             self,
             source_currency_iso: str,
             target_currency_iso: str,
-            buy_exchange_rate: ExchangeRate,
-            sell_exchange_rate: ExchangeRate,
-            mid_exchange_rate: ExchangeRate,
-            target_datetime: datetime.datetime
+            buy_exchange_rate: ExchangeRate = None,
+            sell_exchange_rate: ExchangeRate = None,
+            mid_exchange_rate: ExchangeRate = None,
+            target_datetime: datetime.datetime = None
     ) -> None:
         super().__init__()
         self.source_currency_iso = source_currency_iso
@@ -45,4 +45,3 @@ class ActiveExchangeRate:
         self.sell_exchange_rate = sell_exchange_rate
         self.mid_exchange_rate = mid_exchange_rate
         self.target_datetime = target_datetime
-
