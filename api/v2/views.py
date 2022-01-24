@@ -28,7 +28,7 @@ class ActiveExchangeRatesView(APIView):
             )
 
         if limit_datetime_str is None:
-            limit_datetime = target_datetime - datetime.timedelta(days=30)
+            limit_datetime = target_datetime - datetime.timedelta(days=15)
         else:
             limit_datetime = datetime.datetime.strptime(limit_datetime_str, "%Y-%m-%d %H:%M:%S").replace(
                 tzinfo=datetime.timezone.utc

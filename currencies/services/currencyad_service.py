@@ -166,11 +166,11 @@ def get_similar_currencyads(currencyad: CurrencyAd):
 
 
 def get_older_similar_currencyads(currencyad: CurrencyAd):
-    return get_similar_currencyads(currencyad).filter(ad__external_created_at__lt=currencyad.ad.external_created_at)
+    return get_similar_currencyads(currencyad).filter(ad__external_created_at__lte=currencyad.ad.external_created_at)
 
 
 def get_newest_similar_currencyads(currencyad: CurrencyAd):
-    return get_similar_currencyads(currencyad).filter(ad__external_created_at__gt=currencyad.ad.external_created_at)
+    return get_similar_currencyads(currencyad).filter(ad__external_created_at__gte=currencyad.ad.external_created_at)
 
 
 def soft_delete_older_similar_currencyads(currencyad: CurrencyAd):
