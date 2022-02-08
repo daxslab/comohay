@@ -13,7 +13,6 @@ services:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
       - solr_data:/home/app/web/solr_data
-      - telethon_sessions:/home/app/web/telethon_sessions
     expose:
       - 8000
     env_file:
@@ -96,8 +95,11 @@ services:
   redis:
     restart: always
     image: redis:6.2.6
+    command: redis-server --save 300 1 --loglevel warning
     expose:
       - "6379"
+    volumes:
+      - redis_data:/data
     logging:
       options:
         max-size: "50m"
@@ -113,7 +115,6 @@ services:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
       - solr_data:/home/app/web/solr_data
-      - telethon_sessions:/home/app/web/telethon_sessions
     env_file:
       - ./.env.prod
     logging:
@@ -135,7 +136,6 @@ services:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
       - solr_data:/home/app/web/solr_data
-      - telethon_sessions:/home/app/web/telethon_sessions
     env_file:
       - ./.env.prod
     logging:
@@ -157,7 +157,6 @@ services:
       - ../static_volume:/home/app/web/static_root
       - ../media_volume:/home/app/web/media
       - solr_data:/home/app/web/solr_data
-      - telethon_sessions:/home/app/web/telethon_sessions
     env_file:
       - ./.env.prod
     logging:
@@ -185,7 +184,7 @@ services:
 volumes:
   postgres_data:
   solr_data:
-  telethon_sessions:
+  redis_data:
 
 networks:
   frontproxynet:
