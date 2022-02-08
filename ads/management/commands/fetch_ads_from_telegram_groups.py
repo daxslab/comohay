@@ -10,8 +10,6 @@ import logging
 import comohay.settings
 from currencies.services import currencyad_service
 import asyncio
-from teleredis import RedisSession
-import redis
 
 logger = logging.getLogger(__name__)
 
@@ -30,19 +28,9 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        redis_connector = redis.Redis(
-            host=comohay.settings.REDIS_HOST,
-            port=comohay.settings.REDIS_PORT,
-            db=comohay.settings.REDIS_DEFAULT_DB,
-            decode_responses=False
-        )
-
-        session = RedisSession('telethon_session', redis_connector)
-
         # Telegram desktop sample keys, see https://docs.telethon.dev/en/latest/basic/signing-in.html
-        # see also https://core.telegram.org/api/obtaining_api_id#using-telegrams-open-source-code
         self.client = TelegramClient(
-            session,
+            'telethon_sessions/anon',
             comohay.settings.TELEGRAM_API_ID,
             comohay.settings.TELEGRAM_API_HASH,
             # connection=connection.ConnectionTcpMTProxyRandomizedIntermediate,

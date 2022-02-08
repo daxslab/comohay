@@ -66,4 +66,3 @@ pandas
 numpy
 scipy
 telethon==1.23.0
-teleredis==0.1.3

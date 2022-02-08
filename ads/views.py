@@ -51,17 +51,14 @@ class IndexView(SearchView):
         self.results = self.get_results()
 
         response = cache.get(path)
-
         if not response:
             response = self.create_response()
             cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
-
         if self.query != '' and not self.request.GET.get('page', False):
             user_search = UserSearch(user=request.user, search=self.query,
                                      autosuggestion=bool(request.GET.get('a', False)))
             user_search.save()
             action.send(request.user, verb=ACTION_SEARCH_AD, target=user_search)
-
         return response
 
     def get_context(self):

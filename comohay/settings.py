@@ -232,25 +232,18 @@ HAYSTACK_CONNECTIONS = {
 
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
-
-REDIS_HOST = os.environ.get("REDIS_HOST", "redis")
-REDIS_PORT = os.environ.get("REDIS_PORT", "6379")
-REDIS_DEFAULT_DB = 0
-REDIS_SEARCH_DB = 1
-REDIS_CELERY_DB = 2
-
 # Cache
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{host}:{port}/{db}".format(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DEFAULT_DB),
+        "LOCATION": "redis://redis:6379/0",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
     "search": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://{host}:{port}/{db}".format(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_SEARCH_DB),
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -263,8 +256,8 @@ CACHE_AUTOCOMPLETE_CLIENT = 10 * 60 * 60 * 24  # 10 days
 
 # Celery
 
-CELERY_BROKER_URL = "redis://{host}:{port}/{db}".format(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_CELERY_DB)
-CELERY_RESULT_BACKEND = "redis://{host}:{port}/{db}".format(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_CELERY_DB)
+CELERY_BROKER_URL = 'redis://redis:6379/2'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/2'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

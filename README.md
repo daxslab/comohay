@@ -33,7 +33,7 @@ the application can be started using:
 
     docker-compose -f docker-compose.prod.yml up --build
     
-### Preparing Solr
+## Preparing Solr
 
 Building the configuration schema and reloading the precreated core in docker-compose
     
