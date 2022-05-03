@@ -21,7 +21,7 @@ django-libsass==0.8
 django-mptt==0.10.0
 django-seed==0.2.2
 django-autoslug==1.9.8
-django==3.0.7
+django==3.1.14
 djangorestframework==3.11.0
 drf-yasg==1.20.0
 django-rest-auth==0.9.5
