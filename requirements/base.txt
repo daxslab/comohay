@@ -2,9 +2,9 @@
 django-haystack
 asgiref==3.2.9
 certifi==2020.4.5.2
-cffi==1.14.0
+cffi==1.16.0
 chardet==3.0.4
-cryptography==2.9.2
+cryptography==41.0.5
 decorator==4.4.2
 defusedxml==0.6.0
 django-activity-stream==0.9.0
@@ -32,7 +32,7 @@ idna==2.9
 libsass==0.20.0
 markdown==3.2.2
 oauthlib==3.1.0
-pillow==7.1.2
+pillow==10.1.0
 pycparser==2.20
 python-dateutil==2.8.1
 python-telegram-bot==12.7
@@ -62,7 +62,7 @@ fast-autocomplete==0.6.0
 pysolr==3.9.0
 django-meta==1.7.0
 Unidecode==1.1.1
-pandas
-numpy
-scipy
-telethon==1.23.0
+pandas==1.5.3
+numpy==1.24.4
+scipy==1.10.1
+telethon==1.32.0
