@@ -77,3 +77,6 @@ Django `DummyCache`. For this, you can override the `CACHES` setting in `comohay
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
         }
     }
+
+### Api credentials for the telegram bot
+- https://github.com/telegramdesktop/tdesktop/blob/dev/docs/api_credentials.md
