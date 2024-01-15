@@ -13,7 +13,7 @@
         {% endif %}
     </div>
     <div class="list-item-title">
-        <a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank" class="external"
+        <a href="{{ ad.get_absolute_url }}" {% if ad.external_source %}target="_blank" class="external" rel="nofollow"
            data-goto="{{ request.scheme }}://{{ request.get_host }}{% url "ads:to_external_url" %}"{% endif %}
            data-ad="{{ ad.id }}">
             <h2>{{ ad.title }}</h2>
