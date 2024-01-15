@@ -1,5 +1,5 @@
 from django.contrib.auth.models import AbstractUser
-from ads.helpers.lazysignup_utils import is_lazy_user
+from ads.helpers.guest_user_utils import is_guest_user
 
 
 class User(AbstractUser):
@@ -7,7 +7,7 @@ class User(AbstractUser):
     @property
     def is_authenticated(self):
         try:
-            if is_lazy_user(self):
+            if is_guest_user(self):
                 return False
         except:
             pass

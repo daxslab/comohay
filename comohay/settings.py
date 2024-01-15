@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'categories',
     'categories.editor',
     'django_seed',
-    'lazysignup',
+    'guest_user',
     'actstream',
     'allauth',
     'allauth.account',
@@ -85,7 +85,7 @@ MIDDLEWARE = [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-    'lazysignup.backends.LazySignupBackend',
+    'guest_user.backends.GuestBackend',
 )
 
 ROOT_URLCONF = 'comohay.urls'

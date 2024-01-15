@@ -13,8 +13,8 @@ from django.shortcuts import render, get_object_or_404
 from django.utils.decorators import method_decorator
 
 from django_filters.views import FilterView
+from guest_user.decorators import allow_guest_user
 from haystack.views import SearchView
-from lazysignup.decorators import allow_lazy_user
 from meta.views import Meta
 from rest_framework.utils import json
 from text_unidecode import unidecode
@@ -157,7 +157,7 @@ class AdsByMainCategoryView(FilterView):
 
         return context
 
-    @method_decorator(allow_lazy_user)
+    @method_decorator(allow_guest_user)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -189,19 +189,19 @@ class AdsByCategoriesView(FilterView):
 
         return context
 
-    @method_decorator(allow_lazy_user)
+    @method_decorator(allow_guest_user)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
 
-@allow_lazy_user
+@allow_guest_user
 def detail(request, id, ad_slug):
     ad = get_object_or_404(Ad, id=id, slug=ad_slug)
     action.send(request.user, verb=ACTION_VIEW_AD, target=ad)
     return render(request, 'ad/detail.html', {'ad': ad})
 
 
-@allow_lazy_user
+@allow_guest_user
 # @csrf_exempt
 def create(request):
     image_form_set = modelformset_factory(AdImage, form=AdImageForm, extra=3)
@@ -236,7 +236,7 @@ def create(request):
     return render(request, 'ad/create.html', {'ad_form': ad_form, 'ad_image_formset': ad_image_formset})
 
 
-@allow_lazy_user
+@allow_guest_user
 def to_external_url(request):
     url = request.GET.get('url')
     ref = request.GET.get('ref')

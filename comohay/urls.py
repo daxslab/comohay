@@ -21,7 +21,7 @@ from django.urls import path, include
 from comohay import settings
 
 urlpatterns = [
-    url(r'^convert/', include('lazysignup.urls')),
+    path("convert/", include("guest_user.urls")),
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     path('', include('ads.urls')),

@@ -1,12 +1,12 @@
 from django.urls import path
-from lazysignup.decorators import allow_lazy_user
+from guest_user.decorators import allow_guest_user
 
 from ads import views
 
 app_name = 'ads'
 urlpatterns = [
-    path('', allow_lazy_user(views.IndexView()), name='index'),
-    path('search/autocomplete/', allow_lazy_user(views.autocomplete), name='autocomplete'),
+    path('', allow_guest_user(views.IndexView()), name='index'),
+    path('search/autocomplete/', allow_guest_user(views.autocomplete), name='autocomplete'),
     path('url/', views.to_external_url, name='to_external_url'),
     path('ads/<str:category>/<str:subcategory>', views.AdsByCategoriesView.as_view(), name='list_by_categories'),
     path('ads/<str:category>', views.AdsByMainCategoryView.as_view(), name='list_by_main_category'),
