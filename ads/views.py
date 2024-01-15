@@ -248,7 +248,8 @@ def to_external_url(request):
         return HttpResponseBadRequest()
     response = HttpResponseRedirect(url)
     response['Referer'] = from_url
-    action.send(request.user, verb=ACTION_FOLLOW_EXTERNAL_AD, target=ad)
+    if not request.user.is_anonymous:
+        action.send(request.user, verb=ACTION_FOLLOW_EXTERNAL_AD, target=ad)
     return response
 
 
