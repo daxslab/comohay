@@ -78,5 +78,11 @@ Django `DummyCache`. For this, you can override the `CACHES` setting in `comohay
         }
     }
 
+### Clear cache
+
+Someties when deployed is needed to flush old redis app cache, the command required is
+
+    docker-compose.prod.yml exec redis redis-cli flushall
+
 ### Api credentials for the telegram bot
 - https://github.com/telegramdesktop/tdesktop/blob/dev/docs/api_credentials.md
