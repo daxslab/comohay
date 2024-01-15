@@ -1,6 +1,9 @@
 window.addEventListener('load', function () {
     let goToLink = function (event) {
         let url = this.getAttribute('href');
+        if (doesUrlBelongsToCurrentDomain(url)) {
+            return;
+        }
         let currentUrl = window.location.href;
         let ref = btoa(currentUrl);
         let goTo = new URL(this.dataset.goto);
@@ -16,6 +19,12 @@ window.addEventListener('load', function () {
         link.addEventListener('mousedown', goToLink);
     });
 });
+
+function doesUrlBelongsToCurrentDomain(url) {
+  const link = document.createElement('a');
+  link.href = url;
+  return link.href.indexOf(window.location.origin) !== -1;
+}
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
