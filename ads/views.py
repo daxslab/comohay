@@ -54,7 +54,7 @@ class IndexView(SearchView):
         if not response:
             response = self.create_response()
             cache.set(path, response, settings.CACHE_SEARCH_RESPONSE_SECONDS)
-        if self.query != '' and not self.request.GET.get('page', False):
+        if self.query != '' and not self.request.GET.get('page', False) and not request.user.is_anonymous:
             user_search = UserSearch(user=request.user, search=self.query,
                                      autosuggestion=bool(request.GET.get('a', False)))
             user_search.save()
