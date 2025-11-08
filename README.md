@@ -86,3 +86,8 @@ Someties when deployed is needed to flush old redis app cache, the command requi
 
 ### Api credentials for the telegram bot
 - https://github.com/telegramdesktop/tdesktop/blob/dev/docs/api_credentials.md
+
+### Fetch Ads from telegram groups
+
+    docker-compose -f docker-compose.prod.yml exec celery_worker_2 sh -c "python manage.py fetch_ads_from_telegram_groups --minutes-offset 3"
+
