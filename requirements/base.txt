@@ -8,7 +8,7 @@ cryptography==41.0.5
 decorator==4.4.2
 defusedxml==0.6.0
 django-activity-stream==0.9.0
-django-allauth==0.42.0
+django-allauth==65.13.0
 django-appconf==1.0.4
 django-categories==1.7.2
 django-compressor==2.4
